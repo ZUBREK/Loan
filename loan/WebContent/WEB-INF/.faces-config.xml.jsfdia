@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="home::#user#home.xhtml" NAME="output"
+    PATH="/user/home.xhtml" TARGET="rules:#user#home.xhtml" TITLE="home" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::1" SHAPE="32,129,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::1" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="index::#index.xhtml" NAME="output"
+    PATH="/index.xhtml" TARGET="rules:#index.xhtml" TITLE="index" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::2" SHAPE="32,241,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::2" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerTecAdm::#adm#tec_adm.xhtml" NAME="output"
+    PATH="/adm/tec_adm.xhtml" TARGET="rules:#adm#tec_adm.xhtml"
+    TITLE="gerTecAdm" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::3" SHAPE="32,353,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::3" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerCampus::#adm#campus.xhtml" NAME="output"
+    PATH="/adm/campus.xhtml" TARGET="rules:#adm#campus.xhtml"
+    TITLE="gerCampus" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::4" SHAPE="32,465,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::4" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerTecEsp::#tec_adm#tec_esp.xhtml"
+    NAME="output" PATH="/tec_adm/tec_esp.xhtml"
+    TARGET="rules:#tec_adm#tec_esp.xhtml" TITLE="gerTecEsp" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::5" SHAPE="32,577,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::5" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerCoord::#tec_adm#coordenadorPea.xhtml"
+    NAME="output" PATH="/tec_adm/coordenadorPea.xhtml"
+    TARGET="rules:#tec_adm#coordenadorPea.xhtml" TITLE="gerCoord" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::6" SHAPE="32,689,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::6" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerSec::#tec_adm#secretario.xhtml"
+    NAME="output" PATH="/tec_adm/secretario.xhtml"
+    TARGET="rules:#tec_adm#secretario.xhtml" TITLE="gerSec" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#index.xhtml" PATH="/index.xhtml"
+  SHAPE="240,145,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#erro.xhtml" PATH="/erro.xhtml"
+  SHAPE="240,705,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#adm#arquivo#arquivo.xhtml"
+  PATH="/adm/arquivo/arquivo.xhtml" SHAPE="240,593,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::7" SHAPE="32,801,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::7" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerEstudante::#tec_adm#estudante.xhtml"
+    NAME="output" PATH="/tec_adm/estudante.xhtml"
+    TARGET="rules:#tec_adm#estudante.xhtml" TITLE="gerEstudante" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#adm#tec_adm.xhtml" PATH="/adm/tec_adm.xhtml"
+  SHAPE="240,817,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#tec_adm#tec_esp.xhtml"
+  PATH="/tec_adm/tec_esp.xhtml" SHAPE="240,929,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#tec_adm#coordenadorPea.xhtml"
+  PATH="/tec_adm/coordenadorPea.xhtml" SHAPE="240,1041,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#tec_adm#secretario.xhtml"
+  PATH="/tec_adm/secretario.xhtml" SHAPE="240,1153,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#user#home.xhtml" PATH="/user/home.xhtml"
+  SHAPE="240,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::8" SHAPE="32,1249,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::8" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerArquivo::#adm#arquivo#arquivo.xhtml"
+    NAME="output" PATH="/adm/arquivo/arquivo.xhtml"
+    TARGET="rules:#adm#arquivo#arquivo.xhtml" TITLE="gerArquivo" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#adm#campus.xhtml" PATH="/adm/campus.xhtml"
+  SHAPE="240,1265,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::9" SHAPE="32,1361,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::9" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerNoticia::#adm#noticia.xhtml"
+    NAME="output" PATH="/adm/noticia.xhtml"
+    TARGET="rules:#adm#noticia.xhtml" TITLE="gerNoticia" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#adm#noticia.xhtml" PATH="/adm/noticia.xhtml"
+  SHAPE="240,1377,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::10" SHAPE="32,1585,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::10" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerTime::#tec_adm#time.xhtml" NAME="output"
+    PATH="/tec_adm/time.xhtml" TARGET="rules:#tec_adm#time.xhtml"
+    TITLE="gerTime" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules::11" SHAPE="32,1473,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::11" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerModalidade::#adm#modalidade.xhtml"
+    NAME="output" PATH="/adm/modalidade.xhtml"
+    TARGET="rules:#adm#modalidade.xhtml" TITLE="gerModalidade" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#adm#modalidade.xhtml"
+  PATH="/adm/modalidade.xhtml" SHAPE="240,1601,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::12" SHAPE="32,1697,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::12" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerProjeto::#tec_adm#projeto.xhtml"
+    NAME="output" PATH="/tec_adm/projeto.xhtml"
+    TARGET="rules:#tec_adm#projeto.xhtml" TITLE="gerProjeto" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#tec_adm#estudante.xhtml"
+  PATH="/tec_adm/estudante.xhtml" SHAPE="240,1713,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::13" SHAPE="32,1809,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::13" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="gerDelegacao::#tec_adm#delegacao.xhtml"
+    NAME="output" PATH="/tec_adm/delegacao.xhtml"
+    TARGET="rules:#tec_adm#delegacao.xhtml" TITLE="gerDelegacao" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#tec_adm#projeto.xhtml"
+  PATH="/tec_adm/projeto.xhtml" SHAPE="240,1825,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::14" SHAPE="32,1921,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::14" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="erro::#erro.xhtml" NAME="output"
+    PATH="/erro.xhtml" TARGET="rules:#erro.xhtml" TITLE="erro" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#tec_adm#delegacao.xhtml"
+  PATH="/tec_adm/delegacao.xhtml" SHAPE="240,1937,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#tec_adm#time.xhtml"
+  PATH="/tec_adm/time.xhtml" SHAPE="240,1489,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

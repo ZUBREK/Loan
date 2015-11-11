@@ -1,0 +1,228 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+div#site {
+	width: 1000px;
+	margin: auto;
+}
+
+div#header {
+	background: #68727B; margin-bottom : 5px;
+	height: 193px;
+	margin-bottom: 5px;
+}
+
+div#footer {
+	background: #F2F1F1;
+	height: 35px;
+	margin-top: 5px;
+	float: left;
+	width: 100%;
+}
+
+body {
+	text-align: justify;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.titulo1 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.label {
+	font-weight: bold;
+	color: #006400 !important;
+}
+
+.centro {
+	text-align: center;
+}
+
+.esquerda {
+	text-align: left;
+}
+
+.direita {
+	text-align: right;
+}
+
+.fonte {
+	font-size: 15px;
+}
+
+ul.ui-menu-child {
+	white-space: nowrap;
+	width: auto !important;
+}
+
+.ui-layout-north {
+	z-index: 20 !important;
+	overflow: visible !important;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+	overflow: visible !important;
+}
+
+a img {
+	border: none;
+	vertical-align: middle;
+}
+
+#footer p {
+	
+}
+
+.logo {
+	margin-left: 300px;
+}
+
+#footer .legal {
+	height: 12px;
+	font: 8pt Arial;
+	text-align: center;
+	width: 100%;
+	margin: 0;
+	padding: 15px 10px;
+	font-size: 11px;
+	text-align: center;
+}
+
+.tamanhoCaixaOpcoes {
+	width: 200px;
+	height: 23px;
+}
+
+.metade {
+	width: 50%;
+}
+
+.umterco {
+	width: 33%;
+}
+
+.noventa {
+	width: 90%;
+}
+
+.noventaecinco {
+	width: 95%;
+}
+
+.cinco {
+	width: 5%;
+}
+
+.dez {
+	width: 10%;
+}
+
+.ui-panelgrid td, .ui-panelgrid tr {
+	border-style: none !important
+}
+
+.planoEnsino16 {
+	background-image: url('../../img/16/exam_16.png') !important
+}
+
+.planoTrabalho16 {
+	background-image: url('../../img/16/teacher_write_16.png') !important
+}
+
+.atendimento16 {
+	background-image: url('../../img/16/attendance_list_clock_16.png')
+		!important
+}
+
+.attach16 {
+	background-image: url('../../img/16/attach.png') !important
+}
+
+.ok16 {
+	background-image: url('../../img/16/button_ok.png') !important
+}
+
+.salvar16 {
+	background-image: url('../../img/16/button_ok.png') !important
+}
+
+.download16 {
+	background-image: url('../../img/16/down_blue.png') !important
+}
+
+.cancel16 {
+	background-image: url('../../img/16/cancel.png') !important
+}
+
+.cancelar16 {
+	background-image: url('../../img/16/cancel.png') !important
+}
+
+.fechar16 {
+	background-image: url('../../img/16/cancel.png') !important
+}
+
+.error16 {
+	background-image: url('../../img/16/error.png') !important
+}
+
+.remover16 {
+	background-image: url('../../img/16/remove.png') !important
+}
+
+.home16 {
+	background-image: url('../../img/16/home_16.png') !important
+}
+
+.editar16 {
+	background-image: url('../../img/16/editar-icone.png') !important
+}
+
+.tools16 {
+	background-image: url('../../img/16/ferramentas.png') !important
+}
+
+.escola16 {
+	background-image: url('../../img/16/bank_16_hot.png') !important
+}
+
+.save16 {
+	background-image: url('../../img/16/save.png') !important
+}
+
+.user16 {
+	background-image: url('../../img/16/admin_16.png') !important
+}
+
+.teacher16 {
+	background-image: url('../../img/16/teacher_clock_16.png') !important
+}
+
+.report16 {
+	background-image: url('../../img/16/report.png') !important
+}
+
+.info16 {
+	background-image: url('../../img/16/info.gif') !important
+}
+
+.pdf16 {
+	background-image: url('../../img/16/pdf.png') !important
+}
+
+.android16 {
+	background-image: url('../../img/16/android16.png') !important
+}
+
+.android216 {
+	background-image: url('../../img/16/notification.png') !important
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateIndex.xhtml">
+
+	<ui:define name="body">
+		<div id="esquerda">
+			<p:outputLabel value="Informações"
+				style="font-weight: bold; font-size: 18px;" />
+
+			<ui:include src="/layout/menus/menu_modalidades.xhtml" />
+
+		</div>
+
+		<div id="direita">
+			<h1>Notícias</h1>
+			<p:galleria value="#{galleriaControllerMB.images}" var="image"
+				panelWidth="827" panelHeight="420" showCaption="true">
+				<p:graphicImage width = "827" height="420" value="resources/images/#{image}" alt="Parte do texto da notícia"
+					title="Titulo"/>
+			</p:galleria>
+		</div>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+
+		<p:growl id="msg" showDetail="true" />
+		<p:panel id="painelPrincipal" header="Gerenciamento de Notícias">
+
+			<h:form>
+				<p:commandButton id="novoNoticia" value="Nova"
+					actionListener="#{noticiaMB.criar}"
+					oncomplete="PF('noticiaDialog').show()" update=":noticiaDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:dataTable id="noticiaTable"
+					value="#{noticiaMB.noticiaLazyDataModel}" var="notic"
+					emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{notic.id}" paginator="true" lazy="true"
+					filteredValue="#{noticiaMB.noticiaFiltered}">
+
+					<f:facet name="header">
+						<h:outputText value="Notícias cadastradas" />
+					</f:facet>
+
+					<p:column headerText="Título" filterBy="#{notic.titulo}"
+						filterMatchMode="contains">
+						<h:outputText value="#{notic.titulo}" />
+
+					</p:column>
+
+					<p:column headerText="Data da Notícia">
+						<h:outputText value="#{notic.data}" id="data">
+							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+								pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":noticia_form"
+							oncomplete="PF('noticiaDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{notic}"
+								target="#{noticiaMB.noticia}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('noticiaConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{notic}"
+								target="#{noticiaMB.noticia}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:panel>
+
+		<p:dialog id="noticiaDlg" widgetVar="noticiaDialog"
+			header="Dados da Notícia" width="600" height="200" modal="true"
+			closable="false">
+
+			<h:form id="noticia_form">
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="tituloLb" value="Título:" for="titulo" />
+
+					<p:inputText id="titulo" value="#{noticiaMB.noticia.titulo}"
+						size="50" required="true" requiredMessage="Título é obrigatório!" />
+
+					<p:message for="titulo" />
+
+					<h:outputLabel id="textoLb" value="Texto da notícia:" for="texto" />
+					<h:form>
+						<p:editor id="texto" widgetVar="editorWidget"
+							value="#{noticiaMB.noticia.texto}" width="300" />
+						<p:commandButton value="Limpar" type="button"
+							onclick="PF('editorWidget').clear();" icon="ui-icon-close" />
+					</h:form>
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :noticia_form :msg"
+							actionListener="#{noticiaMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('noticiaDialog').hide()" />
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('noticiaDialog').hide()"
+							update=":msg" immediate="true"
+							actionListener="#{noticiaMB.cancelar()}">
+							<p:resetInput target=":noticia_form" />
+						</p:commandButton>
+
+					</f:facet>
+
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="noticiaConfirmDialog"
+			global="true" header="Confirma exclusão da Notícia?"
+			showEffect="fade" hideEffect="explode"
+			message="Deseja realmente excluir a Notícia: #{noticiaMB.noticia.titulo}">
+
+
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{noticiaMB.remover()}"
+					oncomplete="PF('noticiaConfirmDialog').hide()" update=":tableForm"
+					icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{noticiaMB.cancelar()}"
+					oncomplete="PF('noticiaConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

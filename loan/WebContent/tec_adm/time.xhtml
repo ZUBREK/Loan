@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal" header="Gerenciamento de Times">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novoTime" value="Novo"
+					actionListener="#{timeMB.criar}"
+					oncomplete="PF('timeDialog').show()" update=":timeDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:dataTable id="timeTable" value="#{timeMB.timeLazyDataModel}"
+					var="time" emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{time.id}" paginator="true" lazy="true"
+					filteredValue="#{timeMB.timeFiltered}">
+
+					<f:facet name="header">
+						<h:outputText value="Times" />
+					</f:facet>
+
+					<p:column headerText="Nome" filterBy="#{time.nome}"
+						filterMatchMode="contains">
+						<h:outputText value="#{time.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Câmpus">
+						<p:outputLabel value="#{time.campus.cidade}" />
+					</p:column>
+
+					<p:column headerText="Modalidade">
+						<p:outputLabel value="#{time.modalidade.nome}" />
+					</p:column>
+
+					<p:column headerText="Técnico Responsável">
+						<p:outputLabel value="#{time.tecnico.nome}" />
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":time_form"
+							oncomplete="PF('timeDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{time}"
+								target="#{timeMB.time}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('timeConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{time}"
+								target="#{timeMB.time}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:panel>
+
+		<p:dialog id="timeDlg" widgetVar="timeDialog" header="Dados do Time"
+			width="600" height="200" modal="true" closable="false">
+
+			<h:form id="time_form">
+				<p:tabView id="tabView" widgetVar="tabBagaca">
+					<p:tab title="Dados Em Geral">
+
+						<h:panelGrid columns="3">
+
+							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+							<p:inputText id="nome" value="#{timeMB.time.nome}" size="50"
+								required="true" requiredMessage="Nome é obrigatório!" />
+
+							<p:message for="nome" />
+
+							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+							<p:selectOneMenu id="campus" value="#{timeMB.campus}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Câmpus é obrigatório!"
+								converter="#{campusConverter}">
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{timeMB.listaCampus}" var="camp"
+									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+								<p:ajax update=":time_form:tabView:tecEsportiv" />
+
+							</p:selectOneMenu>
+
+							<p:message for="campus" />
+
+							<p:outputLabel id="modalidadeLb" value="Modalidade:"
+								for="modalidade" />
+							<p:selectOneMenu id="modalidade" value="#{timeMB.modalidade}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Modalidade é obrigatório!"
+								converter="#{modalidadeConverter}">
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{timeMB.listaModalidade}" var="modalidd"
+									itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
+							</p:selectOneMenu>
+							<p:message for="modalidade" />
+
+							<p:outputLabel id="tecEsportivoLb" value="Ténico Esportivo:"
+								for="tecEsportiv" />
+							<p:selectOneMenu id="tecEsportiv" value="#{timeMB.tecEsportivo}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Ténico Esportivo é obrigatório!"
+								converter="#{tecnicoEsportivoConverter}"
+								disabled="#{empty timeMB.campus}">
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{timeMB.listaTecEsportivo}"
+									var="tecEsport" itemLabel="#{tecEsport.nome}"
+									itemValue="#{tecEsport}" />
+							</p:selectOneMenu>
+							<p:message for="tecEsportiv" />
+
+							<p:commandButton id="continuarBt" value="Continuar"
+								icon="salvar16" update=":tableForm :time_form :msg"
+								actionListener="#{timeMB.salvar}"
+								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
+
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Adicionar Estudantes:">
+						<h:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
+						<p:autoComplete id="estudante"
+							completeMethod="#{timeMB.pesquisarEstudanteNome}"
+							value="#{timeMB.estudante}" converter="#{estudanteConverter}"
+							minQueryLength="2" forceSelection="true">
+							<p:ajax event="itemSelect" listener="#{timeMB.onItemSelect}" />
+						</p:autoComplete>
+						<p:commandButton id="addEstudanteBt" value="Adicionar"
+							icon="apply" actionListener="#{timeMB.adicionarEstudante()}"
+							update=":time_form:tabView:estudantesList" />
+
+						<p:dataTable id="estudantesList" var="timeEstudante"
+							value="#{timeMB.time.timeEstudante}"
+							emptyMessage="Nenhum registro encontrado!" first="0">
+							<p:column headerText="Nome">
+								<h:outputText value="#{timeEstudante.estudante.nome}" />
+							</p:column>
+
+							<p:column headerText="Ações">
+								<p:commandButton id="removeEstudanteBt" value=""
+									icon="remover16" oncomplete="PF('timeEstConfirmDialog').show()"
+									update=":confirmRmv">
+									<f:setPropertyActionListener value="#{timeEstudante}"
+										target="#{timeMB.timeEstudante}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+			</h:form>
+			<f:facet name="footer">
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":tableForm :time_form :msg"
+					actionListener="#{timeMB.salvar}"
+					oncomplete="if(!args.validationFailed) PF('timeDialog').hide()" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('timeDialog').hide()" update=":msg" immediate="true"
+					actionListener="#{timeMB.cancelar()}">
+					<p:resetInput target=":time_form" />
+				</p:commandButton>
+
+			</f:facet>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="timeConfirmDialog"
+			global="true" header="Confirma exclusão do Time?" showEffect="fade"
+			hideEffect="fade"
+			message="Deseja realmente excluir o
+				time: #{timeMB.time.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{timeMB.remover()}"
+					oncomplete="PF('timeConfirmDialog').hide()" update=":tableForm"
+					icon="ok16" />
+				<p:commandButton value="Não" actionListener="#{timeMB.cancelar()}"
+					oncomplete="PF('timeConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+		<p:confirmDialog id="confirmRmv" widgetVar="timeEstConfirmDialog"
+			global="true" header="Remover estudante do time?" showEffect="fade"
+			hideEffect="fade"
+			message="Deseja realmente excluir o
+				estudante: #{timeMB.timeEstudante.estudante.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{timeMB.removerEstudante()}"
+					oncomplete="PF('timeEstConfirmDialog').hide()"
+					update=":time_form:tabView:estudantesList" icon="ok16" />
+				<p:commandButton value="Não" actionListener="#{timeMB.cancelar()}"
+					oncomplete="PF('timeEstConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

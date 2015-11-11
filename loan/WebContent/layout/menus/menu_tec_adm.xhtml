@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<h:form id="formSide">
+
+		<p:menu id="menuVertical" toggleable="true">
+			<p:menuitem id="homeMn" value="Meu Perfil" icon="home16"
+				action="home" actionListener="#{breadCrumbController.navigateHome}" />
+			
+			<p:menuitem id="projetoMn" value="Gerenciar - Projetos PEA"
+				action="gerProjeto"
+				actionListener="#{breadCrumbController.navigate(11)}"
+				icon="attach16" />
+			
+			<p:submenu id="opcoesTecAdmSubMn" label="Gerenciar - Usuários"
+				rendered="true">
+
+				<p:menuitem id="tecEspMn" value="Tecs. Esportivos"
+					action="gerTecEsp"
+					actionListener="#{breadCrumbController.navigate(3)}" icon="user16" />
+
+				<p:menuitem id="coordMn" value="Coordenadores" action="gerCoord"
+					actionListener="#{breadCrumbController.navigate(4)}" icon="user16" />
+
+				<p:menuitem id="secretarioMn" value="Secretários" action="gerSec"
+					actionListener="#{breadCrumbController.navigate(5)}" icon="user16" />
+
+				<p:menuitem id="estudanteMn" value="Estudantes"
+					action="gerEstudante"
+					actionListener="#{breadCrumbController.navigate(10)}" icon="user16" />
+
+			</p:submenu>
+			
+			<p:submenu id="opcoesCompeticaoSubMn" label="Gerenciar - Competição"
+				rendered="true">
+				
+				<p:menuitem id="timeMn" value="Times"
+					action="gerTime"
+					actionListener="#{breadCrumbController.navigate(9)}" icon="attach16" />
+				
+				<p:menuitem id="delegacaoMn" value="Delegações"
+				action="gerDelegacao"
+				actionListener="#{breadCrumbController.navigate(12)}"
+				icon="attach16" />
+				
+			</p:submenu>
+		</p:menu>
+
+	</h:form>
+</ui:composition>

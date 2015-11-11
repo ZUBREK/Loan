@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal" header="Gerenciamento de Modalidades">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novoModalidade" value="Nova"
+					actionListener="#{modalidadeMB.criar}"
+					oncomplete="PF('mdlddDialog').show()" update=":mdlddDlg" />
+			</h:form>
+			<h:form id="table_form">
+				<p:dataTable id="modalidadeTable"
+					value="#{modalidadeMB.modalidadeLazyDataModel}" var="mdldd"
+					emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{mdldd.id}" paginator="true" lazy="true">
+
+					<f:facet name="header">
+						<h:outputText value="Modalidades cadastradas" />
+					</f:facet>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{mdldd.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":mdldd_form"
+							oncomplete="PF('mdlddDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{mdldd}"
+								target="#{modalidadeMB.modalidade}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('confirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{mdldd}"
+								target="#{modalidadeMB.modalidade}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</p:panel>
+		<p:dialog id="mdlddDlg" widgetVar="mdlddDialog"
+			header="Nova Modalidade" width="450" height="100" modal="true"
+			closable="false">
+
+			<h:form id="mdldd_form">
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{modalidadeMB.modalidade.nome}"
+						size="20" required="true" requiredMessage="Nome é obrigatório!" />
+
+					<p:message for="nome" />
+					<p:spacer height="10px" />
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":table_form :mdldd_form :msg"
+							actionListener="#{modalidadeMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('mdlddDialog').hide()" />
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('mdlddDialog').hide()"
+							immediate="true" actionListener="#{modalidadeMB.cancelar()}">
+							<p:resetInput target=":mdldd_form" />
+						</p:commandButton>
+					</f:facet>
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="confirmDialog" global="true"
+			header="Confirma exclusão da Modalidade?" showEffect="fade"
+			hideEffect="explode"
+			message="Deseja realmente excluir a
+				modalidade: #{modalidadeMB.modalidade.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{modalidadeMB.remover()}"
+					oncomplete="PF('confirmDialog').hide()" update=":table_form"
+					icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{modalidadeMB.cancelar()}"
+					oncomplete="PF('confirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

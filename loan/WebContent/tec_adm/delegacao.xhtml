@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal" header="Gerenciamento de Delegação">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novaDelegacao" value="Nova"
+					actionListener="#{delegacaoMB.criar}"
+					oncomplete="PF('delegacaoDialog').show()" update=":delegacaoDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:dataTable id="delegacaoTable"
+					value="#{delegacaoMB.delegacaoLazyDataModel}" var="delegacao"
+					emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{delegacao.id}" paginator="true" lazy="true"
+					filteredValue="#{delegacaoMB.delegacaoFiltered}">
+
+					<f:facet name="header">
+						<h:outputText value="Delegações" />
+					</f:facet>
+
+					<p:column headerText="Nome" filterBy="#{delegacao.nome}"
+						filterMatchMode="contains">
+						<h:outputText value="#{delegacao.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Câmpus">
+						<p:outputLabel value="#{delegacao.campus.cidade}" />
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":delegacao_form"
+							oncomplete="PF('delegacaoDialog').show()"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{delegacao}"
+								target="#{delegacaoMB.delegacao}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('delegacaoConfirmDialog').show()"
+							update=":confirm" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{delegacao}"
+								target="#{delegacaoMB.delegacao}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:panel>
+
+		<p:dialog id="delegacaoDlg" widgetVar="delegacaoDialog"
+			header="Dados da Delegação" width="600" height="200" modal="true"
+			closable="false">
+
+			<h:form id="delegacao_form">
+				<p:tabView id="tabView" widgetVar="tabBagaca">
+					<p:tab title="Dados Em Geral">
+
+						<h:panelGrid columns="3">
+
+							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+							<p:inputText id="nome" value="#{delegacaoMB.delegacao.nome}"
+								size="50" required="true" requiredMessage="Nome é obrigatório!" />
+
+							<p:message for="nome" />
+
+							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+							<p:selectOneMenu id="campus" value="#{delegacaoMB.campus}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Câmpus é obrigatório!"
+								converter="#{campusConverter}">
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{delegacaoMB.listaCampus}" var="camp"
+									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
+
+							</p:selectOneMenu>
+
+							<p:message for="campus" />
+
+							<p:commandButton id="continuarBt" value="Continuar"
+								icon="salvar16" update=":tableForm :delegacao_form :msg"
+								actionListener="#{delegacaoMB.salvar}"
+								oncomplete="PF('tabBagaca').select(1);" />
+
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Adicionar Pessoas:">
+						<h:outputLabel id="pessoasLb" value="Pessoa:" for="pessoa" />
+						<p:autoComplete id="pessoa"
+							completeMethod="#{delegacaoMB.pesquisarPessoaNome}"
+							value="#{delegacaoMB.pessoa}" converter="#{pessoaConverter}"
+							minQueryLength="3" forceSelection="true">
+							<p:ajax event="itemSelect" listener="#{delegacaoMB.onItemSelect}" />
+						</p:autoComplete>
+
+						<p:commandButton id="addPessoasBt" value="Adicionar" icon="apply"
+							actionListener="#{delegacaoMB.adicionarPessoa()}"
+							update=":delegacao_form:tabView:pessoasList" />
+
+						<p:dataTable id="pessoasList" var="delegacaoPessoa"
+							value="#{delegacaoMB.delegacao.delegacaoPessoas}"
+							emptyMessage="Nenhum registro encontrado!" first="0">
+							<p:column headerText="Nome">
+								<h:outputText value="#{delegacaoPessoa.pessoa.nome}" />
+							</p:column>
+
+							<p:column headerText="Ações">
+								<p:selectBooleanCheckbox itemLabel="Chefe" itemvalue="#{delegacaoMB.delegacaoPessoa.chefe}">
+									<p:ajax update=":msg" listener="#{delegacaoMB.addChefe()}" />
+								</p:selectBooleanCheckbox>
+								<p:commandButton id="removeEstudanteBt" value="Remover"
+									icon="remover16"
+									oncomplete="PF('delegacaoPessoaConfirmDialog').show()"
+									update=":confirmRmv">
+									<f:setPropertyActionListener value="#{delegacaoPessoa}"
+										target="#{delegacaoMB.delegacaoPessoa}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+			</h:form>
+			<f:facet name="footer">
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":tableForm :delegacao_form :msg"
+					actionListener="#{delegacaoMB.salvar}"
+					oncomplete="if(!args.validationFailed) PF('delegacaoDialog').hide()" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('delegacaoDialog').hide()" update=":tableForm :msg"
+					immediate="true" actionListener="#{delegacaoMB.cancelar()}">
+					<p:resetInput target=":delegacao_form" />
+				</p:commandButton>
+
+			</f:facet>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="delegacaoConfirmDialog"
+			global="true" header="Confirma exclusão da Delegação?"
+			showEffect="fade" hideEffect="fade"
+			message="Deseja realmente excluir a delegação: #{delegacaoMB.delegacao.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{delegacaoMB.remover()}"
+					oncomplete="PF('delegacaoConfirmDialog').hide()"
+					update=":tableForm" icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{delegacaoMB.cancelar()}"
+					oncomplete="PF('delegacaoConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+		<p:confirmDialog id="confirmRmv"
+			widgetVar="delegacaoPessoaConfirmDialog" global="true"
+			header="Remover pessoa da delegação?" showEffect="fade"
+			hideEffect="fade"
+			message="Deseja realmente excluir a
+				pessoa: #{delegacaoMB.delegacaoPessoa.pessoa.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{delegacaoMB.removerPessoa()}"
+					oncomplete="PF('delegacaoPessoaConfirmDialog').hide()"
+					update=":delegacao_form:tabView:pessoasList" icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{delegacaoMB.cancelar()}"
+					oncomplete="PF('delegacaoPessoaConfirmDialog').hide()"
+					icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

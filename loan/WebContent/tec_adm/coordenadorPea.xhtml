@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal"
+			header="Gerenciamento de Coordenadores PEA">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novoCoord" value="Novo"
+					actionListener="#{coordenadorMB.criar}"
+					oncomplete="PF('coordDialog').show()" update=":coordDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:dataTable id="coordenadorTable"
+					value="#{coordenadorMB.coordenadorLazyDataModel}" var="coord"
+					emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{coord.id}" paginator="true" lazy="true"
+					filteredValue="#{coordenadorMB.coordenadorFiltered}">
+
+					<f:facet name="header">
+						<h:outputText
+							value="Coordenadores do Programa Estudante Atleta cadastrados" />
+					</f:facet>
+
+					<p:column headerText="Nome" filterBy="#{coord.nome}"
+						filterMatchMode="contains">
+						<h:outputText value="#{coord.nome}" />
+
+					</p:column>
+
+					<p:column headerText="E-Mail">
+						<h:outputText value="#{coord.login}" />
+					</p:column>
+
+					<p:column headerText="Cód. Siape">
+						<h:outputText value="#{coord.siape}" />
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":coord_form"
+							oncomplete="PF('coordDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{coord}"
+								target="#{coordenadorMB.coordenador}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('coordConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{coord}"
+								target="#{coordenadorMB.coordenador}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:panel>
+
+		<p:dialog id="coordDlg" widgetVar="coordDialog"
+			header="Dados do Coordenador" width="600" height="200" modal="true"
+			closable="false">
+
+			<h:form id="coord_form">
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{coordenadorMB.coordenador.nome}"
+						size="50" required="true" requiredMessage="Nome é obrigatório!" />
+
+					<p:message for="nome" />
+
+					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
+
+					<p:inputText id="email" value="#{coordenadorMB.coordenador.login}"
+						size="50" required="true" requiredMessage="E-mail é obrigatório!"
+						disabled="#{coordenadorMB.coordenador.id != null}">
+
+						<p:ajax listener="#{coordenadorMB.validarLoginExistente}"
+							update=":msg" event="blur" />
+
+					</p:inputText>
+
+					<p:message for="email" />
+
+					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
+
+					<p:inputText id="codSiape"
+						value="#{coordenadorMB.coordenador.siape}" size="50"
+						maxlength="20" required="true"
+						requiredMessage="Siape é obrigatório!" />
+					<p:message for="codSiape" />
+
+					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+					<p:selectOneMenu id="campus" value="#{coordenadorMB.campus}"
+						filter="true" filterMatchMode="startsWith" required="true"
+						requiredMessage="Câmpus é obrigatório!"
+						converter="#{campusConverter}">
+
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{coordenadorMB.listaCampus}" var="camp"
+							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+					</p:selectOneMenu>
+
+					<p:message for="campus" />
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :coord_form :msg"
+							actionListener="#{coordenadorMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('coordDialog').hide()" />
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('coordDialog').hide()"
+							update=":msg" immediate="true"
+							actionListener="#{coordenadorMB.cancelar()}">
+							<p:resetInput target=":coord_form" />
+						</p:commandButton>
+
+					</f:facet>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="coordConfirmDialog"
+			global="true" header="Confirma exclusão do Coordenador?"
+			showEffect="fade" hideEffect="fade"
+			message="Deseja realmente excluir o
+				Coordenador: #{coordenadorMB.coordenador.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{coordenadorMB.remover()}"
+					oncomplete="PF('coordConfirmDialog').hide()" update=":tableForm"
+					icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{coordenadorMB.cancelar()}"
+					oncomplete="PF('coordConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

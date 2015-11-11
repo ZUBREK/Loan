@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+
+		<h:form>
+			<p:commandButton id="novoCampus" value="Novo"
+				actionListener="#{campusMB.criar}"
+				oncomplete="PF('campDialog').show()" update=":campDlg" />
+		</h:form>
+		<h:form id="table_form">
+			<p:dataTable id="campusTable" value="#{campusMB.campusLazyDataModel}"
+				var="camp" emptyMessage="Nenhum registro encontrado!" rows="15"
+				rowKey="#{camp.id}" paginator="true" lazy="true">
+
+				<f:facet name="header">
+					<h:outputText value="Campus cadastrados" />
+				</f:facet>
+
+				<p:column headerText="Cidade">
+					<h:outputText value="#{camp.cidade}" />
+
+				</p:column>
+
+				<p:column headerText="Editar" width="35">
+
+					<p:commandButton id="editarTR" value=" " icon="editar16"
+						style="margin-left: 3px;" update=":camp_form"
+						oncomplete="PF('campDialog').show()" styleClass="apenasIcone">
+						<f:setPropertyActionListener value="#{camp}"
+							target="#{campusMB.campus}" />
+
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Remover" width="47">
+					<p:commandButton id="removerTR" value="" icon="remover16"
+						style="margin-left: 10px;"
+						oncomplete="PF('confirmDialog').show()" update=":confirm"
+						styleClass="apenasIcone">
+						<f:setPropertyActionListener value="#{camp}"
+							target="#{campusMB.campus}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+		<p:dialog id="campDlg" widgetVar="campDialog" header="Novo Câmpus"
+			width="450" height="100" modal="true" closable="false">
+
+			<h:form id="camp_form">
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="cidadeLb" value="Cidade:" for="cidade" />
+
+					<p:inputText id="cidade" value="#{campusMB.campus.cidade}"
+						size="20" required="true" requiredMessage="Cidade é obrigatório!" />
+
+					<p:message for="cidade" />
+					<p:spacer height="10px" />
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":table_form :camp_form"
+							actionListener="#{campusMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('campDialog').hide()" />
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('campDialog').hide()"
+							immediate="true" actionListener="#{campusMB.cancelar()}">
+							<p:resetInput target=":camp_form" />
+						</p:commandButton>
+					</f:facet>
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="confirmDialog" global="true"
+			header="Confirma exclusão do Câmpus?" showEffect="fade"
+			hideEffect="explode"
+			message="Deseja realmente excluir o
+				câmpus: #{campusMB.campus.cidade}">
+
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{campusMB.remover()}"
+					oncomplete="PF('confirmDialog').hide()" update=":table_form"
+					icon="ok16" />
+				<p:commandButton value="Não" actionListener="#{campusMB.cancelar()}"
+					oncomplete="PF('confirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

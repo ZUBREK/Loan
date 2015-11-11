@@ -1,0 +1,20 @@
+ARRUMAR CADASTROS DE USUARIOS
+	- SETAR TIPO da PESSOA (menos no estudante q foi onde eu fiz isso) nos metodos "salvar" antes de enviar email (no texto do email é usado o tipo)
+	- botar mascara nos campos de RG E CPF da galera
+ESPECIFICOS
+	- nos cadastros de usuarios e de time (e futuros com relação) precisa-se adaptar os "select one menu" para virem setados ou resetarem...
+		EM ESTUDANTE:
+			- verificar matricula
+	
+	
+Cadastro de time: 
+- Verificar se aluno já está no time
+- verificar se algum aluno foi escolhido (campo está vazio ou nao)<<<!!
+- Sinalizar se já há um  time com akele campus e modalidade
+- mesmo problema com select one menu
+
+cadastro de projeto
+- Verificar se aluno já está no time
+- Sinalizar e bloquear se já há um  projeto com akele campus e modalidade
+
+!!!ON CASCADE ON OU OFF? AVISAR SOBRE ISSO!!!! modalidadeMB linha 42

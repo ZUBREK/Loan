@@ -1,0 +1,11 @@
+Relação entre Arquivo e Projeto está errada.
+
+mudancas na tbHorarioAsistencia,tbNoticia
+
+tamanho do password modificado para varchar(20)
+
+
+-Mudar o id de todas as tbs que herdam de pessoa para id_pessoa
+
+
+tamanho da senha é 255

@@ -1,0 +1,24 @@
+Como colocar o Projeto pra rodar:
+
+1 - Copie aquele trecho do standalone-datasource para dentro do standalone do wildfly, abaixo do data-source IFPR.
+
+2 - Altere a senha e usuário nesse datasource.
+
+-------------- Passos pós standalone ------------------------------------------------------------------------------
+
+3 - Crie a db_loan no seu MySql.
+
+4 - Altere o username e senha no application context do projeto.
+
+5 - Adicione as libs do projeto webIfpr.
+
+6 - Adicione o projeto no servidor.
+
+7 - Rode e sejE feliz.
+
+PS: para acessar o sistema é só digitar localhost:8080/loan
+
+registro:
+
+
+INSERT INTO `tbpessoa` (`id_pessoa`, `username`, `nome_pessoa`, `password`, `authority`) VALUES (1, 'braz', 'braz', '202cb962ac59075b964b07152d234b70', 'ROLE_ADMIN');

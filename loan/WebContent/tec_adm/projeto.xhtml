@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal" header="Gerenciamento de Projetos">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novoProjeto" value="Novo"
+					actionListener="#{projetoMB.criar}"
+					oncomplete="PF('projetoDialog').show()" update=":projetoDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:dataTable id="projetoTable"
+					value="#{projetoMB.projetoLazyDataModel}" var="projeto"
+					emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{projeto.id}" paginator="true" lazy="true"
+					filteredValue="#{projetoMB.projetoFiltered}">
+
+					<f:facet name="header">
+						<h:outputText value="Projetos" />
+					</f:facet>
+
+					<p:column headerText="Nome" filterBy="#{projeto.nome}"
+						filterMatchMode="contains">
+						<h:outputText value="#{projeto.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Câmpus">
+						<p:outputLabel value="#{projeto.campus.cidade}" />
+					</p:column>
+
+					<p:column headerText="Modalidade">
+						<p:outputLabel value="#{projeto.modalidade.nome}" />
+					</p:column>
+
+					<p:column headerText="Coordenador">
+						<p:outputLabel value="#{projeto.coordenador.nome}" />
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":projeto_form"
+							oncomplete="PF('projetoDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{time}"
+								target="#{projetoMB.projeto}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('projetoConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{projeto}"
+								target="#{projetoMB.projeto}" />
+						</p:commandButton>
+					</p:column>
+
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:panel>
+
+		<p:dialog id="projetoDlg" widgetVar="projetoDialog"
+			header="Dados do Projeto" width="800" height="400" modal="true"
+			closable="false">
+
+			<h:form id="projeto_form">
+				<p:tabView id="tabView" widgetVar="tabBagaca">
+					<p:tab title="Dados Em Geral">
+
+						<h:panelGrid columns="3">
+
+							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+							<p:inputText id="nome" value="#{projetoMB.projeto.nome}"
+								size="50" required="true" requiredMessage="Nome é obrigatório!" />
+
+							<p:message for="nome" />
+
+							<h:outputLabel id="descricaoLb" value="Descrição:"
+								for="descricao" />
+
+							<p:inputText id="descricao"
+								value="#{projetoMB.projeto.descricao}" size="50" required="true"
+								requiredMessage="Descrição é obrigatório!" />
+
+							<p:message for="descricao" />
+
+							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+							<p:selectOneMenu id="campus" value="#{projetoMB.campus}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Câmpus é obrigatório!"
+								converter="#{campusConverter}">
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{projetoMB.listaCampus}" var="camp"
+									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+								<p:ajax update=":projeto_form:tabView:coordenadorPEA" />
+
+							</p:selectOneMenu>
+
+							<p:message for="campus" />
+
+							<p:outputLabel id="modalidadeLb" value="Modalidade:"
+								for="modalidade" />
+							<p:selectOneMenu id="modalidade" value="#{projetoMB.modalidade}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Modalidade é obrigatório!"
+								converter="#{modalidadeConverter}">
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{projetoMB.listaModalidade}"
+									var="modalidad" itemLabel="#{modalidad.nome}"
+									itemValue="#{modalidad}" />
+							</p:selectOneMenu>
+							<p:message for="modalidade" />
+
+							<p:outputLabel id="coordenadorLb" value="Coordenador:"
+								for="coordenadorPEA" />
+							<p:selectOneMenu id="coordenadorPEA"
+								value="#{projetoMB.coordenador}" filter="true"
+								filterMatchMode="startsWith" required="true"
+								requiredMessage="Coordenador é obrigatório!"
+								converter="#{coordenadorConverter}"
+								disabled="#{empty projetoMB.campus}">
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{projetoMB.listaCoordenador}"
+									var="coordenador" itemLabel="#{coordenador.nome}"
+									itemValue="#{coordenador}" />
+							</p:selectOneMenu>
+							<p:message for="coordenadorPEA" />
+
+							<p:commandButton id="continuarBt" value="Continuar"
+								icon="salvar16" update=":tableForm :projeto_form :msg"
+								actionListener="#{projetoMB.salvar}"
+								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
+
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Adicionar Estudantes:">
+						<h:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
+						<p:autoComplete id="estudante"
+							completeMethod="#{projetoMB.pesquisarEstudanteNome}"
+							value="#{projetoMB.estudante}" converter="#{estudanteConverter}"
+							minQueryLength="3" forceSelection="true">
+							<p:ajax event="itemSelect" listener="#{projetoMB.onItemSelect}" />
+						</p:autoComplete>
+						<p:commandButton id="addEstudanteBt" value="Adicionar"
+							icon="apply" actionListener="#{projetoMB.adicionarEstudante()}"
+							update=":projeto_form:tabView:estudantesList" />
+
+						<p:dataTable id="estudantesList" var="projetoEstudante"
+							value="#{projetoMB.projeto.projetoEstudante}"
+							emptyMessage="Nenhum registro encontrado!" first="0">
+							<p:column headerText="Nome">
+								<h:outputText value="#{projetoEstudante.estudante.nome}" />
+							</p:column>
+
+							<p:column headerText="Ações">
+								<p:commandButton id="removeEstudanteBt" value="Remover"
+									icon="remover16"
+									oncomplete="PF('projetoEstConfirmDialog').show()"
+									update=":confirmRmv">
+									<f:setPropertyActionListener value="#{projetoEstudante}"
+										target="#{projetoMB.projetoEstudante}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+			</h:form>
+			<f:facet name="footer">
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":tableForm :projeto_form :msg"
+					actionListener="#{projetoMB.salvar}"
+					oncomplete="if(!args.validationFailed) PF('projetoDialog').hide()" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('projetoDialog').hide()" update=":msg"
+					immediate="true" actionListener="#{projetoMB.cancelar()}">
+					<p:resetInput target=":projeto_form" />
+				</p:commandButton>
+
+			</f:facet>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="projetoConfirmDialog"
+			global="true" header="Confirma exclusão do Projeto?"
+			showEffect="fade" hideEffect="fade"
+			message="Deseja realmente excluir o
+				projeto: #{projetoMB.projeto.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{projetoMB.remover()}"
+					oncomplete="PF('projetoConfirmDialog').hide()" update=":tableForm"
+					icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{projetoMB.cancelar()}"
+					oncomplete="PF('projetoConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+		<p:confirmDialog id="confirmRmv" widgetVar="projetoEstConfirmDialog"
+			global="true" header="Remover estudante do projeto?"
+			showEffect="fade" hideEffect="fade"
+			message="Deseja realmente excluir o
+				estudante: #{projetoMB.projetoEstudante.estudante.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{projetoMB.removerEstudante()}"
+					oncomplete="PF('projetoEstConfirmDialog').hide()"
+					update=":projeto_form:tabView:estudantesList" icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{projetoMB.cancelar()}"
+					oncomplete="PF('projetoEstConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:a="http://richfaces.org/a4j" xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		<title>LOAN - Sistema de Gerenciamento JIFPR e PEA</title>
+		<h:outputStylesheet name="css/style.css" />
+		<h:outputStylesheet name="css/index.css" />
+
+		<link rel="shortcut icon" type="image/x-icon"
+			href="#{request.contextPath}/img/favicon.ico" />
+	</h:head>
+
+	<h:body>
+		<div id="site">
+
+			<c:choose>
+				<c:when test="#{loginControllerMB.logado}">
+					<div id="header">
+						<ui:include src="/layout/headers/header.xhtml" />
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div id="headerLogar">
+						<ui:include src="/layout/headers/headerLogar.xhtml" />
+					</div>
+				</c:otherwise>
+			</c:choose>
+
+
+			<div id="content">
+				<ui:insert name="body" />
+			</div>
+
+
+			<div id="footer">
+				<ui:include src="/layout/footer.xhtml" />
+			</div>
+		</div>
+	</h:body>
+</f:view>
+</html>

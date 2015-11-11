@@ -1,0 +1,32 @@
+.imagemPerfil .ui-widget-content{
+	background: #8cc63f;
+}
+
+.imagemPerfil{
+	margin: 0 auto;
+}
+
+.tabelaAtribs{
+	margin: 0 auto;
+	text-align: center;
+}
+
+
+.fileupload-boleidous > .ui-fileupload {
+	display: none
+}
+
+.fileupload-boleidous > .ui-fileupload-content {
+	display: none
+}
+
+.fileupload-boleidous > .ui-widget-header{
+	background: none;
+	border: none;
+}
+
+.fileupload-boleidous > .ui-fileupload-buttonbar .ui-button{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}

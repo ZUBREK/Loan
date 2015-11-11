@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div id="logo" class="logo">
+		<h:form>
+			<h:commandLink action="index">
+				<h:graphicImage value="/img/logo.png" />
+			</h:commandLink>
+		</h:form>
+	</div>
+	<p:panel style="padding:0">
+		<h:panelGrid style="width:99%;" columns="2">
+			<p:panel style="width:99%;border:0;padding:0" styleClass="esquerda">
+				<h:outputText value="Data e hora no servidor"/><br/><br/>
+				<p:clock mode="server" pattern="HH:mm:ss - dd/MM/yyyy" type="date"
+					locale="pt_BR" timeZone="America/Sao_Paulo"/>
+			</p:panel>
+			<p:panel style="width:99%;border:0;padding:0;" styleClass="direita">
+				<h:form id="infoForm">
+					<h:outputText id="bemVindo" value="Bem vindo(a), "
+						style="font-weight:bold;" />
+					<h:commandLink id="nome" value="#{loginControllerMB.pessoaLogada.nome}"
+						style="font-weight:bold;" action="home" ajax="false" actionListener= "#{breadCrumbController.navigateHome()}"/><br/>
+					
+				</h:form>
+				<br />
+				    <h:outputLink
+					value="#{facesContext.externalContext.requestContextPath}/j_spring_security_logout">
+					<h:outputText value="Sair" />
+				</h:outputLink>
+			</p:panel>
+		</h:panelGrid>
+	</p:panel>
+</ui:composition>

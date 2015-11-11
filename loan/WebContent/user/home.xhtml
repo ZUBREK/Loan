@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal" header="Meu Perfil">
+			<h:form id="idForm">
+				<p:fileUpload id="fotoPerfilUpload"
+					styleClass="fileupload-boleidous"
+					fileUploadListener="#{homeMB.handleFileUpload}"
+					label="Procurar outra imagem de perfil" auto="true"
+					update=":idForm imagem" multiple="false" mode="advanced"
+					cache="false" />
+				<p:panelGrid id="panelFoto" columns="1" styleClass="imagemPerfil">
+					<p:graphicImage value="#{homeMB.imagem}" title="Foto de Perfil"
+						width="250" height="200" id="imagem" />
+				</p:panelGrid>
+				<p:dataTable styleClass="tabelaAtribs"  var="atrib" value="#{homeMB.atributos}">
+					<p:column headerText="Seus Dados:">
+						<h:outputText value="#{atrib}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+
+
+
+
+
+
+		</p:panel>
+	</ui:define>
+</ui:composition>

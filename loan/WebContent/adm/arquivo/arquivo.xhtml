@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+
+		<p:growl id="msg" showDetail="true" />
+		<p:panel id="painelPrincipal" header="Gerenciamento de arquivos">
+
+			<h:form id="uploadForm">
+
+				<p:fileUpload id="fileUploadWidget"
+					fileUploadListener="#{arquivoMB.handleFileUpload}"
+					label="Enviar Arquivo..." cancelLabel="Cancelar Envio"
+					uploadLabel="Enviar arquivo selecionado" update=":tableForm @this"
+					fileLimit="1" fileLimitMessage="Apenas um arquivo por vez!" />
+
+
+			</h:form>
+
+			<h:form id="tableForm">
+				<p:dataTable id="arquivosTable"
+					value="#{arquivoMB.arquivoLazyDataModel}" var="arqv" rows="5"
+					rowKey="#{arqv.id}" paginator="true" lazy="true"
+					filteredValue="#{arquivoMB.arquivosFiltered}"
+					emptyMessage="Nenhum registro encontrado">
+					<f:facet name="header">
+						<h:outputText value="Arquivos cadastradas" />
+					</f:facet>
+					<p:column headerText="Nome">
+						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+							draggable="false" closable="false" resizable="false">
+							<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+						</p:dialog>
+
+						<p:commandLink id="nomeArq" value="#{arqv.nome}" ajax="false"
+							onclick="PrimeFaces.monitorDownload(start, stop)">
+							<f:setPropertyActionListener value="#{arqv}"
+								target="#{arquivoMB.arquivo}" />
+							<p:fileDownload value="#{arquivoMB.arqStreamed}" />
+						</p:commandLink>
+
+						<script type="text/javascript">
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
+
+
+					</p:column>
+
+					<p:column headerText="Foto de perfil">
+						<h:outputText value="#{arqv.fotoPerfil}" />
+					</p:column>
+
+					<p:column headerText="Quem Enviou:">
+						<h:outputText value="#{arqv.uploader.nome}" />
+					</p:column>
+
+					<p:column headerText="Data de Envio">
+						<h:outputText value="#{arqv.dataUpload}" id="dataUpload">
+							<f:convertDateTime
+							 locale="pt_BR" timeZone="America/Sao_Paulo"
+								pattern="dd/MM/yyyy - HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Ações">
+						<p:panelGrid columns="1">
+							<p:commandButton id="removerArq" value="Remover" icon="remover16"
+								oncomplete="PF('arqvConfirmDialog').show()" update=":confirm">
+								<f:setPropertyActionListener value="#{arqv}"
+									target="#{arquivoMB.arquivo}" />
+							</p:commandButton>
+						</p:panelGrid>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:panel>
+
+
+
+		<p:confirmDialog id="confirm" widgetVar="arqvConfirmDialog"
+			global="true" header="Confirma exclusão da arquivo?"
+			showEffect="fade"
+			message="Deseja realmente excluir a
+				arquivo: #{arquivoMB.arquivo.nome}"
+			hideEffect="explode">
+
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{arquivoMB.remover}"
+					oncomplete="PF('arqvConfirmDialog').hide()" update=":tableForm"
+					icon="ok16" />
+				<p:commandButton value="Não" actionListener="#{arquivoMB.cancelar}"
+					oncomplete="PF('arqvConfirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+
+
+
+
+	</ui:define>
+</ui:composition>

@@ -53,7 +53,6 @@ public class EstudanteMB {
 	private List<Campus> listaCampus;
 
 	private Campus campus;
-	private boolean bolsista = false;
 
 	@ManagedProperty(value = "#{crachasPdf}")
 	public CrachasPdf crachasPdf;
@@ -90,7 +89,7 @@ public class EstudanteMB {
 			enviarEmail();
 			String md5 = criptografia.criptografar(estudante.getSenha());
 			estudante.setSenha(md5);
-			estudante.setBolsista(bolsista);
+			estudante.setBolsista(false);
 			estudanteDao.salvar(estudante);
 			homeMB.criarArqFotoPerfil(estudante);
 		}
@@ -196,14 +195,6 @@ public class EstudanteMB {
 
 	public void setCampus(Campus campus) {
 		this.campus = campus;
-	}
-
-	public boolean isBolsista() {
-		return bolsista;
-	}
-
-	public void setBolsista(boolean bolsista) {
-		this.bolsista = bolsista;
 	}
 
 	public void gerarCrachas() {

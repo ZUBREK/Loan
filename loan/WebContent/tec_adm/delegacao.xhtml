@@ -125,9 +125,14 @@
 							</p:column>
 
 							<p:column headerText="Ações">
-								<p:selectBooleanCheckbox itemLabel="Chefe" itemvalue="#{delegacaoMB.delegacaoPessoa.chefe}">
-									<p:ajax update=":msg" listener="#{delegacaoMB.addChefe()}" />
+								<p:selectBooleanCheckbox itemLabel="Chefe"
+									value="#{delegacaoPessoa.chefe}">
+									<p:ajax update=":msg" listener="#{delegacaoMB.marcarChefe()}">
+										<f:setPropertyActionListener value="#{delegacaoPessoa}"
+											target="#{delegacaoMB.delegacaoPessoa}" />
+									</p:ajax>
 								</p:selectBooleanCheckbox>
+
 								<p:commandButton id="removeEstudanteBt" value="Remover"
 									icon="remover16"
 									oncomplete="PF('delegacaoPessoaConfirmDialog').show()"

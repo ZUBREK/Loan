@@ -103,11 +103,11 @@ public class DelegacaoMB {
 	}
 
 	public void adicionarPessoa() {
-		DelegacaoPessoa delegacaoPess = new DelegacaoPessoa();
-		delegacaoPess.setPessoa(pessoa);
-		delegacaoPess.setDelegacao(delegacao);
-		delegacaoPessoaDao.salvar(delegacaoPess);
-		delegacao.getDelegacaoPessoas().add(delegacaoPess);
+		delegacaoPessoa = new DelegacaoPessoa();
+		delegacaoPessoa.setPessoa(pessoa);
+		delegacaoPessoa.setDelegacao(delegacao);
+		delegacaoPessoaDao.salvar(delegacaoPessoa);
+		delegacao.getDelegacaoPessoas().add(delegacaoPessoa);
 		pessoa = new Pessoa();
 	}
 
@@ -157,9 +157,8 @@ public class DelegacaoMB {
 		pessoa = (Pessoa) item;
 	}
 
-	public boolean addChefe() {
+	public void marcarChefe() {
 		delegacaoPessoa.setChefe(true);
-		return true;
 	}
 
 	public Delegacao getDelegacao() {
@@ -182,8 +181,7 @@ public class DelegacaoMB {
 		return delegacaoLazyDataModel;
 	}
 
-	public void setDelegacaoLazyDataModel(
-			DelegacaoLazyDataModel delegacaoLazyDataModel) {
+	public void setDelegacaoLazyDataModel(DelegacaoLazyDataModel delegacaoLazyDataModel) {
 		this.delegacaoLazyDataModel = delegacaoLazyDataModel;
 	}
 

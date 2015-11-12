@@ -25,8 +25,6 @@ public class BreadCrumbController {
 	private final int PROJETOS = 11;
 	private final int DELEGACOES = 12;
 	
-	//Daew meus amigos
-	
 	public BreadCrumbController() {
 		this.menuModel = new DefaultMenuModel();
 		navigateHome();

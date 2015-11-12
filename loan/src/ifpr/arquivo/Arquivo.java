@@ -19,6 +19,8 @@ import javax.persistence.TemporalType;
 @Table(name = "tbArquivo")
 public class Arquivo {
 
+	//ola
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_arquivo")

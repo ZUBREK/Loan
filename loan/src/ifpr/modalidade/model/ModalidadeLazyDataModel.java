@@ -60,8 +60,8 @@ public class ModalidadeLazyDataModel extends LazyDataModel<Modalidade> {
 		return modalidadeDao;
 	}
 
-	public void setModalidadeDao(ModalidadeDao campusDao) {
-		this.modalidadeDao = campusDao;
+	public void setModalidadeDao(ModalidadeDao modalidadeDao) {
+		this.modalidadeDao = modalidadeDao;
 	}
 
 

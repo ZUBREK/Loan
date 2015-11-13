@@ -1,6 +1,7 @@
 package ifpr.dao;
 
 import ifpr.campus.Campus;
+import ifpr.modalidade.Modalidade;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface Dao<T> {
 	public List<T> list(int first, int size);
 	
 	public int getRowCount();
+	
+	public List<T> listarPorCampusModalidade(Campus campus, Modalidade modalidade);
 }

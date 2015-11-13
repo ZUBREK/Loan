@@ -1,5 +1,6 @@
-package ifpr.arquivo;
+package ifpr.evento.arquivo;
 
+import ifpr.evento.Evento;
 import ifpr.pessoa.Pessoa;
 
 import java.util.Date;
@@ -16,10 +17,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "tbArquivo")
-public class Arquivo {
+@Table(name = "tbArquivoEvento")
+public class ArquivoEvento {
 
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_arquivo")
@@ -31,9 +32,6 @@ public class Arquivo {
 	@Column(name="nome_arquivo",length=50)
 	private String nome;
 
-	@Column(name="isFoto_perfil")
-	private boolean isFotoPerfil;
-
 	@ManyToOne
 	@JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
 	private Pessoa uploader;
@@ -41,6 +39,20 @@ public class Arquivo {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="data_upload")
 	private Date dataUpload;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_evento", referencedColumnName = "id_evento")
+	private Evento evento;
+
+	
+	
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
 
 	public Integer getId() {
 		return id;
@@ -64,14 +76,6 @@ public class Arquivo {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public boolean isFotoPerfil() {
-		return isFotoPerfil;
-	}
-
-	public void setFotoPerfil(boolean isFotoPerfil) {
-		this.isFotoPerfil = isFotoPerfil;
 	}
 
 	public Pessoa getUploader() {

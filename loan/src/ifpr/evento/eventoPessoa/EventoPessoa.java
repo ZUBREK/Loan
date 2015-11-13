@@ -1,6 +1,5 @@
 package ifpr.evento.eventoPessoa;
 
-import ifpr.arquivo.Arquivo;
 import ifpr.evento.Evento;
 import ifpr.pessoa.Pessoa;
 
@@ -13,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -39,18 +37,6 @@ public class EventoPessoa {
 	private Date dataHora;
 
 	private boolean wasPresente;
-
-	@OneToOne
-	@JoinColumn(name = "id_arquivo")
-	private Arquivo arquivo;
-
-	public Arquivo getArquivo() {
-		return arquivo;
-	}
-
-	public void setArquivo(Arquivo arquivo) {
-		this.arquivo = arquivo;
-	}
 
 	public Integer getId() {
 		return id;

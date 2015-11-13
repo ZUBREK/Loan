@@ -20,6 +20,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
+//actionListener="#{buttonView.buttonAction}"
+
+
 @Entity
 @Table(name = "tbEvento")
 public class Evento {
@@ -118,4 +122,10 @@ public class Evento {
 	public void setTipo(TipoEvento tipo) {
 		this.tipo = tipo;
 	}
+	
+	@Override
+	public String toString() {
+		return getNome();
+	}
+
 }

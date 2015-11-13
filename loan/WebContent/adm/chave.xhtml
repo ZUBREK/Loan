@@ -25,14 +25,20 @@
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{chav.nome}" />
-
+					</p:column>
+					<p:column headerText="Modalidade">
+						<h:outputText value="#{chav.modalidade}" />
+					</p:column>
+					<p:column headerText="Tipo">
+						<h:outputText value="#{chav.tipo}" />
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Visualizar" width="35">
 
-						<p:commandButton id="editarTR" value=" " icon="editar16"
+						<p:commandButton id="visualizarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":chav_form"
-							oncomplete="PF('chavDialog').show()" styleClass="apenasIcone">
+							oncomplete="PF('editarChavDialog').show()"
+							styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{chav}"
 								target="#{chaveMB.chave}" />
 
@@ -52,6 +58,35 @@
 
 			</h:form>
 		</p:panel>
+		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
+			header="Nova Chave" width="450" height="100" modal="true"
+			closable="false">
+
+			<h:form id="chav_form">
+
+				<p:tree value="#{chaveMB.root}" var="node"
+					orientation="horizontal" dynamic="true">
+					<p:treeNode>
+						<h:outputText value="#{node}" />
+					</p:treeNode>
+				</p:tree>
+				<p:spacer height="10px" />
+
+				<f:facet name="footer">
+					<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+						update=":table_form :chav_form :msg"
+						actionListener="#{chaveMB.salvar}"
+						oncomplete="if(!args.validationFailed) PF('editarChavDialog').hide()" />
+
+					<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+						oncomplete="PF('editarChavDialog').hide()" immediate="true"
+						actionListener="#{chaveMB.cancelar()}">
+						<p:resetInput target=":chav_form" />
+					</p:commandButton>
+				</f:facet>
+			</h:form>
+		</p:dialog>
+
 		<p:dialog id="chavDlg" widgetVar="chavDialog" header="Nova Chave"
 			width="450" height="100" modal="true" closable="false">
 

@@ -9,7 +9,7 @@ div#sidemenu {
 
 	float: left;
 	width: 160.5px;
-	height: 500px;
+	height: 1000px;
 	position: relative;
 	text-align: center;
 }
@@ -51,7 +51,7 @@ div#painelPrincipal {
 }
 
 #formSide {
-	height: 470px;
+	height: 1000px;
 }
 
 .apenasIcone{

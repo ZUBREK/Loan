@@ -1,9 +1,5 @@
 package ifpr.competicao.partida;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.competicao.chave.Chave;
-import ifpr.competicao.partida.local.Local;
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -16,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import ifpr.arquivo.Arquivo;
+import ifpr.competicao.partida.local.Local;
 
 @Entity
 @Table(name = "tbPartida")
@@ -33,13 +32,9 @@ public class Partida {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="data_hora_partida")
 	private Date dataHora;
-
-	@JoinColumn(name = "id_chave", referencedColumnName = "id_chave")
-	@ManyToOne()
-	private Chave chave;
-
+	
 	@JoinColumn(name = "id_local", referencedColumnName = "id_local")
 	@ManyToOne()
 	private Local local;
-
+	
 }

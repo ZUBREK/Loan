@@ -54,7 +54,8 @@ public class MenuUsuariosViewMB {
 
 			adicionarItem("Gerenciar - Projetos PEA", "/tec_adm/projeto.ifpr",
 					"#{breadCrumbController.navigate(11)}", "attach16", false, 11);
-
+			
+			adicionarItem("Gerenciar - Horários de Assistências", "/adm/noticia.ifpr", "#{breadCrumbController.navigate(7)}", "attach16", false, 13);
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
@@ -96,6 +97,9 @@ public class MenuUsuariosViewMB {
 
 		adicionarItem("Delegações", "/tec_adm/delegacao.ifpr",
 				"#{breadCrumbController.navigate(12)}", "attach16", true, 12);
+		
+		adicionarItem("Chaves", "/adm/chave.ifpr",
+				"#{breadCrumbController.navigate(13)}", "attach16", true, 14);
 		model.addElement(submenu);
 	}
 

@@ -1,6 +1,6 @@
 package ifpr.competicao.chave;
 
-import ifpr.modalidade.Modalidade;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import ifpr.competicao.partida.Partida;
+import ifpr.modalidade.Modalidade;
 
 @Entity
 @Table(name = "tbChave")
@@ -32,6 +36,18 @@ public class Chave {
 	@Column(name = "tipo_chave", length = 20)
 	@Enumerated(EnumType.STRING)
 	private TipoCompeticao tipo;
+
+	@JoinColumn(name = "id_chave", referencedColumnName = "id_chave")
+	@OneToMany()
+	private List<Partida> partidas;
+	
+	public List<Partida> getPartidas() {
+		return partidas;
+	}
+
+	public void setPartidas(List<Partida> partidas) {
+		this.partidas = partidas;
+	}
 
 	public Integer getId() {
 		return id;

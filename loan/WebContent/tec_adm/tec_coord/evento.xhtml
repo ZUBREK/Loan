@@ -52,11 +52,12 @@
 					</p:column>
 
 					<p:column headerText="Ações" width="35">
-						<p:commandLink id="ajax" oncomplete="PF('eventoDialog').show()">
-							<h:outputText value="Visualizar" />
-							<f:setPropertyActionListener value="#{time}"
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":evento_form"
+							oncomplete="PF('eventoDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{evento}"
 								target="#{eventoMB.evento}" />
-						</p:commandLink>
+						</p:commandButton>
 					</p:column>
 					<p:column headerText="Remover" width="47">
 						<p:commandButton id="removerTR" value="" icon="remover16"
@@ -80,7 +81,7 @@
 			closable="false">
 
 			<h:form id="evento_form">
-				<p:tabView id="tabView" widgetVar="tabBagaca">
+				<p:tabView id="tabView" widgetVar="tabBagaca" activeIndex="#{eventoMB.index}">
 					<p:tab title="Dados Em Geral">
 
 						<h:panelGrid columns="2">
@@ -123,7 +124,7 @@
 
 
 							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":tableForm :evento_form :msg"
+								icon="salvar16" update=":evento_form :msg"
 								actionListener="#{eventoMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
@@ -147,8 +148,7 @@
 						<p:outputLabel id="modalidadeLb" value="Modalidade:"
 							for="modalidade" />
 						<p:selectOneMenu id="modalidade" value="#{eventoMB.modalidade}"
-							filter="true" filterMatchMode="startsWith" 
-							 onchange="update:"
+							filter="true" filterMatchMode="startsWith"
 							converter="#{modalidadeConverter}">
 
 							<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um"/>
@@ -166,7 +166,7 @@
 							<p:selectCheckboxMenu id="menu" disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
 								value="#{eventoMB.estudantesSelecionados}" label="Estudantes"
 								filter="true" filterMatchMode="startsWith"
-								panelStyle="width:250px">
+								panelStyle="width:250px" converter="#{estudanteConverter}">
 								<f:selectItems value="#{eventoMB.estudantes}" />
 							</p:selectCheckboxMenu>
 							<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes" 
@@ -177,7 +177,7 @@
 
 						
 
-						<p:dataTable id="estudantesList" var="eventoEstudante"
+						<p:dataTable id="estudantesList" var="eventoPessoa"
 							value="#{eventoMB.evento.eventoPessoas}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
 							<p:column headerText="Nome">
@@ -192,7 +192,9 @@
 				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 					update=":tableForm :evento_form :msg"
 					actionListener="#{eventoMB.salvar}"
-					oncomplete="if(!args.validationFailed) PF('eventoDialog').hide()" />
+					oncomplete="if(!args.validationFailed) PF('eventoDialog').hide()">
+					<p:resetInput target=":evento_form" />
+					</p:commandButton>
 
 				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
 					oncomplete="PF('eventoDialog').hide()" update=":msg"

@@ -24,7 +24,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.ifpr</url-pattern>
+		<url-pattern>*.loan</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>

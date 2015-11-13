@@ -190,17 +190,20 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> listarPorCampusModalidade(Campus campus,
 			Modalidade modalidade) {
-		/*
+		
+
 		EntityManager em = emf.createEntityManager();
-		Query q = em.createQuery("select u from " + classe.getSimpleName() +" u where campus = :campus order by u.nome");
+		Query q = em.createQuery("select e from TimeEstudante as te inner join te.estudante as e "
+				+ "where e.campus = :campus and te.time.modalidade = :modalidade order by e.nome");
 		q.setParameter("campus", campus);
-		q.setMaxResults(10);
-		*/
-		//TODO:Arrumar esse treco aqui, fazendo a query certa.
-		return null;
+		q.setParameter("modalidade", modalidade);
+		q.setMaxResults(100);	
+		
+		return q.getResultList();
 	}
 
 

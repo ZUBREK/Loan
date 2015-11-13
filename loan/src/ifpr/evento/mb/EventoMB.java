@@ -3,14 +3,18 @@ package ifpr.evento.mb;
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.evento.Evento;
+import ifpr.evento.TipoEvento;
 import ifpr.evento.dao.EventoDao;
 import ifpr.evento.eventoPessoa.EventoPessoa;
 import ifpr.evento.eventoPessoa.dao.EventoPessoaDao;
 import ifpr.evento.model.EventoLazyDataModel;
 import ifpr.modalidade.Modalidade;
 import ifpr.modalidade.dao.ModalidadeDao;
-import ifpr.pessoa.dao.PessoaDao;
+import ifpr.model.LoginControllerMB;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,22 +23,17 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolationException;
 
-
-/*
- * <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-			closable="false" resizable="false" showHeader="false">
-			<p:graphicImage library="primefaces" name="jquery/ui/ui-anim_basic_16x16.gif" />
-		</p:dialog>
- */
 
 @ManagedBean(name = "eventoMB")
 @ViewScoped
 public class EventoMB {
 	
-	@ManagedProperty(value = "#{pessoaDao}")
-	private PessoaDao pessoaDao;
+
+	@ManagedProperty(value = "#{estudanteDao}")
+	private EstudanteDao estudanteDao;
 
 	private Evento evento;
 
@@ -47,6 +46,8 @@ public class EventoMB {
 
 	@ManagedProperty(value = "#{eventoLazyDataModel}")
 	private EventoLazyDataModel eventoLazyDataModel;
+	
+	private LoginControllerMB loginController;
 
 	@ManagedProperty(value = "#{eventoPessoaDao}")
 	private EventoPessoaDao eventoPessoaDao;
@@ -75,21 +76,29 @@ public class EventoMB {
 	
 	private boolean tabBoolean;
 	
+	private Pessoa pessoaLogada;
+	
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
 		tabBoolean = true;
+		
 	}
 
 	public void criar() {
 		evento = new Evento();
 		isUpdate = false;
-
+		evento.setEventoPessoas(new ArrayList<EventoPessoa>());
 	}
 	
 	@PostConstruct
 	public void poust() {
 		listaCampus = campusDao.listarAlfabetica();
 		listaModalidade = modalidadeDao.listarAlfabetica();
+		FacesContext context = FacesContext.getCurrentInstance();
+		loginController = context.getApplication().evaluateExpressionGet(
+				context, "#{loginControllerMB}", LoginControllerMB.class);
+		pessoaLogada = loginController.getPessoaLogada();
+		estudantesSelecionados = new ArrayList<Estudante>();
 	}
 
 	public void remover() {
@@ -105,6 +114,8 @@ public class EventoMB {
 	public void cancelar() {
 		if (isUpdate == true) {
 			evento = null;
+			modalidade = null;
+			campus = null;
 		} else {
 			remover();
 			isUpdate = true;
@@ -118,20 +129,29 @@ public class EventoMB {
 		if (evento.getId() != null) {
 			eventoDao.update(evento);
 		} else {
+			if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP) || pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)){
+				evento.setTipo(TipoEvento.TREINO);
+			}
+			
+			evento.setResponsavel(pessoaLogada);
+			
 			eventoDao.salvar(evento);
+		
 		}
 	}
 
-	public void adicionarEstudante() {
+	public void adicionarEstudante( ) {
 		EventoPessoa evp;
-		
-		for(Estudante est : estudantesSelecionados){
+		for(int i = 0; i < estudantesSelecionados.size(); ++i){
 			evp = new EventoPessoa();
-			evp.setPessoa(est);
+			evp.setPessoa(estudantesSelecionados.get(i));
 			evp.setEvento(evento);
 			evp.setWasPresente(false);
 			eventoPessoaDao.salvar(evp);
+			evento.getEventoPessoas().add(evp);
 		}
+		
+
 	}
 	
 	public boolean checarCampos(){
@@ -146,6 +166,8 @@ public class EventoMB {
 		eventoPessoaDao.remover(eventoPessoa);
 		evento.getEventoPessoas().remove(eventoPessoa);
 	}
+	
+
 	
 
 	public EventoPessoa getEventoPessoa() {
@@ -229,8 +251,7 @@ public class EventoMB {
 	}
 
 	public List<Estudante> getEstudantes() {
-		//estudantes = pessoaDao.
-		//TODO:Arrumar o getEstudantes para listar os estudantes por campus e modalidade.
+		estudantes = estudanteDao.listarPorCampusModalidade(campus, modalidade);
 		return estudantes;
 	}
 
@@ -286,6 +307,30 @@ public class EventoMB {
 
 	public void setUpdate(boolean isUpdate) {
 		this.isUpdate = isUpdate;
+	}
+
+	public EstudanteDao getEstudanteDao() {
+		return estudanteDao;
+	}
+
+	public void setEstudanteDao(EstudanteDao estudanteDao) {
+		this.estudanteDao = estudanteDao;
+	}
+
+	public LoginControllerMB getLoginController() {
+		return loginController;
+	}
+
+	public void setLoginController(LoginControllerMB loginController) {
+		this.loginController = loginController;
+	}
+
+	public Pessoa getPessoaLogada() {
+		return pessoaLogada;
+	}
+
+	public void setPessoaLogada(Pessoa pessoaLogada) {
+		this.pessoaLogada = pessoaLogada;
 	}
 	
 	

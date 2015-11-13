@@ -54,7 +54,7 @@
 					<p:column headerText="Ações" width="35">
 						<p:commandLink id="ajax" oncomplete="PF('eventoDialog').show()">
 							<h:outputText value="Visualizar" />
-							<f:setPropertyActionListener value="#{time}"
+							<f:setPropertyActionListener value="#{evento}"
 								target="#{eventoMB.evento}" />
 						</p:commandLink>
 					</p:column>
@@ -123,7 +123,7 @@
 
 
 							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":tableForm :evento_form :msg"
+								icon="salvar16" update=":evento_form :msg"
 								actionListener="#{eventoMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
@@ -166,7 +166,7 @@
 							<p:selectCheckboxMenu id="menu" disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
 								value="#{eventoMB.estudantesSelecionados}" label="Estudantes"
 								filter="true" filterMatchMode="startsWith"
-								panelStyle="width:250px">
+								panelStyle="width:250px" converter="#{estudanteConverter}">
 								<f:selectItems value="#{eventoMB.estudantes}" />
 							</p:selectCheckboxMenu>
 							<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes" 
@@ -177,7 +177,7 @@
 
 						
 
-						<p:dataTable id="estudantesList" var="eventoEstudante"
+						<p:dataTable id="estudantesList" var="eventoPessoa"
 							value="#{eventoMB.evento.eventoPessoas}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
 							<p:column headerText="Nome">

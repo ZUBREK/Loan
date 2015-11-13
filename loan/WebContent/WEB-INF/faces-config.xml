@@ -113,7 +113,7 @@
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>gerAssistencia</from-outcome>
-			<to-view-id>/coord/horarioAssistencia.xhtml</to-view-id>
+			<to-view-id>/tec_adm/tec_coord/coord/horarioAssistencia.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>

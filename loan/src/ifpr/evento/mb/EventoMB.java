@@ -78,16 +78,20 @@ public class EventoMB {
 	
 	private Pessoa pessoaLogada;
 	
+	private int index;
+	
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
 		tabBoolean = true;
-		
+		isUpdate = true;
+		index = 0;
 	}
 
 	public void criar() {
 		evento = new Evento();
 		isUpdate = false;
 		evento.setEventoPessoas(new ArrayList<EventoPessoa>());
+		index = 0;
 	}
 	
 	@PostConstruct
@@ -118,9 +122,12 @@ public class EventoMB {
 			campus = null;
 		} else {
 			remover();
+			modalidade = null;
+			campus = null;
 			isUpdate = true;
 		}
 		tabBoolean = true;
+		index = 0;
 	}
 
 
@@ -138,6 +145,7 @@ public class EventoMB {
 			eventoDao.salvar(evento);
 		
 		}
+		index = 0;
 	}
 
 	public void adicionarEstudante( ) {
@@ -331,6 +339,14 @@ public class EventoMB {
 
 	public void setPessoaLogada(Pessoa pessoaLogada) {
 		this.pessoaLogada = pessoaLogada;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 	
 	

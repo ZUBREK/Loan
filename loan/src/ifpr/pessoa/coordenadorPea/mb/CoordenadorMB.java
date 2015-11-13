@@ -4,6 +4,7 @@ import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.coordenadorPea.CoordenadorPea;
 import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
@@ -47,6 +48,9 @@ public class CoordenadorMB {
 	private List<Campus> listaCampus;
 	
 	private Campus campus;
+	
+	@ManagedProperty(value = "#{homeMB}")
+	private HomeMB homeMB;
 
 	public CoordenadorMB() {
 
@@ -78,6 +82,7 @@ public class CoordenadorMB {
 			String md5 = criptografia.criptografar(coordenador.getSenha());
 			coordenador.setSenha(md5);
 			coordenadorDao.salvar(coordenador);
+			homeMB.criarArqFotoPerfil(coordenador);
 		}
 	}
 
@@ -183,6 +188,14 @@ public class CoordenadorMB {
 
 	public void setCampus(Campus campus) {
 		this.campus = campus;
+	}
+
+	public HomeMB getHomeMB() {
+		return homeMB;
+	}
+
+	public void setHomeMB(HomeMB homeMB) {
+		this.homeMB = homeMB;
 	}
 	
 	

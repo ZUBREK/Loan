@@ -4,6 +4,7 @@ import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
@@ -20,7 +21,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
-
 
 @ManagedBean(name = "tecnicoAdmMB")
 @ViewScoped
@@ -41,25 +41,27 @@ public class TecnicoAdministrativoMB {
 
 	@ManagedProperty(value = "#{tecnicoAdmLazyDataModel}")
 	private TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel;
-	
+
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
-	
+
 	private List<Campus> listaCampus;
-	
+
 	private Campus campus;
 
-	
+	@ManagedProperty(value = "#{homeMB}")
+	private HomeMB homeMB;
 
 	public TecnicoAdministrativoMB() {
 		tecnicoAdmFiltered = new ArrayList<TecnicoAdministrativo>();
 	}
 
 	public void criar() {
-		
+
 		tecnicoAdm = new TecnicoAdministrativo();
-		
+
 	}
+
 	public void remover() {
 		tecnicoAdmDao.remover(tecnicoAdm);
 	}
@@ -80,6 +82,7 @@ public class TecnicoAdministrativoMB {
 			String md5 = criptografia.criptografar(tecnicoAdm.getSenha());
 			tecnicoAdm.setSenha(md5);
 			tecnicoAdmDao.salvar(tecnicoAdm);
+			homeMB.criarArqFotoPerfil(tecnicoAdm);
 		}
 	}
 
@@ -94,25 +97,22 @@ public class TecnicoAdministrativoMB {
 	}
 
 	public boolean validarLoginExistente() {
-		if(!CadastroUsuarioValidator.validarEmail(tecnicoAdm)){
+		if (!CadastroUsuarioValidator.validarEmail(tecnicoAdm)) {
 			return false;
 		}
 		try {
 			pessoaDao.findByLogin(tecnicoAdm.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
-		
+
 			return false;
 		} catch (NoResultException nre) {
 			return true;
 		}
-		
-	}
-	
 
+	}
 
 	public TecnicoAdministrativoDao getTecnicoAdmDao() {
 		return tecnicoAdmDao;
@@ -134,8 +134,7 @@ public class TecnicoAdministrativoMB {
 		return tecnicoAdmFiltered;
 	}
 
-	public void setTecnicoAdmFiltered(
-			List<TecnicoAdministrativo> tecnicoAdmFiltered) {
+	public void setTecnicoAdmFiltered(List<TecnicoAdministrativo> tecnicoAdmFiltered) {
 		this.tecnicoAdmFiltered = tecnicoAdmFiltered;
 	}
 
@@ -158,9 +157,7 @@ public class TecnicoAdministrativoMB {
 	public void setPessoaDao(PessoaDao pessoaDao) {
 		this.pessoaDao = pessoaDao;
 	}
-	
-	
-	
+
 	public CampusDao getCampusDao() {
 		return campusDao;
 	}
@@ -178,8 +175,7 @@ public class TecnicoAdministrativoMB {
 		this.listaCampus = listaCampus;
 	}
 
-	public void setTecnicoAdmLazyDataModel(
-			TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel) {
+	public void setTecnicoAdmLazyDataModel(TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel) {
 		this.tecnicoAdmLazyDataModel = tecnicoAdmLazyDataModel;
 	}
 
@@ -191,5 +187,12 @@ public class TecnicoAdministrativoMB {
 		this.campus = campus;
 	}
 
+	public HomeMB getHomeMB() {
+		return homeMB;
+	}
+
+	public void setHomeMB(HomeMB homeMB) {
+		this.homeMB = homeMB;
+	}
 	
 }

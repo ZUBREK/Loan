@@ -24,7 +24,8 @@ public class BreadCrumbController {
 	private final int ESTUDANTES = 10;
 	private final int PROJETOS = 11;
 	private final int DELEGACOES = 12;
-	
+	private final int HORARIOASSISTENCIA = 13;
+
 	public BreadCrumbController() {
 		this.menuModel = new DefaultMenuModel();
 		navigateHome();
@@ -32,9 +33,8 @@ public class BreadCrumbController {
 
 	public String navigateHome() {
 		menuModel.getElements().clear();
-		adicionarItem("Home", "/index.ifpr", "");
-		adicionarItem("Meu Perfil", "/user/home.ifpr",
-				"#{breadCrumbController.navigateHome}");
+		adicionarItem("Home", "/index.loan", "");
+		adicionarItem("Meu Perfil", "/user/home.loan", "#{breadCrumbController.navigateHome}");
 
 		return "home";
 	}
@@ -43,63 +43,50 @@ public class BreadCrumbController {
 
 		navigateHome();
 		if (opcao == ARQUIVOS) {
-			adicionarItem("Gerenciar - Arquivos", "/adm/arquivo/arquivo.ifpr",
-					"#{breadCrumbController.navigate(1)}");
+			adicionarItem("Gerenciar - Arquivos", "/adm/arquivo/arquivo.loan", "#{breadCrumbController.navigate(1)}");
 			return "usuarios";
 		} else if (opcao == TECADM) {
-			adicionarItem("Gerenciar - Tec. Administrativos", "/adm/tec_adm.ifpr",
+			adicionarItem("Gerenciar - Tec. Administrativos", "/adm/tec_adm.loan",
 					"#{breadCrumbController.navigate(2)}");
 			return "turmas";
 		} else if (opcao == TECESP) {
-			adicionarItem("Gerenciar - Tec. Esportivos", "/tec_adm/tec_esp.ifpr",
+			adicionarItem("Gerenciar - Tec. Esportivos", "/tec_adm/tec_esp.loan",
 					"#{breadCrumbController.navigate(3)}");
 			return "usuarios";
 		} else if (opcao == COORDENADORES) {
-			adicionarItem("Gerenciar - Coordenadores", "/tec_adm/coordenadorPea.ifpr",
+			adicionarItem("Gerenciar - Coordenadores", "/tec_adm/coordenadorPea.loan",
 					"#{breadCrumbController.navigate(4)}");
 			return "usuarios";
-		}
-		else if (opcao == SECRETARIOS) {
-			adicionarItem("Gerenciar - Secretários", "/tec_adm/secretario.ifpr",
-					"#{breadCrumbController.navigate(5)}");
+		} else if (opcao == SECRETARIOS) {
+			adicionarItem("Gerenciar - Secretários", "/tec_adm/secretario.loan", "#{breadCrumbController.navigate(5)}");
+			return "usuarios";
+		} else if (opcao == CAMPUS) {
+			adicionarItem("Gerenciar - Campus", "/adm/campus.loan", "#{breadCrumbController.navigate(6)}");
+			return "usuarios";
+		} else if (opcao == NOTICIAS) {
+			adicionarItem("Gerenciar - Notícias", "/adm/noticia.loan", "#{breadCrumbController.navigate(7)}");
+			return "usuarios";
+		} else if (opcao == MODALIDADES) {
+			adicionarItem("Gerenciar - Modalidades", "/adm/modalidade.loan", "#{breadCrumbController.navigate(8)}");
+			return "usuarios";
+		} else if (opcao == TIMES) {
+			adicionarItem("Gerenciar - Times", "/tec_adm/time.loan", "#{breadCrumbController.navigate(9)}");
+			return "usuarios";
+		} else if (opcao == ESTUDANTES) {
+			adicionarItem("Gerenciar - Estudantes", "/tec_adm/estudante.loan", "#{breadCrumbController.navigate(10)}");
+			return "usuarios";
+		} else if (opcao == PROJETOS) {
+			adicionarItem("Gerenciar - Projetos PEA", "/tec_adm/projeto.loan", "#{breadCrumbController.navigate(11)}");
+			return "usuarios";
+		} else if (opcao == DELEGACOES) {
+			adicionarItem("Gerenciar - Delegações", "/tec_adm/delegacao.loan", "#{breadCrumbController.navigate(12)}");
+			return "usuarios";
+		} else if (opcao == HORARIOASSISTENCIA) {
+			adicionarItem("Gerenciar - Horários de Assistências", "/coord/horarioAssistencia.loan",
+					"#{breadCrumbController.navigate(13)}");
 			return "usuarios";
 		}
-		else if (opcao == CAMPUS) {
-			adicionarItem("Gerenciar - Campus", "/adm/campus.ifpr",
-					"#{breadCrumbController.navigate(6)}");
-			return "usuarios";
-		}
-		else if (opcao == NOTICIAS) {
-			adicionarItem("Gerenciar - Notícias", "/adm/noticia.ifpr",
-					"#{breadCrumbController.navigate(7)}");
-			return "usuarios";
-		}
-		else if (opcao == MODALIDADES) {
-			adicionarItem("Gerenciar - Modalidades", "/adm/modalidade.ifpr",
-					"#{breadCrumbController.navigate(8)}");
-			return "usuarios";
-		}
-		else if (opcao == TIMES) {
-			adicionarItem("Gerenciar - Times", "/tec_adm/time.ifpr",
-					"#{breadCrumbController.navigate(9)}");
-			return "usuarios";
-		}
-		else if (opcao == ESTUDANTES) {
-			adicionarItem("Gerenciar - Estudantes", "/tec_adm/estudante.ifpr",
-					"#{breadCrumbController.navigate(10)}");
-			return "usuarios";
-		}
-		else if (opcao == PROJETOS) {
-			adicionarItem("Gerenciar - Projetos PEA", "/tec_adm/projeto.ifpr",
-					"#{breadCrumbController.navigate(11)}");
-			return "usuarios";
-		}
-		else if (opcao == DELEGACOES) {
-			adicionarItem("Gerenciar - Delegações", "/tec_adm/delegacao.ifpr",
-					"#{breadCrumbController.navigate(12)}");
-			return "usuarios";
-		}
-		
+
 		return "";
 	}
 

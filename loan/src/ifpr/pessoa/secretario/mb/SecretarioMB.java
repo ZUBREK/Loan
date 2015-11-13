@@ -2,6 +2,7 @@ package ifpr.pessoa.secretario.mb;
 
 import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.secretario.Secretario;
@@ -39,6 +40,9 @@ public class SecretarioMB {
 
 	private List<Secretario> secretarioFiltered;
 
+	@ManagedProperty(value = "#{homeMB}")
+	private HomeMB homeMB;
+
 	public SecretarioMB() {
 
 		secretarioFiltered = new ArrayList<Secretario>();
@@ -68,6 +72,7 @@ public class SecretarioMB {
 			String md5 = criptografia.criptografar(secretario.getSenha());
 			secretario.setSenha(md5);
 			secretarioDao.salvar(secretario);
+			homeMB.criarArqFotoPerfil(secretario);
 		}
 	}
 
@@ -87,8 +92,7 @@ public class SecretarioMB {
 		}
 		try {
 			pessoaDao.findByLogin(secretario.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -99,7 +103,6 @@ public class SecretarioMB {
 		}
 
 	}
-
 
 	public Criptografia getCriptografia() {
 		return criptografia;
@@ -137,8 +140,7 @@ public class SecretarioMB {
 		return secretarioLazyDataModel;
 	}
 
-	public void setSecretarioLazyDataModel(
-			SecretarioLazyDataModel secretarioLazyDataModel) {
+	public void setSecretarioLazyDataModel(SecretarioLazyDataModel secretarioLazyDataModel) {
 		this.secretarioLazyDataModel = secretarioLazyDataModel;
 	}
 
@@ -150,5 +152,12 @@ public class SecretarioMB {
 		this.secretarioFiltered = secretarioFiltered;
 	}
 
+	public HomeMB getHomeMB() {
+		return homeMB;
+	}
+
+	public void setHomeMB(HomeMB homeMB) {
+		this.homeMB = homeMB;
+	}
 
 }

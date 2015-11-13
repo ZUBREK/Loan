@@ -135,8 +135,6 @@
 					</p:selectOneMenu>
 					<p:message for="campus" />
 
-					<p:message for="bolsa" />
-
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :estudante_form :msg"
@@ -159,10 +157,10 @@
 		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="estudanteConfirmDialog"
-			global="true" header="Confirma exclusão do Técnico?"
+			global="true" header="Confirma exclusão do Estudante?"
 			showEffect="fade" hideEffect="fade"
 			message="Deseja realmente excluir o
-				técnico: #{estudanteMB.estudante.nome}">
+				estudante: #{estudanteMB.estudante.nome}">
 
 			<h:form>
 				<p:commandButton value="Sim"

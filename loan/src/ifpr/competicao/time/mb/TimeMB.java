@@ -282,6 +282,14 @@ public class TimeMB {
 		return timeEstudante;
 	}
 
+	public boolean isUpdate() {
+		return isUpdate;
+	}
+
+	public void setUpdate(boolean isUpdate) {
+		this.isUpdate = isUpdate;
+	}
+
 	public void setTimeEstudante(TimeEstudante timeEstudante) {
 		this.timeEstudante = timeEstudante;
 	}

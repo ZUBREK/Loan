@@ -119,8 +119,8 @@ public class Estudante extends Pessoa {
 	}
 
 	public boolean equals(Object other) {
-		return other instanceof TecnicoEsportivo && (getId() != null) ? getId()
-				.equals(((TecnicoEsportivo) other).getId()) : (other == this);
+		return other instanceof Estudante && (getId() != null) ? getId()
+				.equals(((Estudante) other).getId()) : (other == this);
 	}
 
 	public int hashCode() {

@@ -110,7 +110,13 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>gerAssistencia</from-outcome>
+			<to-view-id>/coord/horarioAssistencia.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
 	
 	<navigation-rule>
 		<navigation-case>

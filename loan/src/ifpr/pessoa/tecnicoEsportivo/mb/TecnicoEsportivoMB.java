@@ -4,6 +4,7 @@ import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
@@ -40,13 +41,16 @@ public class TecnicoEsportivoMB {
 	private TecnicoEsportivoLazyDataModel tecEspLazyDataModel;
 
 	private List<TecnicoEsportivo> tecnicoEsportivoFiltered;
-	
+
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
-	
+
 	private List<Campus> listaCampus;
-	
+
 	private Campus campus;
+
+	@ManagedProperty(value = "#{homeMB}")
+	private HomeMB homeMB;
 
 	public TecnicoEsportivoMB() {
 
@@ -77,8 +81,8 @@ public class TecnicoEsportivoMB {
 			enviarEmail();
 			String md5 = criptografia.criptografar(tecnicoEsp.getSenha());
 			tecnicoEsp.setSenha(md5);
-			
 			tecEspDao.salvar(tecnicoEsp);
+			homeMB.criarArqFotoPerfil(tecnicoEsp);
 		}
 	}
 
@@ -98,8 +102,7 @@ public class TecnicoEsportivoMB {
 		}
 		try {
 			pessoaDao.findByLogin(tecnicoEsp.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -139,8 +142,7 @@ public class TecnicoEsportivoMB {
 		return tecEspLazyDataModel;
 	}
 
-	public void setTecEspLazyDataModel(
-			TecnicoEsportivoLazyDataModel tecEspLazyDataModel) {
+	public void setTecEspLazyDataModel(TecnicoEsportivoLazyDataModel tecEspLazyDataModel) {
 		this.tecEspLazyDataModel = tecEspLazyDataModel;
 	}
 
@@ -148,8 +150,7 @@ public class TecnicoEsportivoMB {
 		return tecnicoEsportivoFiltered;
 	}
 
-	public void setTecnicoEsportivoFiltered(
-			List<TecnicoEsportivo> tecnicoEsportivoFiltered) {
+	public void setTecnicoEsportivoFiltered(List<TecnicoEsportivo> tecnicoEsportivoFiltered) {
 		this.tecnicoEsportivoFiltered = tecnicoEsportivoFiltered;
 	}
 
@@ -160,7 +161,6 @@ public class TecnicoEsportivoMB {
 	public void setTecnicoEsp(TecnicoEsportivo tecnicoEsp) {
 		this.tecnicoEsp = tecnicoEsp;
 	}
-
 
 	public CampusDao getCampusDao() {
 		return campusDao;
@@ -186,4 +186,13 @@ public class TecnicoEsportivoMB {
 	public void setListaCampus(List<Campus> listaCampus) {
 		this.listaCampus = listaCampus;
 	}
+
+	public HomeMB getHomeMB() {
+		return homeMB;
+	}
+
+	public void setHomeMB(HomeMB homeMB) {
+		this.homeMB = homeMB;
+	}
+
 }

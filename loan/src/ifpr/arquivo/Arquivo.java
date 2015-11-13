@@ -18,8 +18,6 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "tbArquivo")
 public class Arquivo {
-
-	//ola 123
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

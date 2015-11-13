@@ -7,7 +7,8 @@ public enum TipoPessoa {
 	ROLE_SECRETARIO("Secretário", 3), 
 	ROLE_TEC_ESP("Técnico Esportivo", 4), 
 	ROLE_COORDENADOR("Coordenador PEA", 5), 
-	ROLE_ESTUDANTE("Estudante", 6);
+	ROLE_ESTUDANTE("Estudante", 6),
+	ROLE_TEC_COORD("Técnico Esportivo & Coordenador",7);
 
 	private String label;
 

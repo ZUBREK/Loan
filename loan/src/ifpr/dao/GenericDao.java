@@ -1,6 +1,7 @@
 package ifpr.dao;
 
 import ifpr.campus.Campus;
+import ifpr.modalidade.Modalidade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -188,5 +189,19 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 		q.setMaxResults(10);
 		return q.getResultList();
 	}
+
+	@Override
+	public List<T> listarPorCampusModalidade(Campus campus,
+			Modalidade modalidade) {
+		/*
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select u from " + classe.getSimpleName() +" u where campus = :campus order by u.nome");
+		q.setParameter("campus", campus);
+		q.setMaxResults(10);
+		*/
+		//TODO:Arrumar esse treco aqui, fazendo a query certa.
+		return null;
+	}
+
 
 }

@@ -42,6 +42,8 @@ public class PessoaDaoImpl  extends GenericDao<Pessoa> implements PessoaDao {
 		return (Pessoa) q.getSingleResult();
 		
 	}
+
+	
 	
 
 }

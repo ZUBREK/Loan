@@ -1,11 +1,5 @@
 package ifpr.pessoa.estudante;
 
-import ifpr.campus.Campus;
-import ifpr.competicao.time.estudante.TimeEstudante;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-import ifpr.projeto.projetoEstudante.ProjetoEstudante;
-
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +11,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import ifpr.campus.Campus;
+import ifpr.competicao.time.estudante.TimeEstudante;
+import ifpr.pessoa.Pessoa;
+import ifpr.projeto.projetoEstudante.ProjetoEstudante;
 
 @Entity
 @Table(name = "tbEstudante")

@@ -1,0 +1,34 @@
+package ifpr.pessoa.coordenadorPea.horarioReposicao.dao;
+
+import java.util.List;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import ifpr.dao.GenericDao;
+import ifpr.pessoa.coordenadorPea.horarioReposicao.HorarioAssistencia;
+
+@ManagedBean(name = "horarioAssistenciaDao")
+@ApplicationScoped
+public class HorarioAssistenciaDaoImpl extends GenericDao<HorarioAssistencia> implements HorarioAssistenciaDao {
+
+	private static final long serialVersionUID = 1L;
+
+	public HorarioAssistenciaDaoImpl() {
+		super(HorarioAssistencia.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<HorarioAssistencia> pesquisarPorNome(String nome) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select u from HorarioAssistencia u where lower(u.nome) like concat('%', :nome, '%')");
+		q.setParameter("nome", nome);
+		q.setMaxResults(50);
+
+		return q.getResultList();
+	}
+
+}

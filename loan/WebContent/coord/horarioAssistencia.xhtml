@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal"
+			header="Gerenciamento de Horário de Assistências">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novoEst" value="Novo"
+					actionListener="#{horarioAssistenciaMB.criar}"
+					oncomplete="PF('assistenciaDialog').show()"
+					update=":assistenciaDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:dataTable id="assistenciaTable"
+					value="#{horarioAssistenciaMB.horarioAssistenciaLazyDataModel}"
+					var="assistencia" emptyMessage="Nenhum registro encontrado!"
+					rows="15" rowKey="#{assistencia.id}" paginator="true" lazy="true"
+					filteredValue="#{horarioAssistenciaMB.horarioAssistenciaFiltered}">
+
+					<f:facet name="header">
+						<h:outputText value="Horários de Assistências" />
+					</f:facet>
+
+					<p:column headerText="Matéria" filterBy="#{assistencia.materia}"
+						filterMatchMode="contains">
+						<h:outputText value="#{assistencia.materia}" />
+
+					</p:column>
+
+					<p:column headerText="Estudante">
+						<p:outputLabel value="#{assistencia.estudante.nome}" />
+					</p:column>
+
+					<p:column headerText="Data">
+						<h:outputText value="#{assistencia.dataHora}" id="dataHora">
+							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+								pattern="dd/MM/yyyy - HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":assistencia_form"
+							oncomplete="PF('assistenciaDialog').show()"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{assistencia}"
+								target="#{horarioAssistenciaMB.horarioAssistencia}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('assistenciaConfirmDialog').show()"
+							update=":confirm" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{assistencia}"
+								target="#{horarioAssistenciaMB.horarioAssistencia}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:panel>
+
+		<p:dialog id="assistenciaDlg" widgetVar="assistenciaDialog"
+			header="Dados do Horário de Assistência" width="600" height="200"
+			modal="true" closable="false">
+
+			<h:form id="assistencia_form">
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="materiaLb" value="Matéria:" for="materia" />
+
+					<p:inputText id="materia"
+						value="#{horarioAssistenciaMB.horarioAssistencia.materia}"
+						size="50" required="true" requiredMessage="Matéria é obrigatório!" />
+
+					<p:message for="materia" />
+
+					<h:outputLabel id="dataLb" value="Data da Assistência:" for="data" />
+					<p:calendar id="data"
+						value="#{horarioAssistenciaMB.horarioAssistencia.dataHora}"
+						locale="pt" navigator="true" pattern="dd/mm/yyyy"
+						mindate="1/1/2014" />
+					<p:message for="data" />
+
+					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+					<p:selectOneMenu id="campus" value="#{horarioAssistenciaMB.campus}"
+						filter="true" filterMatchMode="startsWith" required="true"
+						requiredMessage="Câmpus é obrigatório!"
+						converter="#{campusConverter}">
+
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{horarioAssistenciaMB.listaCampus}"
+							var="camp" itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+						<p:ajax update=":assistencia_form:estudante" />
+					</p:selectOneMenu>
+					<p:message for="campus" />
+
+					<p:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
+					<p:selectOneMenu id="estudante"
+						value="#{horarioAssistenciaMB.estudante}" filter="true"
+						filterMatchMode="startsWith" required="true"
+						requiredMessage="Estudante é obrigatório!"
+						converter="#{estudanteConverter}"
+						disabled="#{empty horarioAssistenciaMB.campus}">
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{horarioAssistenciaMB.listaEstudante}"
+							var="estudant" itemLabel="#{estudant.nome}"
+							itemValue="#{estudant}" />
+					</p:selectOneMenu>
+					<p:message for="estudante" />
+
+					<h:outputLabel id="fotoLb" value="Foto da Assinatura:" />
+					
+					<p:fileUpload
+						fileUploadListener="horarioAssistenciaMB.handleFileUpload"
+						mode="simple" skinSimple="true" />
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :assistencia_form :msg"
+							actionListener="#{horarioAssistenciaMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('assistenciaDialog').hide()">
+						</p:commandButton>
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('assistenciaDialog').hide()"
+							update=":msg" immediate="true"
+							actionListener="#{horarioAssistenciaMB.cancelar()}">
+							<p:resetInput target=":assistencia_form" />
+						</p:commandButton>
+
+					</f:facet>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="assistenciaConfirmDialog"
+			global="true" header="Confirma exclusão do Horário de Assistência?"
+			showEffect="fade" hideEffect="fade"
+			message="Deseja realmente excluir o
+				horário de assistência do estudante: #{horarioAssistenciaMB.horarioAssistencia.estudante.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim"
+					actionListener="#{horarioAssistenciaMB.remover()}"
+					oncomplete="PF('assistenciaConfirmDialog').hide()"
+					update=":tableForm" icon="ok16" />
+				<p:commandButton value="Não"
+					actionListener="#{horarioAssistenciaMB.cancelar()}"
+					oncomplete="PF('assistenciaConfirmDialog').hide()"
+					icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

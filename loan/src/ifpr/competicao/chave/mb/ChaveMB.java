@@ -51,7 +51,7 @@ public class ChaveMB {
 	private TimeDao timeDao;
 
 	@ManagedProperty(value = "#{partidaTimePlacarDao}")
-	private PartidaTimePlacarDao partidaTimeDao;
+	private PartidaTimePlacarDao partidaTimePlacarDao;
 
 	@ManagedProperty(value = "#{chaveLazyDataModel}")
 	private ChaveLazyDataModel chaveLazyDataModel;
@@ -71,7 +71,11 @@ public class ChaveMB {
 
 	private Partida partida;
 
+	private boolean isOutraFase;
+
 	public ChaveMB() {
+		chave = new Chave();
+		isOutraFase = false;
 	}
 
 	@PostConstruct
@@ -85,30 +89,45 @@ public class ChaveMB {
 	}
 
 	public void iniciarTreeNode() {
-
 		nodes = new ArrayList<TreeNode>();
 		rootNode = new DefaultTreeNode(chave.getNome(), null);
 		String nomePartida = "";
 		for (Partida partida : chave.getPartidas()) {
 			for (PartidaTimePlacar partidaTimePlacar : partida.getPartidasTimesPlacares()) {
-				nomePartida += partidaTimePlacar.getTime().getNome() + " ";
+				if (!nomePartida.equals("")) {
+					nomePartida += " X ";
+				}
+				nomePartida += partidaTimePlacar.getTime().getNome();
 			}
+			adicionarNodeParent(nomePartida, rootNode);
+			nomePartida = "";
 		}
-		adicionarNodeParent(nomePartida, rootNode);
+
+	}
+
+	public void removerPartidas() {
+		for (Partida partida : chave.getPartidas()) {
+			partidaDao.remover(partida);
+		}
+		chave.getPartidas().clear();
 	}
 
 	public void criar() {
 		chave = new Chave();
-
 	}
 
 	public void remover() {
 		try {
+			removerPartidas();
 			chaveDao.remover(chave);
 		} catch (ConstraintViolationException e) {
 			// facesmessage bagaça
 		}
 
+	}
+
+	public boolean getIsOutraFase() {
+		return isOutraFase;
 	}
 
 	public void cancelar() {
@@ -118,8 +137,7 @@ public class ChaveMB {
 	public void salvarChave() {
 		if (chave.getId() == null) {
 			chave.setTipo(tipo);
-			long seed = System.nanoTime();
-			Collections.shuffle(times, new Random(seed));
+			randomizarTimes();
 			if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
 
 			} else if (chave.getTipo().equals(TipoCompeticao.GRUPOS)) {
@@ -127,21 +145,44 @@ public class ChaveMB {
 			} else if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
 
 			} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-				for (int i = 0; i < times.size(); i++) {
-					if (i % 2 == 0) {
-						partidaTimePlacar = new PartidaTimePlacar();
-						partida = new Partida();
-						salvarPartida(partida);
-						placar = new Placar();
-						salvarPlacar(placar);
-					}
-					setarSalvarPartidaTimePlacar(i);
-					partida.getPartidasTimesPlacares().add(partidaTimePlacar);
-					partidaDao.salvar(partida);
-					chave.getPartidas().add(partida);
-				}
+				gerarPartidasTipoMataMata();
 				chaveDao.salvar(chave);
 			}
+		}
+	}
+
+	public void randomizarTimes() {
+		long seed = System.nanoTime();
+		Collections.shuffle(times, new Random(seed));
+	}
+
+	public void gerarPartidasTipoMataMata() {
+		randomizarTimes();
+		for (int i = 0; i < times.size(); i++) {
+			if (i % 2 == 0) {
+				partida = new Partida();
+				chave.getPartidas().add(partida);
+				salvarPartida(partida);
+				placar = new Placar();
+				salvarPlacar(placar);
+			}
+			setarSalvarPartidaTimePlacar(i);
+			partida.getPartidasTimesPlacares().add(partidaTimePlacar);
+			salvarPartida(partida);
+		}
+
+	}
+
+	public void reorganizarNodes() {
+		randomizarTimes();
+		int i = 0;
+		for (Partida partida : chave.getPartidas()) {
+			for (PartidaTimePlacar partidaTimePlacar : partida.getPartidasTimesPlacares()) {
+				partidaTimePlacar.setTime(times.get(i));
+				i++;
+				partidaTimePlacarDao.update(partidaTimePlacar);
+			}
+
 		}
 		iniciarTreeNode();
 	}
@@ -163,10 +204,11 @@ public class ChaveMB {
 	}
 
 	private void setarSalvarPartidaTimePlacar(int i) {
+		partidaTimePlacar = new PartidaTimePlacar();
 		partidaTimePlacar.setPartida(partida);
 		partidaTimePlacar.setTime(times.get(i));
 		partidaTimePlacar.setPlacar(placar);
-		partidaTimeDao.salvar(partidaTimePlacar);
+		partidaTimePlacarDao.salvar(partidaTimePlacar);
 
 	}
 
@@ -243,7 +285,7 @@ public class ChaveMB {
 		chave.setModalidade(modalidade);
 		TipoCompeticao[] tipos = TipoCompeticao.values();
 		times = timeDao.pesquisarPorModalidade(chave.getModalidade());
-		if (times.size() % 2 == 0) {
+		if (verificarTamanhoTime()) {
 			return tipos;
 		} else {
 			ArrayList<TipoCompeticao> tiposOld = new ArrayList<TipoCompeticao>(Arrays.asList(tipos));
@@ -251,6 +293,17 @@ public class ChaveMB {
 			TipoCompeticao[] tiposNew = tiposOld.toArray(new TipoCompeticao[tiposOld.size()]);
 			return tiposNew;
 		}
+	}
+
+	public boolean verificarTamanhoTime() {
+		float qtdTimes = times.size();
+		while (qtdTimes > 1 && qtdTimes % 2 == 0) {
+			qtdTimes = qtdTimes / (float) 2;
+			if (qtdTimes == 1) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public TimeDao getTimeDao() {
@@ -285,12 +338,12 @@ public class ChaveMB {
 		this.modalidade = modalidade;
 	}
 
-	public PartidaTimePlacarDao getPartidaTimeDao() {
-		return partidaTimeDao;
+	public PartidaTimePlacarDao getPartidaTimePlacarDao() {
+		return partidaTimePlacarDao;
 	}
 
-	public void setPartidaTimeDao(PartidaTimePlacarDao partidaTimeDao) {
-		this.partidaTimeDao = partidaTimeDao;
+	public void setPartidaTimePlacarDao(PartidaTimePlacarDao partidaTimePlacarDao) {
+		this.partidaTimePlacarDao = partidaTimePlacarDao;
 	}
 
 	public Placar getPlacar() {

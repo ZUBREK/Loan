@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +42,7 @@ public class Partida {
 	@ManyToOne()
 	private Local local;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.REMOVE)
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
 	private List<PartidaTimePlacar> partidasTimesPlacares;
 

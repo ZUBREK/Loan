@@ -38,10 +38,9 @@
 						<p:commandButton id="visualizarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":chav_form"
 							oncomplete="PF('editarChavDialog').show()"
-							styleClass="apenasIcone">
+							action="#{chaveMB.iniciarTreeNode()}" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{chav}"
 								target="#{chaveMB.chave}" />
-
 						</p:commandButton>
 					</p:column>
 					<p:column headerText="Remover" width="47">
@@ -59,13 +58,18 @@
 			</h:form>
 		</p:panel>
 		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
-			header="Nova Chave" width="1000" height="500" modal="true"
+			header="Partidas da chave:" width="1000" height="500" modal="true"
 			closable="false">
 
 			<h:form id="chav_form">
+				<p:commandButton value="ReSortear"
+					disabled="#{chaveMB.isOutraFase}"
+					action="#{chaveMB.reorganizarNodes()}" update=":chav_form"
+					icon="ui-icon-refresh" />
 
-				<p:tree value="#{chaveMB.rootNode}" var="node" rendered="#{not empty chaveMB.chave}"
-					orientation="horizontal" dynamic="true" selectionMode="single">
+				<p:tree value="#{chaveMB.rootNode}" var="node"
+					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
+					dynamic="true" selectionMode="single">
 					<p:treeNode>
 						<h:outputText value="#{node}" />
 					</p:treeNode>
@@ -95,7 +99,7 @@
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{chaveMB.chave.nome}" size="20"
-						required="true" requiredMessage="Nome é obrigatório!"/>
+						required="true" requiredMessage="Nome é obrigatório!" />
 
 					<p:outputLabel id="modalidadeLb" value="Modalidade:"
 						for="modalidade" />
@@ -110,8 +114,9 @@
 							itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
 					</p:selectOneMenu>
 					<p:outputLabel id="tipoLb" value="Tipo do competição:" for="tipo" />
-					<p:selectOneMenu id="tipo" value="#{chaveMB.tipo}" label="" disabled="#{empty chaveMB.modalidade}" required="true"
-					rendered="#{not empty chaveMB.modalidade}">
+					<p:selectOneMenu id="tipo" value="#{chaveMB.tipo}" label=""
+						disabled="#{empty chaveMB.modalidade}" required="true"
+						rendered="#{not empty chaveMB.modalidade}">
 						<f:selectItems value="#{chaveMB.tipos}" var="tip"
 							itemValue="#{tip}" itemLabel="#{tip.label}" />
 					</p:selectOneMenu>

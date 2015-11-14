@@ -36,7 +36,7 @@ public class Pessoa {
 	@Column(name = "password")
 	private String senha;
 
-	@Column(name = "authority")
+	@Column(name = "authority", length=50)
 	@Enumerated(EnumType.STRING)
 	private TipoPessoa tipo;
 

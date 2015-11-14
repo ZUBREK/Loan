@@ -81,7 +81,8 @@
 			closable="false">
 
 			<h:form id="evento_form">
-				<p:tabView id="tabView" widgetVar="tabBagaca" activeIndex="#{eventoMB.index}">
+				<p:tabView id="tabView" widgetVar="tabBagaca"
+					activeIndex="#{eventoMB.index}"  dynamic="true">
 					<p:tab title="Dados Em Geral">
 
 						<h:panelGrid columns="2">
@@ -91,7 +92,7 @@
 							<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="50"
 								required="true" requiredMessage="Nome é obrigatório!" />
 
-						
+
 
 							<h:outputLabel id="descricaoLb" value="Descrição:"
 								for="descricao" />
@@ -100,37 +101,33 @@
 								size="50" required="true"
 								requiredMessage="Descrição é obrigatório!" />
 
-							
-
 							<p:outputLabel id="dataInicioLb" value="Data de Início:"
 								for="dataInicio" />
 							<p:calendar id="dataInicio"
 								value="#{eventoMB.evento.dataHoraInicio}" locale="pt"
 								navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
 								maxdate="31/12/2050" yearRange="2015:2020" required="true"
-								requiredMessage="Data de início é obrigatória"  mask="true" showOn="button"/>
+								requiredMessage="Data de início é obrigatória" mask="true" />
 
-							
 
 							<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
 								for="dataFim" />
 							<p:calendar id="dataFim" value="#{eventoMB.evento.dataHoraFinal}"
-								locale="pt" mask="true" navigator="true" showOn="button" pattern="dd/mm/yyyy HH:mm"
-								mindate="1/1/1980" maxdate="31/12/2020" yearRange="2015:2020"
-								required="true"
+								locale="pt" mask="true" navigator="true" 
+								pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
+								maxdate="31/12/2020" yearRange="2015:2020" required="true"
 								requiredMessage="Data de encerramento é obrigatória" />
 
-							
-
-
 							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":evento_form :msg"
-								actionListener="#{eventoMB.salvar}"
-								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
+								icon="salvar16" update=":evento_form:tabView :msg "
+								actionListener="#{eventoMB.salvar}"	
+								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);"/>
+		
 
 						</h:panelGrid>
 					</p:tab>
-					<p:tab  title="Adicionar Estudantes:" disabled="#{eventoMB.tabBoolean}" >
+					<p:tab title="Adicionar Estudantes:"
+						disabled="#{eventoMB.isPrimeiraTab}" rendered="#{!eventoMB.adm}">
 
 						<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 						<p:selectOneMenu id="campus" value="#{eventoMB.campus}"
@@ -141,8 +138,8 @@
 
 							<f:selectItems value="#{eventoMB.listaCampus}" var="camp"
 								itemLabel="#{camp.cidade}" itemValue="#{camp}" />
-								<p:ajax process="@this"
-									 event="change" update=":evento_form:tabView:addGrid"  />
+							<p:ajax process="@this" event="change"
+								update=":evento_form:tabView:addGrid" />
 						</p:selectOneMenu>
 
 						<p:outputLabel id="modalidadeLb" value="Modalidade:"
@@ -151,31 +148,31 @@
 							filter="true" filterMatchMode="startsWith"
 							converter="#{modalidadeConverter}">
 
-							<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um"/>
+							<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
 							<f:selectItems value="#{eventoMB.listaModalidade}" var="modalidd"
 								itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
-							<p:ajax process="@this"
-									 event="change" update=":evento_form:tabView:addGrid"  />
-								
-						</p:selectOneMenu>
-						
+							<p:ajax process="@this" event="change"
+								update=":evento_form:tabView:addGrid" />
 
-						<h:panelGrid id="addGrid" columns="3" cellpadding="5" >
+						</p:selectOneMenu>
+
+						<h:panelGrid id="addGrid" columns="3" cellpadding="5">
 							<h:outputLabel for="menu" value="Estudantes:" />
-							<p:selectCheckboxMenu id="menu" disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
+							<p:selectCheckboxMenu id="menu"
+								disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
 								value="#{eventoMB.estudantesSelecionados}" label="Estudantes"
 								filter="true" filterMatchMode="startsWith"
 								panelStyle="width:250px" converter="#{estudanteConverter}">
 								<f:selectItems value="#{eventoMB.estudantes}" />
 							</p:selectCheckboxMenu>
-							<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes" 
-							disabled="eventoMB.checarCampos()"
-								icon="apply" actionListener="#{eventoMB.adicionarEstudante()}"
-								update=":evento_form:tabView:estudantesList"  />
+							<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes"
+								disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}" icon="apply"
+								actionListener="#{eventoMB.adicionarEstudante()}"
+								update=":evento_form:tabView:estudantesList" />
 						</h:panelGrid>
 
-						
+
 
 						<p:dataTable id="estudantesList" var="eventoPessoa"
 							value="#{eventoMB.evento.eventoPessoas}"
@@ -184,28 +181,62 @@
 								<h:outputText value="#{eventoPessoa.pessoa.nome}" />
 							</p:column>
 
+							<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+								update=":tableForm :evento_form :msg"
+								actionListener="#{eventoMB.salvar}"
+								oncomplete="if(!args.validationFailed) PF('eventoDialog').hide()">
+								<p:resetInput target=":evento_form" />
+							</p:commandButton>
+
+
 						</p:dataTable>
 					</p:tab>
+					<p:tab title="Selecionar Participantes do evento:"
+						disabled="#{eventoMB.isPrimeiraTab}" rendered="#{eventoMB.adm}">
+						
+							<p:outputLabel id="roleLb" value="Para:" for="role" />
+
+							<p:selectOneMenu id="role" value="#{eventoMB.role}" label="Para:"
+								rendered="#{eventoMB.adm}">
+
+								<f:selectItems value="#{eventoMB.tiposPessoa}" var="role"
+									itemValue="#{role}" itemLabel="#{role.label}" />
+							</p:selectOneMenu>
+
+
+							<p:outputLabel id="tipoLb" value="Tipo do evento:"
+								rendered="#{eventoMB.adm}" style="padding-right: 5px;"
+								for="tipo" />
+
+							<p:selectOneMenu id="tipo" value="#{eventoMB.tipo}" label="Para:"
+								rendered="#{eventoMB.adm}">
+
+								<f:selectItems value="#{eventoMB.tiposEvento}" var="tip"
+									itemValue="#{tip}" itemLabel="#{tip.label}" />
+							</p:selectOneMenu>
+						
+					</p:tab>
 				</p:tabView>
-			</h:form>
-			<f:facet name="footer">
-				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":tableForm :evento_form :msg"
-					actionListener="#{eventoMB.salvar}"
-					oncomplete="if(!args.validationFailed) PF('eventoDialog').hide()">
-					<p:resetInput target=":evento_form" />
+				</h:form>
+				
+				<f:facet name="footer" >
+					<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :evento_form :msg" disabled="#{eventoMB.isPrimeiraTab}"
+							actionListener="#{eventoMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('eventoDialog').hide()">
+							<p:resetInput target=":evento_form" />
+							</p:commandButton>
+					<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+						oncomplete="PF('eventoDialog').hide()" update=":msg"
+						immediate="true" actionListener="#{eventoMB.cancelar()}">
+						<p:resetInput target=":evento_form" />
 					</p:commandButton>
 
-				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
-					oncomplete="PF('eventoDialog').hide()" update=":msg"
-					immediate="true" actionListener="#{eventoMB.cancelar()}">
-					<p:resetInput target=":evento_form" />
-				</p:commandButton>
-
-			</f:facet>
+				</f:facet>
+			
 		</p:dialog>
 
-		
+
 
 		<p:confirmDialog id="confirm" widgetVar="eventoConfirmDialog"
 			global="true" header="Confirma exclusão do evento?" showEffect="fade"
@@ -214,7 +245,8 @@
 				evento: #{eventoMB.evento.nome}">
 
 			<h:form>
-				<p:commandButton value="Sim" actionListener="#{eventoMB.remover()}"
+				<p:commandButton value="Sim"
+					actionListener="#{eventoMB.removerPessoa()}"
 					oncomplete="PF('eventoConfirmDialog').hide()" update=":tableForm"
 					icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{eventoMB.cancelar()}"

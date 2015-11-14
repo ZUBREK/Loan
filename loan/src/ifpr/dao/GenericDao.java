@@ -112,6 +112,7 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 		EntityManager em = emf.createEntityManager();
 		return em.find(classe, id);
 	}
+
 	@Override
 	public T findByIdInteger(Integer id) {
 		EntityManager em = emf.createEntityManager();
@@ -122,27 +123,24 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 	@Override
 	public List<T> listDesc() {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
-				+ " a order by a.id DESC");
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName() + " a order by a.id DESC");
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> listAsc() {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
-				+ " a order by a.id ASC");
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName() + " a order by a.id ASC");
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> findByNome(String nome) {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
-				+ " a where lower(a.nome) like :nome");
-		
+		Query query = em.createQuery(
+				"SELECT a from " + classe.getSimpleName() + " a where lower(a.nome) like concat('%', :nome, '%')");
 		query.setParameter("nome", nome);
 		query.setMaxResults(10);
 		return query.getResultList();
@@ -152,8 +150,7 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 	public void setEntityManagerFactory(EntityManagerFactory emf) {
 		this.emf = emf;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	public List<T> list(int first, int size) {
 		EntityManager em = emf.createEntityManager();
@@ -162,29 +159,30 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 		query.setMaxResults(size);
 		return query.getResultList();
 	}
-	
+
 	public int getRowCount() {
 		EntityManager em = emf.createEntityManager();
 		Query query = em.createQuery("SELECT count(a) from " + classe.getSimpleName() + " a");
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<T> findByNomeRole(String nome, String role)
-	{
+	public List<T> findByNomeRole(String nome, String role) {
 		EntityManager em = emf.createEntityManager();
-		Query q = em.createQuery("select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') and authority = :role");
+		Query q = em.createQuery(
+				"select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') and authority = :role");
 		q.setParameter("nome", nome);
 		q.setParameter("role", role);
 		q.setMaxResults(10);
-		
+
 		return q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<T> listarPessoaByCampusEmAlfabetica(Campus campus) {
 		EntityManager em = emf.createEntityManager();
-		Query q = em.createQuery("select u from " + classe.getSimpleName() +" u where campus = :campus order by u.nome");
+		Query q = em
+				.createQuery("select u from " + classe.getSimpleName() + " u where campus = :campus order by u.nome");
 		q.setParameter("campus", campus);
 		q.setMaxResults(10);
 		return q.getResultList();
@@ -192,19 +190,16 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> listarPorCampusModalidade(Campus campus,
-			Modalidade modalidade) {
-		
+	public List<T> listarPorCampusModalidade(Campus campus, Modalidade modalidade) {
 
 		EntityManager em = emf.createEntityManager();
 		Query q = em.createQuery("select e from TimeEstudante as te inner join te.estudante as e "
 				+ "where e.campus = :campus and te.time.modalidade = :modalidade order by e.nome");
 		q.setParameter("campus", campus);
 		q.setParameter("modalidade", modalidade);
-		q.setMaxResults(100);	
-		
+		q.setMaxResults(100);
+
 		return q.getResultList();
 	}
-
 
 }

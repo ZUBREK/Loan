@@ -1,9 +1,5 @@
 package ifpr.geradorPdf;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.arquivo.dao.ArquivoDao;
-import ifpr.pessoa.estudante.Estudante;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,9 +22,14 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import ifpr.arquivo.Arquivo;
+import ifpr.arquivo.dao.ArquivoDao;
+import ifpr.pessoa.estudante.Estudante;
 
 @ManagedBean(name = "crachasPdf")
 @ViewScoped
@@ -65,48 +66,56 @@ public class CrachasPdf {
 
 			for (int i = 0; i < listDesc.size(); i++) {
 				tabela = new PdfPTable(COLUNAS);
+				tabela.setTotalWidth(500);
+				tabela.setWidthPercentage(110f);
+				celula = new PdfPCell();
+				celula.setBackgroundColor(BaseColor.WHITE);
+				celula.setBorder(Rectangle.NO_BORDER);
+				Image img = Image.getInstance("Moldura.png");
+				img.setAlignment(Element.ALIGN_LEFT);
+				celula.addElement(img);
 				Estudante estudante = listDesc.get(i);
 				Arquivo fotoPerfil = arquivoDao.pesquisarFotoPerfil(estudante);
-				Image fotoPerfilImg = Image
-						.getInstance(fotoPerfil.getCaminho());
+				Image fotoPerfilImg = Image.getInstance(fotoPerfil.getCaminho());
 				fotoPerfilImg.setAlignment(Element.ALIGN_MIDDLE);
-				fotoPerfilImg.scaleAbsolute(250, 200);
-				doc.add(fotoPerfilImg);
-				adicionarCelulaTabela("Nome: ", true);
+				fotoPerfilImg.scaleAbsolute(150, 100);
+				adicionarCelulaTabela("Nome:", true);
 				adicionarCelulaTabela(estudante.getNome(), false);
-				adicionarCelulaTabela("Data de nascimento: ", true);
+				tabela.addCell(celula);
+				celula = new PdfPCell();
+				celula.setBackgroundColor(BaseColor.WHITE);
+				celula.setBorder(Rectangle.NO_BORDER);
+				Image img2 = Image.getInstance("Moldura.png");
+				img.setAlignment(Element.ALIGN_RIGHT);
+				celula.addElement(img2);
+				tabela.addCell(celula);
+				doc.add(tabela);
+				/*adicionarCelulaTabela("Data de nascimento: ", true);
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				adicionarCelulaTabela(
-						sdf.format(estudante.getDataNascimento()), false);
+				adicionarCelulaTabela(sdf.format(estudante.getDataNascimento()), false);
 				adicionarCelulaTabela("Matricula: ", true);
 				adicionarCelulaTabela(estudante.getMatricula(), false);
 				adicionarCelulaTabela("Câmpus: ", true);
-				adicionarCelulaTabela(estudante.getCampus().toString(), false);
+				adicionarCelulaTabela(estudante.getCampus().toString(), false);*/
 				doc.add(tabela);
 				doc.newPage();
-
 			}
 
 			doc.close();
 		} catch (Exception e) {
-	        e.printStackTrace();
+			e.printStackTrace();
 		}
 
 	}
 
 	private void adicionarCelulaTabela(String string, boolean bold) {
 		if (bold) {
-			fonte = FontFactory.getFont(FontFactory.COURIER, (float) 12,
-					Font.BOLD, black);
+			fonte = FontFactory.getFont(FontFactory.COURIER, (float) 12, Font.BOLD, black);
 		} else {
-			fonte = FontFactory.getFont(FontFactory.COURIER, (float) 12,
-					Font.NORMAL, black);
+			fonte = FontFactory.getFont(FontFactory.COURIER, (float) 12, Font.NORMAL, black);
 		}
-		celula = new PdfPCell();
 		paragrafo = new Paragraph(string, fonte);
 		celula.addElement(paragrafo);
-
-		tabela.addCell(celula);
 	}
 
 	public BaseColor getBlack() {
@@ -177,8 +186,7 @@ public class CrachasPdf {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
-			arqStreamed = new DefaultStreamedContent(stream, null,
-					"CrachasGerados.pdf");
+			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasGerados.pdf");
 		} catch (FileNotFoundException e) {
 			System.out.println("Erro no download de imagem");
 		}

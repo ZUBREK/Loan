@@ -25,7 +25,7 @@ public class LazyHorarioAssistenciaSorter implements Comparator<HorarioAssistenc
 
 			int value = ((Comparable) value1).compareTo(value2);
 
-			return SortOrder.ASCENDING.equals(sortOrder) ? value : -1 * value;
+			return SortOrder.DESCENDING.equals(sortOrder) ? value : -1 * value;
 		} catch (Exception e) {
 			throw new RuntimeException();
 		}

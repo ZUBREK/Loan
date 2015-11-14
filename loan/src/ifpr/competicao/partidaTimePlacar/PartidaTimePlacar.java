@@ -65,5 +65,4 @@ public class PartidaTimePlacar {
 		this.partida = partida;
 	}
 	
-
 }

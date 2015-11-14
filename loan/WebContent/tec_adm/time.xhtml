@@ -77,14 +77,12 @@
 				<p:tabView id="tabView" widgetVar="tabBagaca">
 					<p:tab title="Dados Em Geral">
 
-						<h:panelGrid columns="3">
+						<h:panelGrid columns="2">
 
 							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 							<p:inputText id="nome" value="#{timeMB.time.nome}" size="50"
 								required="true" requiredMessage="Nome é obrigatório!" />
-
-							<p:message for="nome" />
 
 							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 							<p:selectOneMenu id="campus" value="#{timeMB.campus}"
@@ -100,8 +98,6 @@
 
 							</p:selectOneMenu>
 
-							<p:message for="campus" />
-
 							<p:outputLabel id="modalidadeLb" value="Modalidade:"
 								for="modalidade" />
 							<p:selectOneMenu id="modalidade" value="#{timeMB.modalidade}"
@@ -114,7 +110,6 @@
 								<f:selectItems value="#{timeMB.listaModalidade}" var="modalidd"
 									itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
 							</p:selectOneMenu>
-							<p:message for="modalidade" />
 
 							<p:outputLabel id="tecEsportivoLb" value="Ténico Esportivo:"
 								for="tecEsportiv" />
@@ -129,7 +124,6 @@
 									var="tecEsport" itemLabel="#{tecEsport.nome}"
 									itemValue="#{tecEsport}" />
 							</p:selectOneMenu>
-							<p:message for="tecEsportiv" />
 
 							<p:commandButton id="continuarBt" value="Continuar"
 								icon="salvar16" update=":tableForm :time_form :msg"

@@ -2,6 +2,7 @@ package ifpr.competicao.time.dao;
 
 import ifpr.competicao.time.Time;
 import ifpr.dao.GenericDao;
+import ifpr.modalidade.Modalidade;
 
 import java.util.List;
 
@@ -30,6 +31,16 @@ public class TimeDaoImpl  extends GenericDao<Time> implements TimeDao {
 		q.setParameter("nome", nome);
 		q.setMaxResults(50);
 		
+		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Time> pesquisarPorModalidade(Modalidade modalidade) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select u from Time u where modalidade = :modalidade");
+		q.setParameter("modalidade", modalidade);
+		q.setMaxResults(10);
 		return q.getResultList();
 	}
 	

@@ -1,5 +1,6 @@
 package ifpr.competicao.chave;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -40,6 +41,10 @@ public class Chave {
 	@JoinColumn(name = "id_chave", referencedColumnName = "id_chave")
 	@OneToMany()
 	private List<Partida> partidas;
+
+	public Chave() {
+		partidas = new ArrayList<>();
+	}
 	
 	public List<Partida> getPartidas() {
 		return partidas;
@@ -79,6 +84,11 @@ public class Chave {
 
 	public void setTipo(TipoCompeticao tipo) {
 		this.tipo = tipo;
+	}
+
+	@Override
+	public String toString() {
+		return this.nome;
 	}
 
 }

@@ -1,14 +1,5 @@
 package ifpr.pessoa.secretario.mb;
 
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.criptografia.Criptografia;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.secretario.Secretario;
-import ifpr.pessoa.secretario.dao.SecretarioDao;
-import ifpr.pessoa.secretario.model.SecretarioLazyDataModel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +10,16 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.criptografia.Criptografia;
+import ifpr.geradorPdf.CrachasPdf;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.secretario.Secretario;
+import ifpr.pessoa.secretario.dao.SecretarioDao;
+import ifpr.pessoa.secretario.model.SecretarioLazyDataModel;
 
 @ManagedBean(name = "secretarioMB")
 @ViewScoped
@@ -42,6 +43,9 @@ public class SecretarioMB {
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
+	
+	@ManagedProperty(value = "#{crachasPdf}")
+	public CrachasPdf crachasPdf;
 
 	public SecretarioMB() {
 
@@ -50,7 +54,6 @@ public class SecretarioMB {
 
 	public void criar() {
 		secretario = new Secretario();
-
 	}
 
 	public void remover() {
@@ -63,11 +66,10 @@ public class SecretarioMB {
 
 	public void salvar() {
 		if (secretario.getId() != null) {
-
 			secretarioDao.update(secretario);
 		} else if (validarLoginExistente()) {
 			gerarSenha();
-			secretario.setTipo(TipoPessoa.ROLE_COORDENADOR);
+			secretario.setTipo(TipoPessoa.ROLE_SECRETARIO);
 			enviarEmail();
 			String md5 = criptografia.criptografar(secretario.getSenha());
 			secretario.setSenha(md5);
@@ -102,6 +104,10 @@ public class SecretarioMB {
 			return true;
 		}
 
+	}
+	
+	public void gerarCrachas() {
+		crachasPdf.gerarPdfSecretario(secretarioDao.listDesc());
 	}
 
 	public Criptografia getCriptografia() {
@@ -160,4 +166,12 @@ public class SecretarioMB {
 		this.homeMB = homeMB;
 	}
 
+	public CrachasPdf getCrachasPdf() {
+		return crachasPdf;
+	}
+
+	public void setCrachasPdf(CrachasPdf crachasPdf) {
+		this.crachasPdf = crachasPdf;
+	}
+	
 }

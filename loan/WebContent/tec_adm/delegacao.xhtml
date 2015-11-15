@@ -37,6 +37,16 @@
 						<p:outputLabel value="#{delegacao.campus.cidade}" />
 					</p:column>
 
+					<p:column headerText="Crachás" width="35">
+
+						<p:commandButton id="gerarCrachaPessoa" icon="pdf16" value=" "
+							style="margin-left: 3px;" ajax="false"
+							actionListener="#{delegacaoMB.gerarCrachas(delegacao)}" 
+							styleClass="apenasIcone">
+							<p:fileDownload id="download" value="#{crachasPdf.arqStreamed}" />
+						</p:commandButton>
+					</p:column>
+
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
@@ -57,7 +67,6 @@
 								target="#{delegacaoMB.delegacao}" />
 						</p:commandButton>
 					</p:column>
-
 				</p:dataTable>
 
 			</h:form>

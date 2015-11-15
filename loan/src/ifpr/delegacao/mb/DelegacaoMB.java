@@ -8,6 +8,7 @@ import ifpr.delegacao.delegacaoPessoa.DelegacaoPessoa;
 import ifpr.delegacao.delegacaoPessoa.dao.DelegacaoPessoaDao;
 import ifpr.delegacao.delegacaoPessoa.mb.DelegacaoPessoaMB;
 import ifpr.delegacao.model.DelegacaoLazyDataModel;
+import ifpr.geradorPdf.CrachasPdf;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.coordenadorPea.CoordenadorPea;
@@ -62,6 +63,9 @@ public class DelegacaoMB {
 	private DelegacaoPessoaMB delegacaoPessoaMb;
 
 	private boolean isUpdate;
+	
+	@ManagedProperty(value = "#{crachasPdf}")
+	public CrachasPdf crachasPdf;
 
 	public DelegacaoMB() {
 
@@ -155,6 +159,10 @@ public class DelegacaoMB {
 	public void onItemSelect(SelectEvent event) {
 		Object item = event.getObject();
 		pessoa = (Pessoa) item;
+	}
+	
+	public void gerarCrachas(Delegacao delegacao) {
+		crachasPdf.gerarPdfDelegacao(delegacaoDao.listarPessoas(delegacao));
 	}
 
 	public void marcarChefe() {
@@ -265,12 +273,20 @@ public class DelegacaoMB {
 		this.isUpdate = isUpdate;
 	}
 
-	public DelegacaoPessoaMB getDlegacaoPessoaMb() {
+	public DelegacaoPessoaMB getDelegacaoPessoaMb() {
 		return delegacaoPessoaMb;
 	}
 
-	public void setDlegacaoPessoaMb(DelegacaoPessoaMB dlegacaoPessoaMb) {
-		this.delegacaoPessoaMb = dlegacaoPessoaMb;
+	public void setDelegacaoPessoaMb(DelegacaoPessoaMB delegacaoPessoaMb) {
+		this.delegacaoPessoaMb = delegacaoPessoaMb;
 	}
 
+	public CrachasPdf getCrachasPdf() {
+		return crachasPdf;
+	}
+
+	public void setCrachasPdf(CrachasPdf crachasPdf) {
+		this.crachasPdf = crachasPdf;
+	}
+	
 }

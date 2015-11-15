@@ -13,10 +13,6 @@
 				<p:commandButton id="novoEst" value="Novo"
 					actionListener="#{estudanteMB.criar}"
 					oncomplete="PF('estudanteDialog').show()" update=":estudanteDlg" />
-				<p:commandButton id="gerarCrachaEst" value="Gerar crachás em PDF"
-					actionListener="#{estudanteMB.gerarCrachas}" ajax="false">
-					<p:fileDownload value="#{crachasPdf.arqStreamed}" />
-				</p:commandButton>
 			</h:form>
 
 			<h:form id="tableForm">

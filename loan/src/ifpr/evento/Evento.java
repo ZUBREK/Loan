@@ -6,6 +6,7 @@ import ifpr.pessoa.Pessoa;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -47,7 +48,8 @@ public class Evento {
 	@JoinColumn(name = "id_pessoa")
 	private Pessoa responsavel;
 
-	@OneToMany
+	
+	@OneToMany(cascade= CascadeType.ALL)
 	@JoinColumn(name = "id_evento", referencedColumnName = "id_evento")
 	private List<EventoPessoa> eventoPessoas;
 

@@ -25,6 +25,7 @@ public class BreadCrumbController {
 	private final int PROJETOS = 11;
 	private final int DELEGACOES = 12;
 	private final int HORARIOASSISTENCIA = 13;
+	private final int CHAVES = 14;
 
 	public BreadCrumbController() {
 		this.menuModel = new DefaultMenuModel();
@@ -86,7 +87,11 @@ public class BreadCrumbController {
 					"#{breadCrumbController.navigate(13)}");
 			return "usuarios";
 		}
-
+		else if (opcao == CHAVES) {
+			adicionarItem("Chaves", "/adm/chave.ifpr",
+					"#{breadCrumbController.navigate(13)}");
+			return "usuarios";
+		}
 		return "";
 	}
 

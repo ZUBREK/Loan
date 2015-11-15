@@ -16,16 +16,4 @@ public class PartidaTimePlacarDaoImpl extends GenericDao<PartidaTimePlacar> impl
 		super(PartidaTimePlacar.class);
 	}
 
-	/*@SuppressWarnings("unchecked")
-	@Override
-	public List<PartidaTimePlacar> pesquisarPorNome(String nome) {
-		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from PartidaTimePlacar u where lower(u.nome) like concat('%', :nome, '%')");
-		q.setParameter("nome", nome);
-		q.setMaxResults(50);
-
-		return q.getResultList();
-	}*/
-
 }

@@ -97,5 +97,9 @@ public class Time {
 	public void setTimeEstudante(List<TimeEstudante> timeEstudante) {
 		this.timeEstudante = timeEstudante;
 	}
-
+	
+	@Override
+	public String toString() {
+		return this.nome;
+	}
 }

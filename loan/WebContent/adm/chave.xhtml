@@ -25,17 +25,22 @@
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{chav.nome}" />
-
+					</p:column>
+					<p:column headerText="Modalidade">
+						<h:outputText value="#{chav.modalidade}" />
+					</p:column>
+					<p:column headerText="Tipo">
+						<h:outputText value="#{chav.tipo}" />
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Visualizar" width="35">
 
-						<p:commandButton id="editarTR" value=" " icon="editar16"
+						<p:commandButton id="visualizarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":chav_form"
-							oncomplete="PF('chavDialog').show()" styleClass="apenasIcone">
+							oncomplete="PF('editarChavDialog').show()"
+							action="#{chaveMB.iniciarTreeNode()}" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{chav}"
 								target="#{chaveMB.chave}" />
-
 						</p:commandButton>
 					</p:column>
 					<p:column headerText="Remover" width="47">
@@ -52,33 +57,82 @@
 
 			</h:form>
 		</p:panel>
-		<p:dialog id="chavDlg" widgetVar="chavDialog" header="Nova Chave"
-			width="450" height="100" modal="true" closable="false">
+		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
+			header="Partidas da chave:" width="1000" height="500" modal="true"
+			closable="false">
 
 			<h:form id="chav_form">
-				<h:panelGrid columns="3">
+				<p:commandButton value="ReSortear" disabled="#{chaveMB.isOutraFase}"
+					action="#{chaveMB.reorganizarNodes()}" update=":chav_form"
+					icon="ui-icon-refresh" />
+
+				<p:tree value="#{chaveMB.rootNode}" var="node"
+					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
+					dynamic="true" selectionMode="single">
+					<p:treeNode>
+						<h:outputText value="#{node}" />
+					</p:treeNode>
+					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+				</p:tree>
+				<p:spacer height="10px" />
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":table_form :chav_form :msg"
+					actionListener="#{chaveMB.salvarChave}"
+					oncomplete="if(!args.validationFailed) PF('editarChavDialog').hide()" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('editarChavDialog').hide()" immediate="true"
+					actionListener="#{chaveMB.cancelar()}">
+					<p:resetInput target=":chav_form" />
+				</p:commandButton>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="chavDlg" widgetVar="chavDialog" header="Nova Chave"
+			width="450" height="150" modal="true" closable="false">
+
+			<h:form id="chave_form">
+				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{chaveMB.chave.nome}" size="20"
 						required="true" requiredMessage="Nome é obrigatório!" />
 
-					<p:message for="nome" />
-					<p:spacer height="10px" />
+					<p:outputLabel id="modalidadeLb" value="Modalidade:"
+						for="modalidade" />
+					<p:selectOneMenu id="modalidade" value="#{chaveMB.modalidade}"
+						filter="true" filterMatchMode="startsWith" required="true"
+						requiredMessage="Modalidade é obrigatório!"
+						converter="#{modalidadeConverter}">
+						<p:ajax update=":chave_form" />
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
+						<f:selectItems value="#{timeMB.listaModalidade}" var="modalidd"
+							itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
+					</p:selectOneMenu>
+					<p:outputLabel id="tipoLb" value="Tipo do competição:" for="tipo" />
+					<p:selectOneMenu id="tipo" value="#{chaveMB.tipo}" label=""
+						disabled="#{empty chaveMB.modalidade}" required="true"
+						rendered="#{not empty chaveMB.modalidade}">
+						<f:selectItems value="#{chaveMB.tipos}" var="tip"
+							itemValue="#{tip}" itemLabel="#{tip.label}" />
+					</p:selectOneMenu>
+
+					<p:spacer height="10px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":table_form :chav_form :msg"
-							actionListener="#{chaveMB.salvar}"
+							update=":table_form :chave_form :msg"
+							actionListener="#{chaveMB.salvarChave}"
 							oncomplete="if(!args.validationFailed) PF('chavDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('chavDialog').hide()"
 							immediate="true" actionListener="#{chaveMB.cancelar()}">
-							<p:resetInput target=":chav_form" />
+							<p:resetInput target=":chave_form" />
 						</p:commandButton>
 					</f:facet>
-
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

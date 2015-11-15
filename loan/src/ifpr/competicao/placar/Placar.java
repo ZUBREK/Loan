@@ -18,7 +18,7 @@ public class Placar {
 	private Integer id;
 	
 	@Column(name="resultado_placar")
-	private String resultado;
+	private int resultado;
 
 	public Integer getId() {
 		return id;
@@ -28,14 +28,12 @@ public class Placar {
 		this.id = id;
 	}
 
-	public String getResultado() {
+	public int getResultado() {
 		return resultado;
 	}
 
-	public void setResultado(String resultado) {
+	public void setResultado(int resultado) {
 		this.resultado = resultado;
-	}
-	
-	
+	}	
 
 }

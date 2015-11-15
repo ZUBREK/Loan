@@ -4,6 +4,7 @@ import ifpr.competicao.partida.Partida;
 import ifpr.competicao.placar.Placar;
 import ifpr.competicao.time.Time;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +22,7 @@ public class PartidaTimePlacar {
 	private Integer id;
 	
 	@JoinColumn(name = "id_placar", referencedColumnName = "id_placar")
-	@ManyToOne()
+	@ManyToOne(cascade=CascadeType.REMOVE)
 	private Placar placar;
 	
 	
@@ -30,7 +31,7 @@ public class PartidaTimePlacar {
 	private Time time;
 	
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
-	@ManyToOne()
+	@ManyToOne(cascade=CascadeType.REMOVE)
 	private Partida partida;
 
 	public Integer getId() {
@@ -65,5 +66,4 @@ public class PartidaTimePlacar {
 		this.partida = partida;
 	}
 	
-
 }

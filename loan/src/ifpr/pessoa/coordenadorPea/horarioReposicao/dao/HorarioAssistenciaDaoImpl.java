@@ -30,5 +30,14 @@ public class HorarioAssistenciaDaoImpl extends GenericDao<HorarioAssistencia> im
 
 		return q.getResultList();
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<HorarioAssistencia> findByMateria(String materia) {
+		EntityManager em = emf.createEntityManager();
+		Query query = em.createQuery("SELECT a from HorarioAssistencia a where lower(a.materia) like concat('%', :materia, '%')");
+		query.setParameter("materia", materia);
+		query.setMaxResults(10);
+		return query.getResultList();
+	}
 }

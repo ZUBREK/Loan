@@ -9,6 +9,5 @@ public interface HorarioAssistenciaDao extends Dao<HorarioAssistencia> {
 	
 	public List<HorarioAssistencia> pesquisarPorNome(String nome);
 	
-	
-	
+	public 	List<HorarioAssistencia> findByMateria(String materia);
 }

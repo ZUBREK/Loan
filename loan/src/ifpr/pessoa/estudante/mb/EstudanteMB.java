@@ -1,17 +1,5 @@
 package ifpr.pessoa.estudante.mb;
 
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.criptografia.Criptografia;
-import ifpr.geradorPdf.CrachasPdf;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.estudante.dao.EstudanteDao;
-import ifpr.pessoa.estudante.model.EstudanteLazyDataModel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +11,18 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.criptografia.Criptografia;
+import ifpr.geradorPdf.CrachasPdf;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.pessoa.estudante.model.EstudanteLazyDataModel;
 
 @ManagedBean(name = "estudanteMB")
 @ViewScoped
@@ -79,7 +79,7 @@ public class EstudanteMB {
 		estudante = null;
 	}
 
-	public void salvar() {//ta lentao!
+	public void salvar() {// ta lentao!
 		if (estudante.getId() != null) {
 			estudanteDao.update(estudante);
 		} else if (validarLoginExistente()) {
@@ -111,8 +111,7 @@ public class EstudanteMB {
 		}
 		try {
 			pessoaDao.findByLogin(estudante.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -160,8 +159,7 @@ public class EstudanteMB {
 		return estudanteLazyDataModel;
 	}
 
-	public void setEstudanteLazyDataModel(
-			EstudanteLazyDataModel estudanteLazyDataModel) {
+	public void setEstudanteLazyDataModel(EstudanteLazyDataModel estudanteLazyDataModel) {
 		this.estudanteLazyDataModel = estudanteLazyDataModel;
 	}
 
@@ -195,10 +193,6 @@ public class EstudanteMB {
 
 	public void setCampus(Campus campus) {
 		this.campus = campus;
-	}
-
-	public void gerarCrachas() {
-		crachasPdf.gerarPdf(estudanteDao.listDesc());
 	}
 
 	public CrachasPdf getCrachasPdf() {

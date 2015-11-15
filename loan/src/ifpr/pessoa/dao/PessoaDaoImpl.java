@@ -2,6 +2,7 @@ package ifpr.pessoa.dao;
 
 import ifpr.dao.GenericDao;
 import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.TipoPessoa;
 
 import java.util.List;
 
@@ -41,6 +42,17 @@ public class PessoaDaoImpl  extends GenericDao<Pessoa> implements PessoaDao {
 		
 		return (Pessoa) q.getSingleResult();
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Pessoa> findByRole(TipoPessoa tipo) {
+		
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select u from Pessoa u where authority = :role");
+		q.setParameter("role", tipo.toString());
+
+		return q.getResultList();
 	}
 
 	

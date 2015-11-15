@@ -6,25 +6,42 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/layout/templates/templateGerenciamento.xhtml">
 
+
 	<ui:define name="body">
 		<p:panel id="painelPrincipal" header="Gerenciamento de eventos">
 			<p:growl id="msg" showDetail="true" />
+			
 			<h:form>
-				<p:commandButton id="novoevento" value="Novo"
-					actionListener="#{eventoMB.criar}"
+				<p:commandButton id="novoeventoTec" value="Novo"
+					actionListener="#{eventoMB.criar}" style="float:left;"
+					rendered="#{!eventoMB.tecAdm}"
 					oncomplete="PF('eventoDialog').show()" update=":eventoDlg" />
 			</h:form>
-
+			
 			<h:form id="tableForm">
 
-				<p:dataTable id="eventoTable"
+				<p:contextMenu for="eventoTable">
+					<p:menuitem value="Visualizar" update=":eventoDlg" icon="ui-icon-search"
+						oncomplete="PF('eventoDialog').show()" />
+					<p:menuitem value="Editar" update="eventoTable :confirm" disabled="#{!eventoMB.temAcesso()}"
+						rendered="#{!eventoMB.tecAdm}"
+						icon="editar16" oncomplete="PF('eventoDialog').show()" />
+					<p:menuitem value="Remover" update="eventoTable :confirm" disabled="#{!eventoMB.temAcesso()}"
+						rendered="#{!eventoMB.tecAdm}"
+						icon="remover16" oncomplete="PF('eventoConfirmDialog').show()" />
+				</p:contextMenu>
+				<p:dataTable id="eventoTable" style="clear:both;"
 					value="#{eventoMB.eventoLazyDataModel}" var="evento"
 					emptyMessage="Nenhum registro encontrado!" rows="15"
 					rowKey="#{evento.id}" paginator="true" lazy="true"
+					selection="#{eventoMB.evento}" selectionMode="single"
 					filteredValue="#{eventoMB.eventoFiltered}">
 
 					<f:facet name="header">
-						<h:outputText value="eventos" />
+						<p:outputPanel>
+							<p:outputLabel value="Eventos" />
+
+						</p:outputPanel>
 					</f:facet>
 
 					<p:column headerText="Nome" filterBy="#{evento.nome}"
@@ -51,29 +68,9 @@
 						<p:outputLabel value="#{evento.tipo}" />
 					</p:column>
 
-					<p:column headerText="Ações" width="35">
-						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":evento_form"
-							oncomplete="PF('eventoDialog').show()" styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{evento}"
-								target="#{eventoMB.evento}" />
-						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
-						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;"
-							oncomplete="PF('eventoConfirmDialog').show()" update=":confirm"
-							styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{evento}"
-								target="#{eventoMB.evento}" />
-						</p:commandButton>
-					</p:column>
-
-
 				</p:dataTable>
 
 			</h:form>
-
 		</p:panel>
 
 		<p:dialog id="eventoDlg" widgetVar="eventoDialog"
@@ -81,145 +78,126 @@
 			closable="false">
 
 			<h:form id="evento_form">
-				<p:tabView id="tabView" widgetVar="tabBagaca" activeIndex="#{eventoMB.index}">
-					<p:tab title="Dados Em Geral">
 
-						<h:panelGrid columns="2">
+				<p:panelGrid columns="2">
 
-							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-							<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="50"
-								required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="50"
+						required="true" requiredMessage="Nome é obrigatório!" />
 
-						
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
 
-							<h:outputLabel id="descricaoLb" value="Descrição:"
-								for="descricao" />
+					<p:inputText id="descricao" value="#{eventoMB.evento.descricao}"
+						size="50" required="true"
+						requiredMessage="Descrição é obrigatório!" />
 
-							<p:inputText id="descricao" value="#{eventoMB.evento.descricao}"
-								size="50" required="true"
-								requiredMessage="Descrição é obrigatório!" />
-
-							
-
-							<p:outputLabel id="dataInicioLb" value="Data de Início:"
-								for="dataInicio" />
-							<p:calendar id="dataInicio"
-								value="#{eventoMB.evento.dataHoraInicio}" locale="pt"
-								navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
-								maxdate="31/12/2050" yearRange="2015:2020" required="true"
-								requiredMessage="Data de início é obrigatória"  mask="true" showOn="button"/>
-
-							
-
-							<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
-								for="dataFim" />
-							<p:calendar id="dataFim" value="#{eventoMB.evento.dataHoraFinal}"
-								locale="pt" mask="true" navigator="true" showOn="button" pattern="dd/mm/yyyy HH:mm"
-								mindate="1/1/1980" maxdate="31/12/2020" yearRange="2015:2020"
-								required="true"
-								requiredMessage="Data de encerramento é obrigatória" />
-
-							
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:calendar id="dataInicio"
+						value="#{eventoMB.evento.dataHoraInicio}" locale="pt"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
+						maxdate="31/12/2050" yearRange="2015:2020" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true" />
 
 
-							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":evento_form :msg"
-								actionListener="#{eventoMB.salvar}"
-								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+					<p:calendar id="dataFim" value="#{eventoMB.evento.dataHoraFinal}"
+						locale="pt" mask="true" navigator="true"
+						pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980" maxdate="31/12/2020"
+						yearRange="2015:2020" required="true"
+						requiredMessage="Data de encerramento é obrigatória" />
 
-						</h:panelGrid>
-					</p:tab>
-					<p:tab  title="Adicionar Estudantes:" disabled="#{eventoMB.tabBoolean}" >
+					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+					<p:selectOneMenu id="campus" value="#{eventoMB.campus}"
+						filter="true" filterMatchMode="startsWith"
+						converter="#{campusConverter}">
 
-						<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
-						<p:selectOneMenu id="campus" value="#{eventoMB.campus}"
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{eventoMB.listaCampus}" var="camp"
+							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+						<p:ajax process="@this" event="change"
+							update=":evento_form:addGrid" />
+					</p:selectOneMenu>
+
+					<p:outputLabel id="modalidadeLb" value="Modalidade:"
+						for="modalidade" />
+					<p:selectOneMenu id="modalidade" value="#{eventoMB.modalidade}"
+						filter="true" filterMatchMode="startsWith"
+						converter="#{modalidadeConverter}">
+
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{eventoMB.listaModalidade}" var="modalidd"
+							itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
+						<p:ajax process="@this" event="change"
+							update=":evento_form:addGrid" />
+
+					</p:selectOneMenu>
+
+					<h:panelGrid id="addGrid" columns="2" cellpadding="5">
+						<h:outputLabel for="menu" value="Estudantes:" />
+						<p:selectCheckboxMenu id="menu"
+							disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
+							value="#{eventoMB.estudantesSelecionados}" label="Estudantes"
 							filter="true" filterMatchMode="startsWith"
-							converter="#{campusConverter}">
+							panelStyle="width:250px" converter="#{estudanteConverter}">
+							<f:selectItems value="#{eventoMB.estudantes}" />
+						</p:selectCheckboxMenu>
+						<p:spacer width="30px" />
+						<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes"
+							disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
+							icon="apply" actionListener="#{eventoMB.adicionarEstudante()}"
+							update=":evento_form:estudantesList" />
+					</h:panelGrid>
+				</p:panelGrid>
 
-							<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+				<p:dataTable id="estudantesList" var="eventoPessoa"
+					value="#{eventoMB.evento.eventoPessoas}"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+					<p:column headerText="Nome">
+						<h:outputText value="#{eventoPessoa.pessoa.nome}" />
+					</p:column>
+				</p:dataTable>
 
-							<f:selectItems value="#{eventoMB.listaCampus}" var="camp"
-								itemLabel="#{camp.cidade}" itemValue="#{camp}" />
-								<p:ajax process="@this"
-									 event="change" update=":evento_form:tabView:addGrid"  />
-						</p:selectOneMenu>
-
-						<p:outputLabel id="modalidadeLb" value="Modalidade:"
-							for="modalidade" />
-						<p:selectOneMenu id="modalidade" value="#{eventoMB.modalidade}"
-							filter="true" filterMatchMode="startsWith"
-							converter="#{modalidadeConverter}">
-
-							<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um"/>
-
-							<f:selectItems value="#{eventoMB.listaModalidade}" var="modalidd"
-								itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
-							<p:ajax process="@this"
-									 event="change" update=":evento_form:tabView:addGrid"  />
-								
-						</p:selectOneMenu>
-						
-
-						<h:panelGrid id="addGrid" columns="3" cellpadding="5" >
-							<h:outputLabel for="menu" value="Estudantes:" />
-							<p:selectCheckboxMenu id="menu" disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
-								value="#{eventoMB.estudantesSelecionados}" label="Estudantes"
-								filter="true" filterMatchMode="startsWith"
-								panelStyle="width:250px" converter="#{estudanteConverter}">
-								<f:selectItems value="#{eventoMB.estudantes}" />
-							</p:selectCheckboxMenu>
-							<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes" 
-							disabled="eventoMB.checarCampos()"
-								icon="apply" actionListener="#{eventoMB.adicionarEstudante()}"
-								update=":evento_form:tabView:estudantesList"  />
-						</h:panelGrid>
-
-						
-
-						<p:dataTable id="estudantesList" var="eventoPessoa"
-							value="#{eventoMB.evento.eventoPessoas}"
-							emptyMessage="Nenhum registro encontrado!" first="0">
-							<p:column headerText="Nome">
-								<h:outputText value="#{eventoPessoa.pessoa.nome}" />
-							</p:column>
-
-						</p:dataTable>
-					</p:tab>
-				</p:tabView>
-			</h:form>
-			<f:facet name="footer">
 				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":tableForm :evento_form :msg"
-					actionListener="#{eventoMB.salvar}"
-					oncomplete="if(!args.validationFailed) PF('eventoDialog').hide()">
-					<p:resetInput target=":evento_form" />
-					</p:commandButton>
-
+					update=":evento_form :msg "
+					actionListener="#{eventoMB.salvarTreino}"
+					oncomplete="if(!args.validationFailed) PF('eventoDialog').hide();" />
 				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
 					oncomplete="PF('eventoDialog').hide()" update=":msg"
 					immediate="true" actionListener="#{eventoMB.cancelar()}">
 					<p:resetInput target=":evento_form" />
 				</p:commandButton>
+			</h:form>
 
+
+
+			<f:facet name="footer">
+				Esse evento é do tipo treino.
 			</f:facet>
-		</p:dialog>
 
-		
+		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="eventoConfirmDialog"
 			global="true" header="Confirma exclusão do evento?" showEffect="fade"
-			hideEffect="fade"
+			hideEffect="fade" severity="alert"
 			message="Deseja realmente excluir o
-				evento: #{eventoMB.evento.nome}">
+				evento: #{eventoMB.evento.nome}?">
+			<p:outputLabel
+				value="Isso apagará todas as informações relacionadas a este evento!" />
 
 			<h:form>
-				<p:commandButton value="Sim" actionListener="#{eventoMB.remover()}"
+				<p:commandButton value="Sim"
+					actionListener="#{eventoMB.removerPessoa()}"
 					oncomplete="PF('eventoConfirmDialog').hide()" update=":tableForm"
 					icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{eventoMB.cancelar()}"
 					oncomplete="PF('eventoConfirmDialog').hide()" icon="cancelar16" />
 			</h:form>
+
 		</p:confirmDialog>
 
 		<p:confirmDialog id="confirmRmv" widgetVar="eventoEstConfirmDialog"
@@ -232,7 +210,7 @@
 				<p:commandButton value="Sim"
 					actionListener="#{eventoMB.removerPessoa()}"
 					oncomplete="PF('eventoEstConfirmDialog').hide()"
-					update=":evento_form:tabView:estudantesList" icon="ok16" />
+					update=":evento_form:estudantesList" icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{eventoMB.cancelar()}"
 					oncomplete="PF('eventoEstConfirmDialog').hide()" icon="cancelar16" />
 			</h:form>

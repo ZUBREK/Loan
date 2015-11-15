@@ -1,5 +1,6 @@
 package ifpr.evento;
 
+
 public enum TipoEvento {
 
 	REFEICAO("Refeição", 1), TREINO("Treino Esportivo", 2), MAPAMODALIDADE(
@@ -26,3 +27,4 @@ public enum TipoEvento {
 		return this.label;
 	}
 }
+

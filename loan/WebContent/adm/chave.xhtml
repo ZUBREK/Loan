@@ -62,8 +62,7 @@
 			closable="false">
 
 			<h:form id="chav_form">
-				<p:commandButton value="ReSortear"
-					disabled="#{chaveMB.isOutraFase}"
+				<p:commandButton value="ReSortear" disabled="#{chaveMB.isOutraFase}"
 					action="#{chaveMB.reorganizarNodes()}" update=":chav_form"
 					icon="ui-icon-refresh" />
 

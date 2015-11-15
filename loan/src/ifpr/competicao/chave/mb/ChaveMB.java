@@ -83,33 +83,35 @@ public class ChaveMB {
 
 	}
 
-	public void adicionarNodeParent(String nome, TreeNode nodeRoot) {
-		nodes.add(new DefaultTreeNode(nome, nodeRoot));
+	public void adicionarNodeParent(Object nome, TreeNode nodeRoot) {
+		TreeNode node = new DefaultTreeNode(nome, nodeRoot);
+		node.setExpanded(true);
+		nodes.add(node);
 
 	}
 
 	public void iniciarTreeNode() {
-		nodes = new ArrayList<TreeNode>();
+		times = timeDao.pesquisarPorModalidade(chave.getModalidade());
+		randomizarTimes();
 		rootNode = new DefaultTreeNode(chave.getNome(), null);
-		String nomePartida = "";
-		for (Partida partida : chave.getPartidas()) {
-			for (PartidaTimePlacar partidaTimePlacar : partida.getPartidasTimesPlacares()) {
-				if (!nomePartida.equals("")) {
-					nomePartida += " X ";
-				}
-				nomePartida += partidaTimePlacar.getTime().getNome();
+		rootNode.setExpanded(true);
+		nodes.add(rootNode);
+		adicionarNodeParent("Campeao", nodes.get(0));
+		int qtdTimes = times.size();
+		int i = 1;
+		int i2 = 0;
+		while (i < qtdTimes) {
+			if (i >= qtdTimes / 2) {
+				adicionarNodeParent(times.get(i2), nodes.get(i));
+				i2++;
+				adicionarNodeParent(times.get(i2), nodes.get(i));
+				i2++;
+			} else {
+				adicionarNodeParent("", nodes.get(i));
+				adicionarNodeParent("", nodes.get(i));
 			}
-			adicionarNodeParent(nomePartida, rootNode);
-			nomePartida = "";
+			i++;
 		}
-
-	}
-
-	public void removerPartidas() {
-		for (Partida partida : chave.getPartidas()) {
-			partidaDao.remover(partida);
-		}
-		chave.getPartidas().clear();
 	}
 
 	public void criar() {
@@ -118,7 +120,6 @@ public class ChaveMB {
 
 	public void remover() {
 		try {
-			removerPartidas();
 			chaveDao.remover(chave);
 		} catch (ConstraintViolationException e) {
 			// facesmessage bagaça
@@ -137,40 +138,13 @@ public class ChaveMB {
 	public void salvarChave() {
 		if (chave.getId() == null) {
 			chave.setTipo(tipo);
-			randomizarTimes();
-			if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
-
-			} else if (chave.getTipo().equals(TipoCompeticao.GRUPOS)) {
-
-			} else if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
-
-			} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-				gerarPartidasTipoMataMata();
-				chaveDao.salvar(chave);
-			}
+			chaveDao.salvar(chave);
 		}
 	}
 
 	public void randomizarTimes() {
 		long seed = System.nanoTime();
 		Collections.shuffle(times, new Random(seed));
-	}
-
-	public void gerarPartidasTipoMataMata() {
-		randomizarTimes();
-		for (int i = 0; i < times.size(); i++) {
-			if (i % 2 == 0) {
-				partida = new Partida();
-				chave.getPartidas().add(partida);
-				salvarPartida(partida);
-				placar = new Placar();
-				salvarPlacar(placar);
-			}
-			setarSalvarPartidaTimePlacar(i);
-			partida.getPartidasTimesPlacares().add(partidaTimePlacar);
-			salvarPartida(partida);
-		}
-
 	}
 
 	public void reorganizarNodes() {

@@ -48,12 +48,15 @@ public class TecnicoAdministrativoMB {
 	private List<Campus> listaCampus;
 
 	private Campus campus;
+	
+	private CadastroUsuarioValidator emailHelper;
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
 	public TecnicoAdministrativoMB() {
 		tecnicoAdmFiltered = new ArrayList<TecnicoAdministrativo>();
+		emailHelper = new CadastroUsuarioValidator(); 
 	}
 
 	public void criar() {
@@ -78,11 +81,11 @@ public class TecnicoAdministrativoMB {
 			tecnicoAdm.setCampus(campus);
 			gerarSenha();
 			tecnicoAdm.setTipo(TipoPessoa.ROLE_TEC_ADM);
-			enviarEmail();
 			String md5 = criptografia.criptografar(tecnicoAdm.getSenha());
 			tecnicoAdm.setSenha(md5);
 			tecnicoAdmDao.salvar(tecnicoAdm);
 			homeMB.criarArqFotoPerfil(tecnicoAdm);
+			enviarEmail();
 		}
 	}
 
@@ -93,11 +96,12 @@ public class TecnicoAdministrativoMB {
 	}
 
 	private void enviarEmail() {
-		CadastroUsuarioValidator.enviarEmail(tecnicoAdm);
+		emailHelper.setPessoa(tecnicoAdm);
+		emailHelper.run();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!CadastroUsuarioValidator.validarEmail(tecnicoAdm)) {
+		if (!emailHelper.validarEmail(tecnicoAdm)) {
 			return false;
 		}
 		try {
@@ -194,5 +198,15 @@ public class TecnicoAdministrativoMB {
 	public void setHomeMB(HomeMB homeMB) {
 		this.homeMB = homeMB;
 	}
+
+	public CadastroUsuarioValidator getEmailHelper() {
+		return emailHelper;
+	}
+
+	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
+		this.emailHelper = emailHelper;
+	}
+	
+	
 	
 }

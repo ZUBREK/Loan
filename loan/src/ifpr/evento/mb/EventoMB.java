@@ -69,17 +69,15 @@ public class EventoMB {
 
 	private List<Estudante> estudantes;
 
-	private List<Pessoa> pessoas;
-
 	private List<Estudante> estudantesSelecionados;
 
 	private List<Pessoa> pessoasSelecionadas;
 
 	private EventoPessoa eventoPessoa;
 
-	private TipoPessoa tipoPessoa;
+	private TipoPessoa tipoPessoaSelecionado;
 
-	private TipoEvento tipoEvento;
+	private TipoEvento tipoEventoSelecionado;
 
 	private boolean isUpdate;
 
@@ -97,11 +95,10 @@ public class EventoMB {
 		eventoFiltered = new ArrayList<Evento>();
 		isAdm = false;
 		isUpdate = true;
-		tipoEvento = TipoEvento.REFEICAO;
-		tipoPessoa = TipoPessoa.ROLE_ADMIN;
+		tipoEventoSelecionado = TipoEvento.REFEICAO;
+		tipoPessoaSelecionado = TipoPessoa.ROLE_ADMIN;
 		estudantesSelecionados = new ArrayList<Estudante>();
 		pessoasSelecionadas = new ArrayList<Pessoa>();
-		pessoas = new ArrayList<Pessoa>();
 	}
 
 	public void criar() {
@@ -156,9 +153,9 @@ public class EventoMB {
 	public void salvarEventoAdm() {
 
 		evento.setResponsavel(pessoaLogada);
-		evento.setTipo(tipoEvento);
+		evento.setTipo(tipoEventoSelecionado);
 		eventoDao.salvar(evento);
-		List<Pessoa> pessoas = pessoaDao.findByRole(tipoPessoa);
+		List<Pessoa> pessoas = pessoaDao.findByRole(tipoPessoaSelecionado);
 		EventoPessoa evp;
 		for (int i = 0; i < pessoas.size(); ++i) {
 			evp = new EventoPessoa();
@@ -169,9 +166,8 @@ public class EventoMB {
 		}
 		eventoDao.update(evento);
 
-		disableTipoPessoa = false;
-		tipoEvento = TipoEvento.REFEICAO;
-		tipoPessoa = TipoPessoa.ROLE_ESTUDANTE;
+		tipoEventoSelecionado = TipoEvento.REFEICAO;
+		tipoPessoaSelecionado = TipoPessoa.ROLE_ESTUDANTE;
 	}
 
 	public void adicionarEstudante() {
@@ -187,13 +183,13 @@ public class EventoMB {
 			eventoPessoaDao.salvar(evp);
 			evento.getEventoPessoas().add(evp);
 		}
-		
+
 	}
 
 	public void adicionarPessoas() {
 
 		evento.setResponsavel(pessoaLogada);
-		evento.setTipo(tipoEvento);
+		evento.setTipo(tipoEventoSelecionado);
 		eventoDao.salvar(evento);
 		EventoPessoa evp;
 		for (int i = 0; i < pessoasSelecionadas.size(); ++i) {
@@ -293,7 +289,9 @@ public class EventoMB {
 	}
 
 	public List<Estudante> getEstudantes() {
-		estudantes = estudanteDao.listarPorCampusModalidade(campus, modalidade);
+		// estudantes = estudanteDao.listarPorCampusModalidade(campus,
+		// modalidade);
+		estudantes = estudanteDao.listAsc();
 		return estudantes;
 	}
 
@@ -375,11 +373,10 @@ public class EventoMB {
 
 	public TipoPessoa[] getTiposPessoa() {
 		TipoPessoa[] lista = null;
-		if (tipoEvento.equals(TipoEvento.MAPAMODALIDADE)) {
+		if (tipoEventoSelecionado.equals(TipoEvento.MAPAMODALIDADE)) {
 			lista = new TipoPessoa[] { TipoPessoa.ROLE_TEC_ADM };
 		} else {
 			lista = new TipoPessoa[] { TipoPessoa.ROLE_ESTUDANTE };
-			disableTipoPessoa = true;
 		}
 
 		return lista;
@@ -390,12 +387,12 @@ public class EventoMB {
 		return TipoEvento.values();
 	}
 
-	public TipoEvento getTipoEvento() {
-		return tipoEvento;
+	public TipoEvento getTipoEventoSelecionado() {
+		return tipoEventoSelecionado;
 	}
 
-	public void setTipoEvento(String tipoEvento) {
-		this.tipoEvento = TipoEvento.valueOf(tipoEvento);
+	public void setTipoEventoSelecionado(String tipoEvento) {
+		this.tipoEventoSelecionado = TipoEvento.valueOf(tipoEvento);
 	}
 
 	public boolean isTecAdm() {
@@ -406,12 +403,12 @@ public class EventoMB {
 		this.isTecAdm = isTecAdm;
 	}
 
-	public TipoPessoa getTipoPessoa() {
-		return tipoPessoa;
+	public TipoPessoa getTipoPessoaSelecionado() {
+		return tipoPessoaSelecionado;
 	}
 
-	public void setTipoPessoa(TipoPessoa tipoPessoa) {
-		this.tipoPessoa = tipoPessoa;
+	public void setTipoPessoaSelecionado(TipoPessoa tipoPessoa) {
+		this.tipoPessoaSelecionado = tipoPessoa;
 	}
 
 	public boolean isDisableTipoPessoa() {
@@ -439,7 +436,7 @@ public class EventoMB {
 	}
 
 	public List<Pessoa> getPessoas() {
-		return pessoaDao.findByRole(tipoPessoa);
+		return pessoaDao.findByRole(tipoPessoaSelecionado);
 	}
 
 	public boolean isAcesso() {
@@ -450,12 +447,5 @@ public class EventoMB {
 		this.isAcesso = isAcesso;
 	}
 
-	public void setTipoEvento(TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
-	public void setPessoas(List<Pessoa> pessoas) {
-		this.pessoas = pessoas;
-	}
 
 }

@@ -122,7 +122,7 @@
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :coord_form :msg"
 							actionListener="#{coordenadorMB.salvar}"
-							oncomplete="if(!args.validationFailed) PF('coordDialog').hide()" />
+							onclick="if(!args.validationFailed) PF('coordDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('coordDialog').hide()"

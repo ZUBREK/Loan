@@ -231,7 +231,7 @@
 
 					<p:outputLabel id="tipoEventoLb" value="Tipo do Evento:"
 						for="tipoEvento" />
-					<p:selectOneMenu id="tipoEvento" value="#{eventoMB.tipoEvento}">
+					<p:selectOneMenu id="tipoEvento" value="#{eventoMB.tipoEventoSelecionado}">
 						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 						<f:selectItems value="#{eventoMB.tiposEvento}" var="tipo"
 							itemLabel="#{tipo}" itemValue="#{tipo}" />
@@ -240,9 +240,7 @@
 					</p:selectOneMenu>
 
 					<p:outputLabel id="roleLb" value="Para:" for="role" />
-					<p:selectOneMenu id="role" value="#{eventoMB.tipoPessoa}"
-						disabled="#{!eventoMB.disableTipoPessoa}">
-						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+					<p:selectOneMenu id="role" value="#{eventoMB.tipoPessoaSelecionado}">
 						<f:selectItems value="#{eventoMB.tiposPessoa}" var="role"
 							itemLabel="#{role}" itemValue="#{role}" />
 						<p:ajax process="@this" event="change"
@@ -252,16 +250,15 @@
 					<h:panelGrid id="addGrid" columns="2" cellpadding="5">
 						<h:outputLabel for="menu" value="Pessoa que participarão:" />
 						<p:selectCheckboxMenu id="menu"
-							disabled="#{empty eventoMB.tipoEvento or empty eventoMB.tipoPessoa}"
+							disabled="#{empty eventoMB.tipoEventoSelecionado or empty eventoMB.tipoPessoaSelecionado}"
 							value="#{eventoMB.pessoasSelecionadas}" label="Selecionar"
 							filter="true" filterMatchMode="startsWith"
-							panelStyle="width:250px" converter="#{pessoaConverter}">
-							<f:selectItems value="#{eventoMB.pessoas}" />
+							panelStyle="width:250px" converter="#{estudanteConverter}">
+							<f:selectItems value="#{eventoMB.estudantes}" />
 						</p:selectCheckboxMenu>
-
-						<p:spacer width="30px" />
+						<p:spacer width="30px"/>
 						<p:commandButton id="addPessoaBt" value="Adicionar Pessoas"
-							disabled="#{empty eventoMB.tipoEvento or empty eventoMB.tipoPessoa}"
+							disabled="#{empty eventoMB.tipoEventoSelecionado or empty eventoMB.tipoPessoaSelecionado}"
 							icon="apply" actionListener="#{eventoMB.adicionarPessoas()}"
 							update=":eventoAdm_form:pessoasList" />
 					</h:panelGrid>

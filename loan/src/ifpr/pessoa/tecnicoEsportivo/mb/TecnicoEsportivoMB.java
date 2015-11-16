@@ -49,14 +49,18 @@ public class TecnicoEsportivoMB {
 
 	private Campus campus;
 
+	private CadastroUsuarioValidator emailHelper;
+
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
 	public TecnicoEsportivoMB() {
-
+		emailHelper = new CadastroUsuarioValidator();
 		tecnicoEsportivoFiltered = new ArrayList<TecnicoEsportivo>();
 	}
-
+	
+	
+	
 	public void criar() {
 		tecnicoEsp = new TecnicoEsportivo();
 
@@ -93,11 +97,12 @@ public class TecnicoEsportivoMB {
 	}
 
 	private void enviarEmail() {
-		CadastroUsuarioValidator.enviarEmail(tecnicoEsp);
+		emailHelper.setPessoa(tecnicoEsp);
+		emailHelper.run();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!CadastroUsuarioValidator.validarEmail(tecnicoEsp)) {
+		if (!emailHelper.validarEmail(tecnicoEsp)) {
 			return false;
 		}
 		try {
@@ -194,5 +199,19 @@ public class TecnicoEsportivoMB {
 	public void setHomeMB(HomeMB homeMB) {
 		this.homeMB = homeMB;
 	}
+
+
+	public CadastroUsuarioValidator getEmailValidator() {
+		return emailHelper;
+	}
+
+
+
+	public void setEmailValidator(CadastroUsuarioValidator emailValidator) {
+		this.emailHelper = emailValidator;
+	}
+	
+	
+	
 
 }

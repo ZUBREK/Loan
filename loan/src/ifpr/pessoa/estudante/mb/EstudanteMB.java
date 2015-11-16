@@ -48,6 +48,8 @@ public class EstudanteMB {
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
+	
+	private CadastroUsuarioValidator emailHelper;
 
 	private List<Campus> listaCampus;
 
@@ -57,6 +59,7 @@ public class EstudanteMB {
 	public EstudanteMB() {
 
 		estudanteFiltered = new ArrayList<Estudante>();
+		emailHelper = new CadastroUsuarioValidator();
 	}
 
 	public void criar() {
@@ -76,19 +79,19 @@ public class EstudanteMB {
 		estudante = null;
 	}
 
-	public void salvar() {// ta lentao!
+	public void salvar() {
 		if (estudante.getId() != null) {
 			estudanteDao.update(estudante);
 		} else if (validarLoginExistente()) {
 			estudante.setCampus(campus);
 			gerarSenha();
 			estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
-			enviarEmail();
 			String md5 = criptografia.criptografar(estudante.getSenha());
 			estudante.setSenha(md5);
 			estudante.setBolsista(false);
 			estudanteDao.salvar(estudante);
 			homeMB.criarArqFotoPerfil(estudante);
+			enviarEmail();
 		}
 	}
 
@@ -99,11 +102,12 @@ public class EstudanteMB {
 	}
 
 	private void enviarEmail() {
-		CadastroUsuarioValidator.enviarEmail(estudante);
+		emailHelper.setPessoa(estudante);
+		emailHelper.run();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!CadastroUsuarioValidator.validarEmail(estudante)) {
+		if (!emailHelper.validarEmail(estudante)) {
 			return false;
 		}
 		try {
@@ -193,13 +197,20 @@ public class EstudanteMB {
 	}
 
 
-
 	public HomeMB getHomeMB() {
 		return homeMB;
 	}
 
 	public void setHomeMB(HomeMB homeMB) {
 		this.homeMB = homeMB;
+	}
+
+	public CadastroUsuarioValidator getEmailHelper() {
+		return emailHelper;
+	}
+
+	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
+		this.emailHelper = emailHelper;
 	}
 
 	

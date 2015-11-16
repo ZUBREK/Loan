@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.validation.ConstraintViolationException;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -273,6 +274,7 @@ public class ChaveMB {
 			}
 		}
 		event.getTreeNode().setSelected(false);
+		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()"); 
 	}
 
 	public TreeNode getRootNode() {

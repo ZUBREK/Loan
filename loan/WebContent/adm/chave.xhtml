@@ -62,24 +62,19 @@
 			closable="false">
 
 			<h:form id="chav_form">
-				<p:tree value="#{chaveMB.rootNode}" var="node"
+				<p:tree value="#{chaveMB.rootNode}" var="node" selection="#{chaveMB.selectedNode}"
 					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
-					dynamic="true" selectionMode="single">
+					dynamic="true" selectionMode="single" widgetVar="treeNodeChave" id="treeNodeChave">
 					<p:treeNode>
 						<h:outputText value="#{node}" />
 					</p:treeNode>
-					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" oncomplete="PF('partidaChavDialog').show()" />
+					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}"
+						 onsuccess="PF('partidaChavDialog').show()"/>
 				</p:tree>
 				<p:spacer height="10px" />
-				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":table_form :chav_form :msg"
-					actionListener="#{chaveMB.salvarChave}"
-					oncomplete="if(!args.validationFailed) PF('editarChavDialog').hide()" />
-
 				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
 					oncomplete="PF('editarChavDialog').hide()" immediate="true"
 					actionListener="#{chaveMB.cancelar()}">
-					<p:resetInput target=":chav_form" />
 				</p:commandButton>
 
 			</h:form>
@@ -90,6 +85,10 @@
 			closable="false">
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
+					<h:outputLabel id="idLb" value="id:" for="id" />
+
+					<p:inputText id="id" value="#{chaveMB.partida.id}" />
+
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.partida.dataHora}"
@@ -103,7 +102,6 @@
 						filterMatchMode="startsWith" required="true"
 						requiredMessage="Local é obrigatório!"
 						converter="#{localConverter}">
-						<p:ajax update=":part_form" />
 						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
 						<f:selectItems value="#{chaveMB.listaLocais}" var="lcl"
@@ -113,9 +111,12 @@
 					<p:spacer height="10px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":table_form :chav_form :msg"
+							update=":table_form :chav_form :msg :editarChavDialog  :chav_form:treeNodeChave"
 							actionListener="#{chaveMB.salvarPartida}"
-							oncomplete="if(!args.validationFailed) PF('partidaChavDialog').hide()" />
+							oncomplete="if(!args.validationFailed) PF('partidaChavDialog').hide()">
+							<p:resetInput target=":part_form" />
+							</p:commandButton>
+							
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('partidaChavDialog').hide()"

@@ -81,6 +81,8 @@ public class ChaveMB {
 	private List<Local> listaLocais;
 
 	private Local local;
+	
+	private TreeNode selectedNode;
 
 	public ChaveMB() {
 		chave = new Chave();
@@ -90,6 +92,7 @@ public class ChaveMB {
 	@PostConstruct
 	public void init() {
 		listaLocais = localDao.listAsc();
+		listaLocais.get(0);
 	}
 
 	public void adicionarNodeParent(Object nome, TreeNode nodeRoot) {
@@ -151,7 +154,6 @@ public class ChaveMB {
 
 	public void salvarChave() {
 		chave.setTipo(tipo);
-		randomizarTimes();
 		if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
 
 		} else if (chave.getTipo().equals(TipoCompeticao.GRUPOS)) {
@@ -178,7 +180,7 @@ public class ChaveMB {
 				if (i % 2 == 0) {
 					partida = new Partida();
 					chave.getPartidas().add(partida);
-					salvarPartida(partida);
+					salvarPartida();
 				}
 				placar = new Placar();
 				placar.setResultado(0);
@@ -186,7 +188,7 @@ public class ChaveMB {
 				setarPartidaTimePlacar();
 				partidaTimePlacarDao.salvar(partidaTimePlacar);
 				partida.getPartidasTimesPlacares().add(partidaTimePlacar);
-				salvarPartida(partida);
+				salvarPartida();
 			}
 		}
 	}
@@ -197,7 +199,7 @@ public class ChaveMB {
 			if (i % 2 == 0) {
 				partida = new Partida();
 				chave.getPartidas().add(partida);
-				salvarPartida(partida);
+				salvarPartida();
 			}
 			placar = new Placar();
 			placar.setResultado(0);
@@ -206,7 +208,7 @@ public class ChaveMB {
 			partidaTimePlacar.setTime(times.get(i));
 			partidaTimePlacarDao.salvar(partidaTimePlacar);
 			partida.getPartidasTimesPlacares().add(partidaTimePlacar);
-			salvarPartida(partida);
+			salvarPartida();
 		}
 	}
 
@@ -215,10 +217,11 @@ public class ChaveMB {
 		Collections.shuffle(times, new Random(seed));
 	}
 
-	public void salvarPartida(Partida partida) {
+	public void salvarPartida() {
 		if (partida.getId() == null) {
 			partidaDao.salvar(partida);
 		} else {
+			partida.setLocal(local);
 			partidaDao.update(partida);
 		}
 	}
@@ -242,17 +245,22 @@ public class ChaveMB {
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
+		Time time = (Time) event.getTreeNode().getData();
 		for (Partida partida : chave.getPartidas()) {
 			for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
-				if (partida.getPartidasTimesPlacares().get(i).getTime() != null) {
-					if (partida.getPartidasTimesPlacares().get(i).getTime().equals(event.getTreeNode().getData())) {
+
+				PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
+				if (ptpAtual.getTime() != null) {
+					if (ptpAtual.getTime().equals(time)) {
 						try {
-							if (partida.getPartidasTimesPlacares().get(i + 1).getTime() != null) {
+							PartidaTimePlacar proximaPtp = partida.getPartidasTimesPlacares().get(i + 1);
+							if (proximaPtp.getTime() != null) {
 								this.partida = partida;
 							}
 						} catch (IndexOutOfBoundsException ex) {
 							try {
-								if (partida.getPartidasTimesPlacares().get(i - 1).getTime() != null) {
+								PartidaTimePlacar ptpAnterior = partida.getPartidasTimesPlacares().get(i - 1);
+								if (ptpAnterior.getTime() != null) {
 									this.partida = partida;
 								}
 							} catch (IndexOutOfBoundsException ex2) {
@@ -264,6 +272,7 @@ public class ChaveMB {
 				}
 			}
 		}
+		event.getTreeNode().setSelected(false);
 	}
 
 	public TreeNode getRootNode() {
@@ -445,6 +454,14 @@ public class ChaveMB {
 
 	public void setLocalDao(LocalDao localDao) {
 		this.localDao = localDao;
+	}
+
+	public TreeNode getSelectedNode() {
+		return selectedNode;
+	}
+
+	public void setSelectedNode(TreeNode selectedNode) {
+		this.selectedNode = selectedNode;
 	}
 
 }

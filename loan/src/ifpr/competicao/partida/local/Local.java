@@ -89,4 +89,20 @@ public class Local {
 	public void setCep(String cep) {
 		this.cep = cep;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return nome;
+	}
+
+	public boolean equals(Object other) {
+		return other instanceof Local && (id != null) ? id
+				.equals(((Local) other).getId()) : (other == this);
+	}
+
+	public int hashCode() {
+		return id != null ? this.getClass().hashCode() + id.hashCode() : super
+				.hashCode();
+	}
 }

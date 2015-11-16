@@ -21,7 +21,7 @@ public class LocalConverter implements Converter {
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
 		if (value != null && !value.isEmpty() && !value.equalsIgnoreCase("Selecione um")) {
-			return localDao.findByNome(value).get(0);
+			return localDao.pesquisarPorNome(value).get(0);
 		}
 		return null;
 	}

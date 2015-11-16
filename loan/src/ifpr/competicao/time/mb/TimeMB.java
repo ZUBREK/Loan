@@ -70,7 +70,7 @@ public class TimeMB {
 	private TimeEstudanteDao timeEstudanteDao;
 
 	private TimeEstudante timeEstudante;
-	
+
 	private boolean isUpdate;
 
 	public TimeMB() {
@@ -129,17 +129,15 @@ public class TimeMB {
 	}
 
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
-		listaEstudante = estudanteDao
-				.pesquisarEstudanteNomeCampus(nome, campus);
+		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampus(nome, campus);
 		return listaEstudante;
 	}
 
-	public void onItemSelect(SelectEvent event)
-	{
-		Object item = event.getObject(); 
-		estudante = (Estudante)item;
+	public void onItemSelect(SelectEvent event) {
+		Object item = event.getObject();
+		estudante = (Estudante) item;
 	}
-	
+
 	public Time getTime() {
 		return time;
 	}
@@ -217,8 +215,7 @@ public class TimeMB {
 	}
 
 	public List<TecnicoEsportivo> getListaTecEsportivo() {
-		listaTecEsportivo = tecEsportivoDao
-				.listarPessoaByCampusEmAlfabetica(campus);
+		listaTecEsportivo = tecEsportivoDao.listarPessoaByCampusEmAlfabetica(campus);
 		return listaTecEsportivo;
 	}
 

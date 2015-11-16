@@ -57,35 +57,76 @@
 
 			</h:form>
 		</p:panel>
-		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
+		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog" 
 			header="Partidas da chave:" width="1000" height="500" modal="true"
 			closable="false">
 
 			<h:form id="chav_form">
-				<p:commandButton value="ReSortear" disabled="#{chaveMB.isOutraFase}"
-					action="#{chaveMB.reorganizarNodes()}" update=":chav_form"
-					icon="ui-icon-refresh" />
-
 				<p:tree value="#{chaveMB.rootNode}" var="node"
+					selection="#{chaveMB.selectedNode}"
 					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
-					dynamic="true" selectionMode="single">
+					dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
+					id="treeNodeChave">
 					<p:treeNode>
 						<h:outputText value="#{node}" />
 					</p:treeNode>
-					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" oncomplete="PF('editarChavDialog').hide()"/>
 				</p:tree>
 				<p:spacer height="10px" />
-				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":table_form :chav_form :msg"
-					actionListener="#{chaveMB.salvarChave}"
-					oncomplete="if(!args.validationFailed) PF('editarChavDialog').hide()" />
-
-				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+				<p:commandButton id="cancelarChaveBt" value="Cancelar" icon="cancelar16"
 					oncomplete="PF('editarChavDialog').hide()" immediate="true"
 					actionListener="#{chaveMB.cancelar()}">
-					<p:resetInput target=":chav_form" />
 				</p:commandButton>
 
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="partidaChavDialog" widgetVar="partidaChavDialog"
+			header="Partidas da chave:" width="500" height="300" modal="true"
+			closable="false">
+			<h:form id="part_form">
+				<h:panelGrid columns="2">
+					<h:outputLabel id="idLb" value="id:" for="id" />
+
+					<p:inputText id="id" value="#{chaveMB.partida.id}" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:calendar id="dataInicio" value="#{chaveMB.partida.dataHora}"
+						locale="pt" navigator="true" pattern="dd/mm/yyyy HH:mm"
+						mindate="1/1/2015" maxdate="31/12/2050" yearRange="2015:2020"
+						required="true" requiredMessage="Data de início é obrigatória"
+						mask="true" />
+
+					<p:outputLabel id="localLb" value="Local:" for="local" />
+					<p:selectOneMenu id="local" value="#{chaveMB.local}" filter="true"
+						filterMatchMode="startsWith" required="true"
+						requiredMessage="Local é obrigatório!"
+						converter="#{localConverter}">
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{chaveMB.listaLocais}" var="lcl"
+							itemLabel="#{lcl.nome}" itemValue="#{lcl}" />
+					</p:selectOneMenu>
+
+					<p:spacer height="10px" />
+					<f:facet name="footer">
+						<p:commandButton id="salvarPartidaBt" value="Salvar" icon="salvar16"
+							actionListener="#{chaveMB.salvarPartida}"
+							onsuccess="if(!args.validationFailed) PF('partidaChavDialog').hide()"	
+							oncomplete="PF('editarChavDialog').show()">
+							<p:resetInput target=":part_form" />
+						</p:commandButton>
+
+
+						<p:commandButton id="cancelarPartidaBt" value="Cancelar"
+							icon="cancelar16" onsuccess="PF('partidaChavDialog').hide()"	
+							oncomplete="PF('editarChavDialog').show()"
+							immediate="true" actionListener="#{chaveMB.cancelar()}">
+							<p:resetInput target=":part_form" />
+						</p:commandButton>
+					</f:facet>
+				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 
@@ -122,12 +163,12 @@
 
 					<p:spacer height="10px" />
 					<f:facet name="footer">
-						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+						<p:commandButton id="salvarNovaBt" value="Salvar" icon="salvar16"
 							update=":table_form :chave_form :msg"
 							actionListener="#{chaveMB.salvarChave}"
 							oncomplete="if(!args.validationFailed) PF('chavDialog').hide()" />
 
-						<p:commandButton id="cancelarBt" value="Cancelar"
+						<p:commandButton id="cancelarNovaBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('chavDialog').hide()"
 							immediate="true" actionListener="#{chaveMB.cancelar()}">
 							<p:resetInput target=":chave_form" />

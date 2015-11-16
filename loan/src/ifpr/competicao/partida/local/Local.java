@@ -29,7 +29,7 @@ public class Local {
 	private String cidade;
 
 	@Column(name = "cep_local")
-	private int cep;
+	private String cep;
 
 	@Column(name = "bairro_local", length = 50)
 	private String bairro;
@@ -74,20 +74,35 @@ public class Local {
 		this.cidade = cidade;
 	}
 
-	public int getCep() {
-		return cep;
-	}
-
 	public String getBairro() {
 		return bairro;
-	}
-
-	public void setCep(int cep) {
-		this.cep = cep;
 	}
 
 	public void setBairro(String bairro) {
 		this.bairro = bairro;
 	}
 
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return nome;
+	}
+
+	public boolean equals(Object other) {
+		return other instanceof Local && (id != null) ? id
+				.equals(((Local) other).getId()) : (other == this);
+	}
+
+	public int hashCode() {
+		return id != null ? this.getClass().hashCode() + id.hashCode() : super
+				.hashCode();
+	}
 }

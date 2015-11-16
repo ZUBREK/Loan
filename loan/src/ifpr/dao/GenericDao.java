@@ -131,7 +131,8 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 	@Override
 	public List<T> listAsc() {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from " + classe.getSimpleName() + " a order by a.id ASC");
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName() + " a order by a.nome ASC");
+		query.setMaxResults(30);
 		return query.getResultList();
 	}
 

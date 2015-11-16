@@ -18,3 +18,5 @@ cadastro de projeto
 - Sinalizar e bloquear se já há um  projeto com akele campus e modalidade
 
 !!!ON CASCADE ON OU OFF? AVISAR SOBRE ISSO!!!! modalidadeMB linha 42
+
+arrumar view de local

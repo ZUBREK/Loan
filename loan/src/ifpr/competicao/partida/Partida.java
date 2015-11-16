@@ -27,7 +27,7 @@ public class Partida {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_partida")
+	@Column(name = "id_partida")
 	private Integer id;
 
 	@JoinColumn(name = "id_sumula_partida", referencedColumnName = "id_arquivo")
@@ -35,21 +35,21 @@ public class Partida {
 	private Arquivo sumula;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="data_hora_partida")
+	@Column(name = "data_hora_partida")
 	private Date dataHora;
-	
+
 	@JoinColumn(name = "id_local", referencedColumnName = "id_local")
 	@ManyToOne()
 	private Local local;
-	
-	@OneToMany(cascade=CascadeType.REMOVE)
+
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
+	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<PartidaTimePlacar> partidasTimesPlacares;
 
 	public Partida() {
 		partidasTimesPlacares = new ArrayList<>();
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -89,5 +89,5 @@ public class Partida {
 	public void setPartidasTimesPlacares(List<PartidaTimePlacar> partidasTimesPlacares) {
 		this.partidasTimesPlacares = partidasTimesPlacares;
 	}
-	
+
 }

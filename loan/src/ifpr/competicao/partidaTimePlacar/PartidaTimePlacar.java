@@ -20,18 +20,17 @@ public class PartidaTimePlacar {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@JoinColumn(name = "id_placar", referencedColumnName = "id_placar")
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Placar placar;
-	
-	
+
 	@JoinColumn(name = "id_time", referencedColumnName = "id_time")
 	@ManyToOne()
 	private Time time;
-	
+
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Partida partida;
 
 	public Integer getId() {
@@ -65,5 +64,5 @@ public class PartidaTimePlacar {
 	public void setPartida(Partida partida) {
 		this.partida = partida;
 	}
-	
+
 }

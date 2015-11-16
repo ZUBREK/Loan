@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+		<p:panel id="painelPrincipal" header="Gerenciamento de Locais">
+			<p:growl id="msg" showDetail="true" />
+			<h:form>
+				<p:commandButton id="novoLocal" value="Novo"
+					actionListener="#{localMB.criar}"
+					oncomplete="PF('lclDialog').show()" update=":lclDlg" />
+			</h:form>
+			<h:form id="table_form">
+				<p:dataTable id="localTable" value="#{localMB.localLazyDataModel}"
+					var="lcl" emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{lcl.id}" paginator="true" lazy="true">
+
+					<f:facet name="header">
+						<h:outputText value="Locais cadastradas" />
+					</f:facet>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{lcl.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Cidade">
+						<h:outputText value="#{lcl.cidade}" />
+
+					</p:column>
+
+					<p:column headerText="Bairro">
+						<h:outputText value="#{lcl.bairro}" />
+
+					</p:column>
+
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":lcl_form"
+							oncomplete="PF('lclDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{lcl}"
+								target="#{localMB.local}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('confirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{lcl}"
+								target="#{localMB.local}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</p:panel>
+		<p:dialog id="lclDlg" widgetVar="lclDialog" header="Nova Local"
+			width="450" height="100" modal="true" closable="false">
+
+			<h:form id="lcl_form">
+				<h:panelGrid columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{localMB.local.nome}" 
+						required="true" requiredMessage="Nome é obrigatório!" />
+
+					<h:outputLabel id="bairroLb" value="Bairro:" for="bairro" />
+
+					<p:inputText id="bairro" value="#{localMB.local.bairro}"
+						required="true" requiredMessage="Bairro é obrigatório!" />
+
+					<h:outputLabel id="cidadeLb" value="Cidade:" for="cidade" />
+					<p:inputText id="cidade" value="#{localMB.local.cidade}" 
+						required="true" requiredMessage="Cidade é obrigatório!" />
+
+					<h:outputLabel id="logradouroLb" value="Logradouro:" for="logradouro" />
+
+					<p:inputText id="logradouro" value="#{localMB.local.logradouro}"
+						required="true" requiredMessage="Logradouro é obrigatório!" />
+
+					<h:outputLabel id="cepLb" value="CEP:" for="cep" />
+
+					<p:inputText id="cep" value="#{localMB.local.cep}"
+						required="true" requiredMessage="CEP é obrigatório!" />
+
+					<h:outputLabel id="numeroLb" value="Número:" for="numero" />
+
+					<p:inputText id="numero" value="#{localMB.local.numero}"
+						required="true" requiredMessage="Número é obrigatório!" >
+						</p:inputText>
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":table_form :lcl_form :msg"
+							actionListener="#{localMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('lclDialog').hide()" />
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('lclDialog').hide()"
+							immediate="true" actionListener="#{localMB.cancelar()}">
+							<p:resetInput target=":lcl_form" />
+						</p:commandButton>
+					</f:facet>
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog id="confirm" widgetVar="confirmDialog" global="true"
+			header="Confirma exclusão da Local?" showEffect="fade"
+			hideEffect="explode"
+			message="Deseja realmente excluir a
+				local: #{localMB.local.nome}">
+
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{localMB.remover()}"
+					oncomplete="PF('confirmDialog').hide()" update=":table_form"
+					icon="ok16" />
+				<p:commandButton value="Não" actionListener="#{localMB.cancelar()}"
+					oncomplete="PF('confirmDialog').hide()" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

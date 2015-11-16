@@ -1,5 +1,6 @@
 package ifpr.geradorPdf;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,6 +45,8 @@ public class CrachasPdf {
 	private File arquivo;
 	private PdfContentByte cb;
 	private Image moldura;
+	private Image logo;
+	private QRCode qrCode;
 
 	@ManagedProperty(value = "#{arquivoDao}")
 	private ArquivoDao arquivoDao;
@@ -55,10 +58,12 @@ public class CrachasPdf {
 		arquivo = new File(CAMINHO_PASTA_CRACHAS);
 		arquivo.mkdirs();
 		moldura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/molduraCracha.png");
+		logo = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/logoJIFPR.png");
+		qrCode = new QRCode();
 	}
 
 	public void gerarPdfDelegacao(List<Pessoa> listDesc) {
-		arquivo = new File(CAMINHO_PASTA_CRACHAS + "/CrachasGerados.pdf");
+		arquivo = new File(CAMINHO_PASTA_CRACHAS + "/CrachasJIFPR.pdf");
 		try {
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(arquivo));
 			doc.open();
@@ -68,6 +73,7 @@ public class CrachasPdf {
 			for (int i = 0; i < listDesc.size(); i += 2) {
 				addMoldura(1);
 				Pessoa pessoa = (Pessoa) listDesc.get(i);
+				addLogo(1);
 				addFotoPerfil(pessoa, 1);
 				addLinhaCracha(writer, "Nome:", 605, true);
 				if (pessoa.getNome().length() > 31) {
@@ -86,8 +92,13 @@ public class CrachasPdf {
 				addLinhaCracha(writer, "Câmpus:", 525, true);
 				addLinhaCracha(writer, retornaCampus(pessoa), 505, false);
 				addMoldura(2);
+				String codeText = "id-" + pessoa.getId() + "-nome-" + pessoa.getNome();
+				Image imagem = addQRCode(writer, codeText, 1);
+				doc.add(imagem);
+
 				if (i + 1 < listDesc.size()) {
 					addMoldura(3);
+					addLogo(2);
 					Pessoa pessoa2 = (Pessoa) listDesc.get(i + 1);
 					addFotoPerfil(pessoa2, 2);
 					addLinhaCracha(writer, "Nome:", 235, true);
@@ -107,6 +118,9 @@ public class CrachasPdf {
 					addLinhaCracha(writer, "Câmpus:", 155, true);
 					addLinhaCracha(writer, retornaCampus(pessoa2), 135, false);
 					addMoldura(4);
+					String codeText2 = "id-" + pessoa2.getId() + "-nome-" + pessoa2.getNome();
+					Image imagem2 = addQRCode(writer, codeText2, 2);
+					doc.add(imagem2);
 				}
 				doc.newPage();
 			}
@@ -115,7 +129,6 @@ public class CrachasPdf {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void gerarPdfSecretario(List<Secretario> listDesc) {
@@ -128,6 +141,7 @@ public class CrachasPdf {
 
 			for (int i = 0; i < listDesc.size(); i++) {
 				addMoldura(1);
+				addLogo(1);
 				Secretario secretario = (Secretario) listDesc.get(i);
 				addFotoPerfil(secretario, 1);
 				addLinhaCracha(writer, "Nome:", 605, true);
@@ -145,8 +159,12 @@ public class CrachasPdf {
 				addLinhaCracha(writer, "Função:", 565, true);
 				addLinhaCracha(writer, secretario.getTipo().getLabel(), 545, false);
 				addMoldura(2);
+				String codeText = "id-" + secretario.getId() + "-nome-" + secretario.getNome();
+				Image imagem = addQRCode(writer, codeText, 1);
+				doc.add(imagem);
 				if (i + 1 < listDesc.size()) {
 					addMoldura(3);
+					addLogo(2);
 					Secretario secretario2 = (Secretario) listDesc.get(i + 1);
 					addFotoPerfil(secretario2, 2);
 					addLinhaCracha(writer, "Nome:", 235, true);
@@ -164,6 +182,9 @@ public class CrachasPdf {
 					addLinhaCracha(writer, "Função:", 195, true);
 					addLinhaCracha(writer, secretario2.getTipo().getLabel(), 175, false);
 					addMoldura(4);
+					String codeText2 = "id-" + secretario2.getId() + "-nome-" + secretario2.getNome();
+					Image imagem2 = addQRCode(writer, codeText2, 2);
+					doc.add(imagem2);
 				}
 				doc.newPage();
 			}
@@ -172,6 +193,19 @@ public class CrachasPdf {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private Image addQRCode(PdfWriter writer, String codeText, int posicao) throws BadElementException, IOException {
+		BufferedImage imagemCode = qrCode.gerarQRCode(codeText);
+		PdfContentByte pdfCB = new PdfContentByte(writer);
+		Image image = Image.getInstance(pdfCB, imagemCode, 1);
+		image.scaleAbsolute(170, 170);
+		if (posicao == 1) {
+			image.setAbsolutePosition(360, 580);
+		} else {
+			image.setAbsolutePosition(360, 210);
+		}
+		return image;
 	}
 
 	private String retornaCampus(Pessoa pessoa) {
@@ -204,6 +238,17 @@ public class CrachasPdf {
 			fotoPerfilImg.setAbsolutePosition(100, 260);
 		}
 		doc.add(fotoPerfilImg);
+	}
+
+	private void addLogo(int posicao) throws DocumentException {
+		logo.scalePercent(5f);
+		if (posicao == 1) {
+			logo.setAbsolutePosition(110, 740);
+
+		} else {
+			logo.setAbsolutePosition(110, 370);
+		}
+		doc.add(logo);
 	}
 
 	private Image addMoldura(int numero)
@@ -273,7 +318,7 @@ public class CrachasPdf {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
-			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasGerados.pdf");
+			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasJIFPR.pdf");
 		} catch (FileNotFoundException e) {
 			System.out.println("Erro no download do arquivo!");
 		}
@@ -298,6 +343,22 @@ public class CrachasPdf {
 
 	public void setMoldura(Image moldura) {
 		this.moldura = moldura;
+	}
+
+	public Image getLogo() {
+		return logo;
+	}
+
+	public void setLogo(Image logo) {
+		this.logo = logo;
+	}
+
+	public QRCode getQrCode() {
+		return qrCode;
+	}
+
+	public void setQrCode(QRCode qrCode) {
+		this.qrCode = qrCode;
 	}
 
 }

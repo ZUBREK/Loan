@@ -36,8 +36,19 @@
 					<p:column headerText="Câmpus">
 						<p:outputLabel value="#{delegacao.campus.cidade}" />
 					</p:column>
+					
+					<p:column headerText="Certificados" width="70">
 
-					<p:column headerText="Crachás" width="35">
+						<p:commandButton id="gerarCertificadoPessoa" icon="pdf16" value=" "
+							style="margin-left: 20px;" ajax="false"
+							actionListener="#{delegacaoMB.gerarCertificados(delegacao)}" 
+							styleClass="apenasIcone">
+							<p:fileDownload id="download" value="#{certificadosPdf.arqStreamed}" />
+						</p:commandButton>
+					</p:column>
+					
+
+					<p:column headerText="Crachás" width="43">
 
 						<p:commandButton id="gerarCrachaPessoa" icon="pdf16" value=" "
 							style="margin-left: 3px;" ajax="false"

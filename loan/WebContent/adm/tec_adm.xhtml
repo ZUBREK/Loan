@@ -8,7 +8,7 @@
 
 	<ui:define name="body">
 
-		<p:growl id="msg" showDetail="true" />
+		<p:growl id="msg" />
 		<p:panel id="painelPrincipal"
 			header="Gerenciamento de Tec. Administrativos">
 
@@ -79,7 +79,7 @@
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{tecnicoAdmMB.tecnicoAdm.nome}"
+					<p:inputText id="nome" value="#{tecnicoAdmMB.tecnicoAdm.nome}" maxlength="60"
 						size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
 					<p:message for="nome" />

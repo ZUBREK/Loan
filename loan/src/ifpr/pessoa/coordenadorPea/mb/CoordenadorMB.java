@@ -49,12 +49,15 @@ public class CoordenadorMB {
 	
 	private Campus campus;
 	
+	private CadastroUsuarioValidator emailHandler;
+	
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
 	public CoordenadorMB() {
-
+		emailHandler = new CadastroUsuarioValidator();
 		coordenadorFiltered = new ArrayList<CoordenadorPea>();
+		emailHandler = new CadastroUsuarioValidator();
 	}
 
 	public void criar() {
@@ -78,11 +81,11 @@ public class CoordenadorMB {
 			coordenador.setCampus(campus);
 			gerarSenha();
 			coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
-			enviarEmail();
 			String md5 = criptografia.criptografar(coordenador.getSenha());
 			coordenador.setSenha(md5);
 			coordenadorDao.salvar(coordenador);
 			homeMB.criarArqFotoPerfil(coordenador);
+			enviarEmail();
 		}
 	}
 
@@ -93,11 +96,12 @@ public class CoordenadorMB {
 	}
 
 	private void enviarEmail() {
-		CadastroUsuarioValidator.enviarEmail(coordenador);
+		emailHandler.setPessoa(coordenador);
+		emailHandler.run();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!CadastroUsuarioValidator.validarEmail(coordenador)) {
+		if (!emailHandler.validarEmail(coordenador)) {
 			return false;
 		}
 		try {
@@ -197,6 +201,16 @@ public class CoordenadorMB {
 	public void setHomeMB(HomeMB homeMB) {
 		this.homeMB = homeMB;
 	}
+
+	public CadastroUsuarioValidator getEmailValidator() {
+		return emailHandler;
+	}
+
+	public void setEmailValidator(CadastroUsuarioValidator emailValidator) {
+		this.emailHandler = emailValidator;
+	}
+	
+	
 	
 	
 }

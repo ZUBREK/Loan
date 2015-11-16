@@ -111,6 +111,7 @@ public class CrachasPdf {
 				doc.newPage();
 			}
 			doc.close();
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -167,6 +168,7 @@ public class CrachasPdf {
 				doc.newPage();
 			}
 			doc.close();
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -273,9 +275,8 @@ public class CrachasPdf {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
 			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasGerados.pdf");
 		} catch (FileNotFoundException e) {
-			System.out.println("Erro no download de imagem");
+			System.out.println("Erro no download do arquivo!");
 		}
-
 		return arqStreamed;
 	}
 

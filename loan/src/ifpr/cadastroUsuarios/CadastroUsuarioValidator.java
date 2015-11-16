@@ -14,11 +14,15 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
 
-public class CadastroUsuarioValidator {
+
+
+public class CadastroUsuarioValidator implements Runnable{
 
 	private final static String LINK_ACESSO = "http://localhost:8080/loan";
 	
-	public static boolean isEmailValid(String email) {
+	private Pessoa pessoa;
+	
+	private  boolean isEmailValid(String email) {
 		if ((email == null) || (email.trim().length() == 0))
 			return false;
 
@@ -29,8 +33,9 @@ public class CadastroUsuarioValidator {
 		return matcher.matches();
 	}
 	
-	public static void enviarEmail(Pessoa pessoa) {
+	private void enviarEmail() {
 		try {
+
 			Email email = new SimpleEmail();
 			email.setHostName("smtp.googlemail.com");
 			email.setSmtpPort(454);
@@ -62,8 +67,8 @@ public class CadastroUsuarioValidator {
 		}
 	}
 	
-	public static boolean validarEmail(Pessoa pessoa){
-		if(!CadastroUsuarioValidator.isEmailValid(pessoa.getLogin())){
+	public boolean validarEmail(Pessoa pessoa){
+		if(!isEmailValid(pessoa.getLogin())){
 			FacesMessage message = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Erro!",
 					"Digite um e-mail válido!");
@@ -74,4 +79,19 @@ public class CadastroUsuarioValidator {
 		
 		return true;
 	}
+
+	@Override
+	public void run() {
+		enviarEmail();
+	}
+
+	public Pessoa getPessoa() {
+		return pessoa;
+	}
+
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
+	
+	
 }

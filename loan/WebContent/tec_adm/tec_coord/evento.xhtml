@@ -10,32 +10,45 @@
 	<ui:define name="body">
 		<p:panel id="painelPrincipal" header="Gerenciamento de eventos">
 			<p:growl id="msg" showDetail="true" />
-			
+
 			<h:form>
-				<p:commandButton id="novoeventoTec" value="Novo"
+				<p:commandButton id="novoEventoTec" value="Novo"
 					actionListener="#{eventoMB.criar}" style="float:left;"
-					rendered="#{!eventoMB.tecAdm}"
+					rendered="#{!eventoMB.tecAdm and !eventoMB.adm}"
 					oncomplete="PF('eventoDialog').show()" update=":eventoDlg" />
+				<p:commandButton id="novoEventoAdm" value="Novo"
+					actionListener="#{eventoMB.criar}" style="float:left;"
+					rendered="#{!eventoMB.tecAdm and eventoMB.adm}"
+					oncomplete="PF('eventoAdmDialog').show()" update=":eventoAdmDlg" />
 			</h:form>
-			
+
 			<h:form id="tableForm">
 
-				<p:contextMenu for="eventoTable">
-					<p:menuitem value="Visualizar" update=":eventoDlg" icon="ui-icon-search"
-						oncomplete="PF('eventoDialog').show()" />
-					<p:menuitem value="Editar" update="eventoTable :confirm" disabled="#{!eventoMB.temAcesso()}"
-						rendered="#{!eventoMB.tecAdm}"
-						icon="editar16" oncomplete="PF('eventoDialog').show()" />
-					<p:menuitem value="Remover" update="eventoTable :confirm" disabled="#{!eventoMB.temAcesso()}"
-						rendered="#{!eventoMB.tecAdm}"
-						icon="remover16" oncomplete="PF('eventoConfirmDialog').show()" />
+				<p:contextMenu id="contextMenu" for="eventoTable"
+					widgetVar="ctxMenu">
+					<p:menuitem value="Visualizar" update=":visEventoDlg"
+						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
+
+					<p:menuitem value="Editar" update="eventoTable :confirm"
+						rendered="#{!eventoMB.tecAdm}" icon="editar16"
+						oncomplete="PF('eventoDialog').show()">
+						<f:setPropertyActionListener value="#{evento}"
+							target="#{eventoMB.evento}" />
+					</p:menuitem>
+
+					<p:menuitem value="Remover" update="eventoTable :confirm"
+						rendered="#{!eventoMB.tecAdm}" icon="remover16"
+						oncomplete="PF('eventoConfirmDialog').show()" />
 				</p:contextMenu>
+
+
 				<p:dataTable id="eventoTable" style="clear:both;"
 					value="#{eventoMB.eventoLazyDataModel}" var="evento"
 					emptyMessage="Nenhum registro encontrado!" rows="15"
 					rowKey="#{evento.id}" paginator="true" lazy="true"
 					selection="#{eventoMB.evento}" selectionMode="single"
 					filteredValue="#{eventoMB.eventoFiltered}">
+
 
 					<f:facet name="header">
 						<p:outputPanel>
@@ -163,7 +176,7 @@
 				</p:dataTable>
 
 				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":evento_form :msg "
+					update=":evento_form :msg :tableForm"
 					actionListener="#{eventoMB.salvarTreino}"
 					oncomplete="if(!args.validationFailed) PF('eventoDialog').hide();" />
 				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
@@ -174,10 +187,156 @@
 			</h:form>
 
 
-
 			<f:facet name="footer">
 				Esse evento é do tipo treino.
 			</f:facet>
+
+		</p:dialog>
+
+		<p:dialog id="eventoAdmDlg" widgetVar="eventoAdmDialog"
+			header="Dados do evento" width="800" height="400" modal="true"
+			closable="false">
+
+			<h:form id="eventoAdm_form">
+
+				<p:panelGrid columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="50"
+						required="true" requiredMessage="Nome é obrigatório!" />
+
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:inputText id="descricao" value="#{eventoMB.evento.descricao}"
+						size="50" required="true"
+						requiredMessage="Descrição é obrigatório!" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:calendar id="dataInicio"
+						value="#{eventoMB.evento.dataHoraInicio}" locale="pt"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
+						maxdate="31/12/2050" yearRange="2015:2020" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true" />
+
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+					<p:calendar id="dataFim" value="#{eventoMB.evento.dataHoraFinal}"
+						locale="pt" mask="true" navigator="true"
+						pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980" maxdate="31/12/2020"
+						yearRange="2015:2020" required="true"
+						requiredMessage="Data de encerramento é obrigatória" />
+
+					<p:outputLabel id="tipoEventoLb" value="Tipo do Evento:"
+						for="tipoEvento" />
+					<p:selectOneMenu id="tipoEvento" value="#{eventoMB.tipoEventoSelecionado}">
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+						<f:selectItems value="#{eventoMB.tiposEvento}" var="tipo"
+							itemLabel="#{tipo}" itemValue="#{tipo}" />
+						<p:ajax process="@this" event="change"
+							update=":eventoAdm_form:role" />
+					</p:selectOneMenu>
+
+					<p:outputLabel id="roleLb" value="Para:" for="role" />
+					<p:selectOneMenu id="role" value="#{eventoMB.tipoPessoaSelecionado}">
+						<f:selectItems value="#{eventoMB.tiposPessoa}" var="role"
+							itemLabel="#{role}" itemValue="#{role}" />
+						<p:ajax process="@this" event="change"
+							update=":eventoAdm_form:addGrid" />
+					</p:selectOneMenu>
+
+					<h:panelGrid id="addGrid" columns="2" cellpadding="5">
+						<h:outputLabel for="menu" value="Pessoa que participarão:" />
+						<p:selectCheckboxMenu id="menu"
+							disabled="#{empty eventoMB.tipoEventoSelecionado or empty eventoMB.tipoPessoaSelecionado}"
+							value="#{eventoMB.pessoasSelecionadas}" label="Selecionar"
+							filter="true" filterMatchMode="startsWith"
+							panelStyle="width:250px" converter="#{estudanteConverter}">
+							<f:selectItems value="#{eventoMB.estudantes}" />
+						</p:selectCheckboxMenu>
+						<p:spacer width="30px"/>
+						<p:commandButton id="addPessoaBt" value="Adicionar Pessoas"
+							disabled="#{empty eventoMB.tipoEventoSelecionado or empty eventoMB.tipoPessoaSelecionado}"
+							icon="apply" actionListener="#{eventoMB.adicionarPessoas()}"
+							update=":eventoAdm_form:pessoasList" />
+					</h:panelGrid>
+				</p:panelGrid>
+
+				<p:dataTable id="pessoasList" var="eventoPessoa"
+					value="#{eventoMB.evento.eventoPessoas}"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+					<p:column headerText="Nome">
+						<h:outputText value="#{eventoPessoa.pessoa.nome}" />
+					</p:column>
+					<p:column headerText="Apagar">
+						<p:commandLink action="#{eventoMB.removerPessoa()}"
+							value="Remover" update=":eventoAdm_form:estudantesList" />
+					</p:column>
+				</p:dataTable>
+				
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":eventoAdm_form :msg :tableForm"
+					action="#{eventoMB.salvarEventoAdm()}"
+					oncomplete="if(!args.validationFailed) PF('eventoAdmDialog').hide();" />
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('eventoAdmDialog').hide()" update=":msg"
+					immediate="true" actionListener="#{eventoMB.cancelar()}">
+					<p:resetInput target=":eventoAdm_form" />
+				</p:commandButton>
+			
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog id="visEventoDlg" widgetVar="visEventoDialog"
+			header="Dados do evento" width="800" height="400" modal="true">
+
+			<h:form id="visEvento_form">
+
+				<p:panelGrid columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:outputLabel id="nome" value="#{eventoMB.evento.nome}" size="50" />
+
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:outputLabel id="descricao" value="#{eventoMB.evento.descricao}"
+						size="50" />
+
+					<p:outputLabel value="Tipo:" />
+
+					<p:outputLabel value="#{eventoMB.evento.tipo}" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:outputLabel id="dataInicio"
+						value="#{eventoMB.evento.dataHoraInicio}" />
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+					<p:outputLabel id="dataFim"
+						value="#{eventoMB.evento.dataHoraFinal}" />
+
+
+				</p:panelGrid>
+
+				<p:dataTable id="estudantesList" var="eventoPessoa"
+					value="#{eventoMB.evento.eventoPessoas}"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+					<p:column headerText="Nome">
+						<h:outputText value="#{eventoPessoa.pessoa.nome}" />
+					</p:column>
+					<p:column headerText="Presente">
+						<h:outputText value="#{eventoPessoa.wasPresente}" />
+					</p:column>
+				</p:dataTable>
+
+
+			</h:form>
 
 		</p:dialog>
 

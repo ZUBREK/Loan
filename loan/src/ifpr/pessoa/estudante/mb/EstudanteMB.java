@@ -1,5 +1,16 @@
 package ifpr.pessoa.estudante.mb;
 
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.pessoa.estudante.model.EstudanteLazyDataModel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,18 +22,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
-
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.criptografia.Criptografia;
-import ifpr.geradorPdf.CrachasPdf;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.estudante.dao.EstudanteDao;
-import ifpr.pessoa.estudante.model.EstudanteLazyDataModel;
 
 @ManagedBean(name = "estudanteMB")
 @ViewScoped
@@ -49,17 +48,18 @@ public class EstudanteMB {
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
+	
+	private CadastroUsuarioValidator emailHelper;
 
 	private List<Campus> listaCampus;
 
 	private Campus campus;
 
-	@ManagedProperty(value = "#{crachasPdf}")
-	public CrachasPdf crachasPdf;
 
 	public EstudanteMB() {
 
 		estudanteFiltered = new ArrayList<Estudante>();
+		emailHelper = new CadastroUsuarioValidator();
 	}
 
 	public void criar() {
@@ -79,19 +79,19 @@ public class EstudanteMB {
 		estudante = null;
 	}
 
-	public void salvar() {// ta lentao!
+	public void salvar() {
 		if (estudante.getId() != null) {
 			estudanteDao.update(estudante);
 		} else if (validarLoginExistente()) {
 			estudante.setCampus(campus);
 			gerarSenha();
 			estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
-			enviarEmail();
 			String md5 = criptografia.criptografar(estudante.getSenha());
 			estudante.setSenha(md5);
 			estudante.setBolsista(false);
 			estudanteDao.salvar(estudante);
 			homeMB.criarArqFotoPerfil(estudante);
+			enviarEmail();
 		}
 	}
 
@@ -102,11 +102,12 @@ public class EstudanteMB {
 	}
 
 	private void enviarEmail() {
-		CadastroUsuarioValidator.enviarEmail(estudante);
+		emailHelper.setPessoa(estudante);
+		emailHelper.run();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!CadastroUsuarioValidator.validarEmail(estudante)) {
+		if (!emailHelper.validarEmail(estudante)) {
 			return false;
 		}
 		try {
@@ -195,13 +196,6 @@ public class EstudanteMB {
 		this.campus = campus;
 	}
 
-	public CrachasPdf getCrachasPdf() {
-		return crachasPdf;
-	}
-
-	public void setCrachasPdf(CrachasPdf crachasPdf) {
-		this.crachasPdf = crachasPdf;
-	}
 
 	public HomeMB getHomeMB() {
 		return homeMB;
@@ -211,4 +205,13 @@ public class EstudanteMB {
 		this.homeMB = homeMB;
 	}
 
+	public CadastroUsuarioValidator getEmailHelper() {
+		return emailHelper;
+	}
+
+	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
+		this.emailHelper = emailHelper;
+	}
+
+	
 }

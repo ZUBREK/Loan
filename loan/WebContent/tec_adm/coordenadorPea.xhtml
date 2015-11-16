@@ -78,14 +78,14 @@
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{coordenadorMB.coordenador.nome}"
+					<p:inputText id="nome" value="#{coordenadorMB.coordenador.nome}" maxlength="60"
 						size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
 					<p:message for="nome" />
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
-					<p:inputText id="email" value="#{coordenadorMB.coordenador.login}"
+					<p:inputText id="email" value="#{coordenadorMB.coordenador.login}" maxlength="255"
 						size="50" required="true" requiredMessage="E-mail é obrigatório!"
 						disabled="#{coordenadorMB.coordenador.id != null}">
 
@@ -122,7 +122,7 @@
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :coord_form :msg"
 							actionListener="#{coordenadorMB.salvar}"
-							oncomplete="if(!args.validationFailed) PF('coordDialog').hide()" />
+							onclick="if(!args.validationFailed) PF('coordDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('coordDialog').hide()"

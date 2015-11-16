@@ -1,5 +1,15 @@
 package ifpr.pessoa.secretario.mb;
 
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.criptografia.Criptografia;
+import ifpr.geradorPdf.CrachasPdf;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.secretario.Secretario;
+import ifpr.pessoa.secretario.dao.SecretarioDao;
+import ifpr.pessoa.secretario.model.SecretarioLazyDataModel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -10,16 +20,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
-
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.criptografia.Criptografia;
-import ifpr.geradorPdf.CrachasPdf;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.secretario.Secretario;
-import ifpr.pessoa.secretario.dao.SecretarioDao;
-import ifpr.pessoa.secretario.model.SecretarioLazyDataModel;
 
 @ManagedBean(name = "secretarioMB")
 @ViewScoped
@@ -46,10 +46,14 @@ public class SecretarioMB {
 	
 	@ManagedProperty(value = "#{crachasPdf}")
 	public CrachasPdf crachasPdf;
+	
+
+	private CadastroUsuarioValidator emailHelper;
 
 	public SecretarioMB() {
 
 		secretarioFiltered = new ArrayList<Secretario>();
+		emailHelper = new CadastroUsuarioValidator();
 	}
 
 	public void criar() {
@@ -70,11 +74,11 @@ public class SecretarioMB {
 		} else if (validarLoginExistente()) {
 			gerarSenha();
 			secretario.setTipo(TipoPessoa.ROLE_SECRETARIO);
-			enviarEmail();
 			String md5 = criptografia.criptografar(secretario.getSenha());
 			secretario.setSenha(md5);
 			secretarioDao.salvar(secretario);
 			homeMB.criarArqFotoPerfil(secretario);
+			enviarEmail();
 		}
 	}
 
@@ -85,11 +89,12 @@ public class SecretarioMB {
 	}
 
 	private void enviarEmail() {
-		CadastroUsuarioValidator.enviarEmail(secretario);
+		emailHelper.setPessoa(secretario);
+		emailHelper.run();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!CadastroUsuarioValidator.validarEmail(secretario)) {
+		if (!emailHelper.validarEmail(secretario)) {
 			return false;
 		}
 		try {
@@ -173,5 +178,15 @@ public class SecretarioMB {
 	public void setCrachasPdf(CrachasPdf crachasPdf) {
 		this.crachasPdf = crachasPdf;
 	}
+
+	public CadastroUsuarioValidator getEmailHelper() {
+		return emailHelper;
+	}
+
+	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
+		this.emailHelper = emailHelper;
+	}
+	
+	
 	
 }

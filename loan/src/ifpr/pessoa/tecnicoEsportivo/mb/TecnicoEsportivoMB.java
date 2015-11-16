@@ -60,7 +60,6 @@ public class TecnicoEsportivoMB {
 	}
 	
 	
-	
 	public void criar() {
 		tecnicoEsp = new TecnicoEsportivo();
 

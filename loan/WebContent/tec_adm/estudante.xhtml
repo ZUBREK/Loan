@@ -45,7 +45,8 @@
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":estudante_form"
-							oncomplete="PF('estudanteDialog').show()" styleClass="apenasIcone">
+							oncomplete="PF('estudanteDialog').show()"
+							styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{estudante}"
 								target="#{estudanteMB.estudante}" />
 
@@ -54,8 +55,8 @@
 					<p:column headerText="Remover" width="47">
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
-							oncomplete="PF('estudanteConfirmDialog').show()" update=":confirm"
-							styleClass="apenasIcone">
+							oncomplete="PF('estudanteConfirmDialog').show()"
+							update=":confirm" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{estudante}"
 								target="#{estudanteMB.estudante}" />
 						</p:commandButton>
@@ -72,43 +73,42 @@
 			closable="false">
 
 			<h:form id="estudante_form">
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{estudanteMB.estudante.nome}"
 						size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
-					<p:message for="nome" />
-
-					<h:outputLabel id="rgLb" value="RG:" for="rg" />
-					<p:inputText id="rg" value="#{estudanteMB.estudante.rg}" size="50"
-						required="true" requiredMessage="RG é obrigatório!" />
-					<p:message for="rg" />
-
-					<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
-					<p:inputText id="cpf" value="#{estudanteMB.estudante.cpf}"
-						size="50" required="true" requiredMessage="CPF é obrigatório!" />
-					<p:message for="cpf" />
-
 					<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
 						for="dataNasc" />
 					<p:calendar id="dataNasc"
 						value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
-						maxdate="31/12/2005" yearRange="1980:2005" />
-					<p:message for="dataNasc" />
+						maxdate="31/12/2005" yearRange="1980:2005" required="true"
+						requiredMessage="Data de nascimento é obrigatória!" />
+
+					<h:outputLabel id="rgLb" value="RG:" for="rg" />
+					<p:inputText id="rg" value="#{estudanteMB.estudante.rg}" size="50"
+						maxlength="9" required="true" requiredMessage="RG é obrigatório!"
+						placeholder="Apenas números" />
+
+
+					<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
+					<p:inputText id="cpf" value="#{estudanteMB.estudante.cpf}"
+						maxlength="11" placeholder="Apenas números" size="50"
+						required="true" requiredMessage="CPF é obrigatório!" />
 
 
 					<h:outputLabel id="matriculaLb" value="Matricula:" for="matricula" />
-					<p:inputText id="matricula"
+					<p:inputText id="matricula" maxlength="11"
 						value="#{estudanteMB.estudante.matricula}" size="50"
 						required="true" requiredMessage="Matricula é obrigatório!" />
-					<p:message for="matricula" />
+
 
 					<h:outputLabel id="emailLb" value="E-mail/Login:" for="email" />
 
-					<p:inputText id="email" value="#{estudanteMB.estudante.login}"
+					<p:inputText id="email" value="#{estudanteMB.estudante.login}" maxlength="255"
 						size="50" required="true" requiredMessage="E-mail é obrigatório!"
 						disabled="#{estudanteMB.estudante.id != null}">
 
@@ -116,7 +116,6 @@
 							update=":msg" event="blur" />
 
 					</p:inputText>
-					<p:message for="email" />
 
 					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 					<p:selectOneMenu id="campus" value="#{estudanteMB.campus}"
@@ -129,9 +128,7 @@
 						<f:selectItems value="#{estudanteMB.listaCampus}" var="camp"
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 					</p:selectOneMenu>
-					<p:message for="campus" />
 
-			
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :estudante_form :msg"

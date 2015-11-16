@@ -81,14 +81,14 @@
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{tecEspMB.tecnicoEsp.nome}"
-						size="50" required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{tecEspMB.tecnicoEsp.nome}" maxlength="255"
+						size="75" required="true" requiredMessage="Nome é obrigatório!" />
 
 					<p:message for="nome" />
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
-					<p:inputText id="email" value="#{tecEspMB.tecnicoEsp.login}"
+					<p:inputText id="email" value="#{tecEspMB.tecnicoEsp.login}" maxlength="255"
 						size="50" required="true" requiredMessage="E-mail é obrigatório!"
 						disabled="#{tecEspMB.tecnicoEsp.id != null}">
 

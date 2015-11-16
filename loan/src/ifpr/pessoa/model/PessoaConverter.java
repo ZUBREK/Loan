@@ -20,12 +20,11 @@ public class PessoaConverter implements Converter {
 	
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-		Pessoa pessoa = null;
 		if ( value != null && !value.isEmpty() && !value.equalsIgnoreCase("Selecione um") )
-			pessoa = pessoaDao.pesquisarPorNome(value).get(0);
-			System.out.println(pessoa.getNome());
 			return pessoaDao.pesquisarPorNome(value).get(0);
-		//return null;
+		
+		return null;
+
 	}
 
 	@Override

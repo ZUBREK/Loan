@@ -69,11 +69,15 @@ public class EventoMB {
 
 	private List<Estudante> estudantes;
 
+	private List<Pessoa> pessoas;
+
 	private List<Estudante> estudantesSelecionados;
+
+	private List<Pessoa> pessoasSelecionadas;
 
 	private EventoPessoa eventoPessoa;
 
-	private TipoPessoa role;
+	private TipoPessoa tipoPessoa;
 
 	private TipoEvento tipoEvento;
 
@@ -83,11 +87,21 @@ public class EventoMB {
 
 	private boolean isTecAdm;
 
+	private boolean isAdm;
+
+	private boolean disableTipoPessoa;
+
+	private boolean isAcesso;
+
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
-
+		isAdm = false;
 		isUpdate = true;
-
+		tipoEvento = TipoEvento.REFEICAO;
+		tipoPessoa = TipoPessoa.ROLE_ADMIN;
+		estudantesSelecionados = new ArrayList<Estudante>();
+		pessoasSelecionadas = new ArrayList<Pessoa>();
+		pessoas = new ArrayList<Pessoa>();
 	}
 
 	public void criar() {
@@ -99,18 +113,18 @@ public class EventoMB {
 
 	@PostConstruct
 	public void poust() {
-		isTecAdm = false;
+
 		listaCampus = campusDao.listarAlfabetica();
 		listaModalidade = modalidadeDao.listarAlfabetica();
 		FacesContext context = FacesContext.getCurrentInstance();
 		loginController = context.getApplication().evaluateExpressionGet(
 				context, "#{loginControllerMB}", LoginControllerMB.class);
 		pessoaLogada = loginController.getPessoaLogada();
-		estudantesSelecionados = new ArrayList<Estudante>();
-		role = TipoPessoa.ROLE_ADMIN;
-		tipoEvento = TipoEvento.MAPAMODALIDADE;
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM))
 			isTecAdm = true;
+		else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
+			isAdm = true;
+		disableTipoPessoa = true;
 	}
 
 	public void cancelar() {
@@ -140,24 +154,52 @@ public class EventoMB {
 	}
 
 	public void salvarEventoAdm() {
-		/*
-		 * evento.setResponsavel(pessoaLogada); evento.setTipo(tipoEvento);
-		 * eventoDao.salvar(evento); List<Pessoa> pessoas =
-		 * pessoaDao.findByRole(role); EventoPessoa evp; for(int i = 0; i <
-		 * pessoas.size(); ++i){ evp = new EventoPessoa();
-		 * evp.setPessoa(pessoas.get(i)); evp.setEvento(evento);
-		 * eventoPessoaDao.salvar(evp); evento.getEventoPessoas().add(evp); }
-		 * eventoDao.update(evento);
-		 */
+
+		evento.setResponsavel(pessoaLogada);
+		evento.setTipo(tipoEvento);
+		eventoDao.salvar(evento);
+		List<Pessoa> pessoas = pessoaDao.findByRole(tipoPessoa);
+		EventoPessoa evp;
+		for (int i = 0; i < pessoas.size(); ++i) {
+			evp = new EventoPessoa();
+			evp.setPessoa(pessoas.get(i));
+			evp.setEvento(evento);
+			eventoPessoaDao.salvar(evp);
+			evento.getEventoPessoas().add(evp);
+		}
+		eventoDao.update(evento);
+
+		disableTipoPessoa = false;
+		tipoEvento = TipoEvento.REFEICAO;
+		tipoPessoa = TipoPessoa.ROLE_ESTUDANTE;
 	}
 
 	public void adicionarEstudante() {
+		evento.setResponsavel(pessoaLogada);
+		evento.setTipo(TipoEvento.TREINO);
+		eventoDao.salvar(evento);
 		EventoPessoa evp;
 		for (int i = 0; i < estudantesSelecionados.size(); ++i) {
 			evp = new EventoPessoa();
 			evp.setPessoa(estudantesSelecionados.get(i));
 			evp.setEvento(evento);
 			evp.setWasPresente(false);
+			eventoPessoaDao.salvar(evp);
+			evento.getEventoPessoas().add(evp);
+		}
+		
+	}
+
+	public void adicionarPessoas() {
+
+		evento.setResponsavel(pessoaLogada);
+		evento.setTipo(tipoEvento);
+		eventoDao.salvar(evento);
+		EventoPessoa evp;
+		for (int i = 0; i < pessoasSelecionadas.size(); ++i) {
+			evp = new EventoPessoa();
+			evp.setPessoa(pessoasSelecionadas.get(i));
+			evp.setEvento(evento);
 			eventoPessoaDao.salvar(evp);
 			evento.getEventoPessoas().add(evp);
 		}
@@ -168,19 +210,6 @@ public class EventoMB {
 		eventoPessoaDao.remover(eventoPessoa);
 		evento.getEventoPessoas().remove(eventoPessoa);
 		eventoDao.remover(evento);
-	}
-
-	public boolean temAcesso() {
-		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
-			return true;
-		else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)
-				|| pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
-			if (evento.getResponsavel().getId() == pessoaLogada.getId()) {
-				return true;
-			}
-		}
-		return false;
-
 	}
 
 	public EventoPessoa getEventoPessoa() {
@@ -336,23 +365,6 @@ public class EventoMB {
 		this.pessoaLogada = pessoaLogada;
 	}
 
-	public TipoPessoa getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = TipoPessoa.valueOf(role);
-	}
-
-	public TipoEvento getTipo() {
-		return tipoEvento;
-	}
-
-	public void setTipo(String tipo) {
-
-		this.tipoEvento = TipoEvento.valueOf(tipo);
-	}
-
 	public PessoaDao getPessoaDao() {
 		return pessoaDao;
 	}
@@ -362,10 +374,19 @@ public class EventoMB {
 	}
 
 	public TipoPessoa[] getTiposPessoa() {
-		return TipoPessoa.values();
+		TipoPessoa[] lista = null;
+		if (tipoEvento.equals(TipoEvento.MAPAMODALIDADE)) {
+			lista = new TipoPessoa[] { TipoPessoa.ROLE_TEC_ADM };
+		} else {
+			lista = new TipoPessoa[] { TipoPessoa.ROLE_ESTUDANTE };
+			disableTipoPessoa = true;
+		}
+
+		return lista;
 	}
 
 	public TipoEvento[] getTiposEvento() {
+
 		return TipoEvento.values();
 	}
 
@@ -373,12 +394,8 @@ public class EventoMB {
 		return tipoEvento;
 	}
 
-	public void setTipoEvento(TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
-	public void setRole(TipoPessoa role) {
-		this.role = role;
+	public void setTipoEvento(String tipoEvento) {
+		this.tipoEvento = TipoEvento.valueOf(tipoEvento);
 	}
 
 	public boolean isTecAdm() {
@@ -388,7 +405,57 @@ public class EventoMB {
 	public void setTecAdm(boolean isTecAdm) {
 		this.isTecAdm = isTecAdm;
 	}
-	
-	
+
+	public TipoPessoa getTipoPessoa() {
+		return tipoPessoa;
+	}
+
+	public void setTipoPessoa(TipoPessoa tipoPessoa) {
+		this.tipoPessoa = tipoPessoa;
+	}
+
+	public boolean isDisableTipoPessoa() {
+		return disableTipoPessoa;
+	}
+
+	public void setDisableTipoPessoa(boolean disableTipoPessoa) {
+		this.disableTipoPessoa = disableTipoPessoa;
+	}
+
+	public boolean isAdm() {
+		return isAdm;
+	}
+
+	public void setAdm(boolean isAdm) {
+		this.isAdm = isAdm;
+	}
+
+	public List<Pessoa> getPessoasSelecionadas() {
+		return pessoasSelecionadas;
+	}
+
+	public void setPessoasSelecionadas(List<Pessoa> pessoasSelecionadas) {
+		this.pessoasSelecionadas = pessoasSelecionadas;
+	}
+
+	public List<Pessoa> getPessoas() {
+		return pessoaDao.findByRole(tipoPessoa);
+	}
+
+	public boolean isAcesso() {
+		return isAcesso;
+	}
+
+	public void setAcesso(boolean isAcesso) {
+		this.isAcesso = isAcesso;
+	}
+
+	public void setTipoEvento(TipoEvento tipoEvento) {
+		this.tipoEvento = tipoEvento;
+	}
+
+	public void setPessoas(List<Pessoa> pessoas) {
+		this.pessoas = pessoas;
+	}
 
 }

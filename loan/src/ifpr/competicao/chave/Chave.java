@@ -40,13 +40,25 @@ public class Chave {
 	private TipoCompeticao tipo;
 
 	@JoinColumn(name = "id_chave", referencedColumnName = "id_chave")
-	@OneToMany(cascade=CascadeType.REMOVE)
+	@OneToMany(cascade = CascadeType.REMOVE)
+	
 	private List<Partida> partidas;
+
+	private boolean isPrimeiraFase;
 
 	public Chave() {
 		partidas = new ArrayList<>();
+		isPrimeiraFase = true;
 	}
-	
+
+	public boolean isPrimeiraFase() {
+		return isPrimeiraFase;
+	}
+
+	public void setPrimeiraFase(boolean isPrimeiraFase) {
+		this.isPrimeiraFase = isPrimeiraFase;
+	}
+
 	public List<Partida> getPartidas() {
 		return partidas;
 	}

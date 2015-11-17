@@ -67,15 +67,25 @@
 					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
 					dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
 					id="treeNodeChave">
-					<p:treeNode>
+					<p:treeNode type="default">
 						<h:outputText value="#{node}" />
 					</p:treeNode>
-					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" oncomplete="PF('editarChavDialog').hide()"/>
+					
+					<p:treeNode type="#{chaveMB.TIPO_CARREGADOR}">
+						<h:outputText value="#{node}" />
+					</p:treeNode>
+					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+					
+					<p:treeNode type="#{chaveMB.TIPO_TIME}">
+						<h:outputText value="#{node}" />
+					</p:treeNode>
+					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
 				</p:tree>
 				<p:spacer height="10px" />
 				<p:commandButton id="cancelarChaveBt" value="Cancelar" icon="cancelar16"
-					oncomplete="PF('editarChavDialog').hide()" immediate="true"
-					actionListener="#{chaveMB.cancelar()}">
+					immediate="true"
+					oncomplete="PF('editarChavDialog').hide()"
+					actionListener="#{chaveMB.cancelarChave()}">
 				</p:commandButton>
 
 			</h:form>
@@ -86,10 +96,12 @@
 			closable="false">
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
-					<h:outputLabel id="idLb" value="id:" for="id" />
+				
+					<p:outputLabel id="resultadoLb" value="Pontos do #{chaveMB.time}:" for="resultado" />
 
-					<p:inputText id="id" value="#{chaveMB.partida.id}" />
-
+					<p:inputText id="resultado" value="#{chaveMB.placar.resultado}"
+						required="true" requiredMessage="Preencha os pontos do time!" />
+				
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.partida.dataHora}"
@@ -112,15 +124,16 @@
 					<p:spacer height="10px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarPartidaBt" value="Salvar" icon="salvar16"
-							actionListener="#{chaveMB.salvarPartida}"
-							onsuccess="if(!args.validationFailed) PF('partidaChavDialog').hide()"	
-							oncomplete="PF('editarChavDialog').show()">
+							actionListener="#{chaveMB.salvarPartidaPlacar}"
+							update="editarChavDialog"
+							oncomplete="if(!args.validationFailed) #{chaveMB.onCompleteSalvarPartidaBt()}">
 							<p:resetInput target=":part_form" />
 						</p:commandButton>
 
 
 						<p:commandButton id="cancelarPartidaBt" value="Cancelar"
-							icon="cancelar16" onsuccess="PF('partidaChavDialog').hide()"	
+							icon="cancelar16" onsuccess="PF('partidaChavDialog').hide()"
+							update="editarChavDialog"
 							oncomplete="PF('editarChavDialog').show()"
 							immediate="true" actionListener="#{chaveMB.cancelar()}">
 							<p:resetInput target=":part_form" />
@@ -136,7 +149,7 @@
 			<h:form id="chave_form">
 				<h:panelGrid columns="2">
 
-					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{chaveMB.chave.nome}" size="20"
 						required="true" requiredMessage="Nome é obrigatório!" />

@@ -3,6 +3,7 @@ package ifpr.competicao.chave.mb;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +37,8 @@ import ifpr.modalidade.Modalidade;
 @ManagedBean(name = "chaveMB")
 @ViewScoped
 public class ChaveMB {
+	private final String TIPO_CARREGADOR = "carregador";
+	private final String TIPO_TIME = "time";
 
 	private Chave chave;
 
@@ -82,8 +85,12 @@ public class ChaveMB {
 	private List<Local> listaLocais;
 
 	private Local local;
-	
+
 	private TreeNode selectedNode;
+
+	private PartidaTimePlacar proximaPtp;
+	private Time time;
+	private TreeNode meuPai;
 
 	public ChaveMB() {
 		chave = new Chave();
@@ -96,8 +103,8 @@ public class ChaveMB {
 		listaLocais.get(0);
 	}
 
-	public void adicionarNodeParent(Object nome, TreeNode nodeRoot) {
-		TreeNode node = new DefaultTreeNode(nome, nodeRoot);
+	public void adicionarNodeParentTipo(Object nome, TreeNode nodeRoot, String tipo) {
+		TreeNode node = new DefaultTreeNode(tipo, nome, nodeRoot);
 		node.setExpanded(true);
 		nodes.add(node);
 
@@ -115,21 +122,48 @@ public class ChaveMB {
 		int i2 = 0;
 		Collections.reverse(times);
 		for (int i = 0; i < times.size(); i++) {
-			adicionarNodeParent(times.get(i), nodes.get(i2));
+			if (times.get(i).getNome().equals("")) {
+				adicionarNodeParentTipo(times.get(i), nodes.get(i2), TIPO_CARREGADOR);
+			} else {
+				adicionarNodeParentTipo(times.get(i), nodes.get(i2), TIPO_TIME);
+			}
 			if (i % 2 == 0) {
 				i2++;
 			}
 		}
 	}
 
+	public void onCompleteSalvarPartidaBt() {
+		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
+		RequestContext.getCurrentInstance().execute("PF('editarChavDialog').show()");
+
+	}
+
 	public void pegarTimes() {
 		times = new ArrayList<>();
+		List<Partida> partidas = chave.getPartidas();
+		Collections.sort(partidas, new Comparator<Partida>() {
+			@Override
+			public int compare(Partida p1, Partida p2) {
+				return p1.getId() - p2.getId(); // Ascending
+			}
+
+		});
 		for (Partida partida : chave.getPartidas()) {
-			for (PartidaTimePlacar partidaTimePlacar : partida.getPartidasTimesPlacares()) {
+			List<PartidaTimePlacar> ptps = partida.getPartidasTimesPlacares();
+			Collections.sort(ptps, new Comparator<PartidaTimePlacar>() {
+				@Override
+				public int compare(PartidaTimePlacar ptp1, PartidaTimePlacar ptp2) {
+					return ptp1.getId() - ptp2.getId(); // Ascending
+				}
+
+			});
+			for (PartidaTimePlacar partidaTimePlacar : ptps) {
 				Time time = partidaTimePlacar.getTime();
 				if (time == null) {
 					time = new Time();
 					time.setNome("");
+					time.setId(partidaTimePlacar.getId());
 				}
 				times.add(time);
 			}
@@ -150,7 +184,7 @@ public class ChaveMB {
 	}
 
 	public void cancelar() {
-		chave = null;
+
 	}
 
 	public void salvarChave() {
@@ -184,7 +218,7 @@ public class ChaveMB {
 					salvarPartida();
 				}
 				placar = new Placar();
-				placar.setResultado(0);
+				placar.setResultado(-1);
 				salvarPlacar(placar);
 				setarPartidaTimePlacar();
 				partidaTimePlacarDao.salvar(partidaTimePlacar);
@@ -203,7 +237,7 @@ public class ChaveMB {
 				salvarPartida();
 			}
 			placar = new Placar();
-			placar.setResultado(0);
+			placar.setResultado(-1);
 			salvarPlacar(placar);
 			setarPartidaTimePlacar();
 			partidaTimePlacar.setTime(times.get(i));
@@ -246,35 +280,85 @@ public class ChaveMB {
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
-		Time time = (Time) event.getTreeNode().getData();
-		for (Partida partida : chave.getPartidas()) {
-			for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
-
-				PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
-				if (ptpAtual.getTime() != null) {
-					if (ptpAtual.getTime().equals(time)) {
-						try {
-							PartidaTimePlacar proximaPtp = partida.getPartidasTimesPlacares().get(i + 1);
-							if (proximaPtp.getTime() != null) {
-								this.partida = partida;
-							}
-						} catch (IndexOutOfBoundsException ex) {
-							try {
-								PartidaTimePlacar ptpAnterior = partida.getPartidasTimesPlacares().get(i - 1);
-								if (ptpAnterior.getTime() != null) {
-									this.partida = partida;
+		time = (Time) selectedNode.getData();
+		meuPai = selectedNode.getParent();
+		if (!time.getNome().equals("")) {
+			if (!meuPai.getData().equals(time)) {
+				for (Partida partida : chave.getPartidas()) {
+					for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
+						PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
+						if (ptpAtual.getTime() != null) {
+							if (ptpAtual.getTime().equals(time)) {
+								if (ptpAtual.getPlacar().getResultado() == -1) {
+									try {
+										proximaPtp = partida.getPartidasTimesPlacares().get(i + 1);
+										if (proximaPtp.getTime() != null) {
+											this.partida = partida;
+											this.partidaTimePlacar = ptpAtual;
+											this.placar = partidaTimePlacar.getPlacar();
+											RequestContext.getCurrentInstance()
+													.execute("PF('partidaChavDialog').show()");
+										}
+									} catch (IndexOutOfBoundsException ex) {
+										try {
+											proximaPtp = partida.getPartidasTimesPlacares().get(i - 1);
+											if (proximaPtp.getTime() != null) {
+												this.partida = partida;
+												this.partidaTimePlacar = ptpAtual;
+												this.placar = partidaTimePlacar.getPlacar();
+												RequestContext.getCurrentInstance()
+														.execute("PF('partidaChavDialog').show()");
+											}
+										} catch (IndexOutOfBoundsException ex2) {
+											ex2.printStackTrace();
+										}
+									}
 								}
-							} catch (IndexOutOfBoundsException ex2) {
-								ex2.printStackTrace();
 							}
 						}
-
 					}
 				}
 			}
 		}
-		event.getTreeNode().setSelected(false);
-		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()"); 
+	}
+
+	public void salvarPartidaPlacar() {
+		salvarPartida();
+		if (placar.getResultado() != -1) {
+			placarDao.update(placar);
+			if (placar.getResultado() > proximaPtp.getPlacar().getResultado()) {
+				if (meuPai.getType().equals(TIPO_CARREGADOR)) {
+					partidaTimePlacar = partidaTimePlacarDao.findById(((Time) (meuPai.getData())).getId());
+				} else {
+					partidaTimePlacar = procurarPartidaTimePlacar((Time) meuPai.getData());
+				}
+				partidaTimePlacar.setTime((Time) selectedNode.getData());
+				partidaTimePlacarDao.update(partidaTimePlacar);
+				chave = chaveDao.findById(chave.getId());
+				iniciarTreeNode();
+			}
+		}
+
+	}
+
+	private PartidaTimePlacar procurarPartidaTimePlacar(Time time) {
+		for (Partida partida : chave.getPartidas()) {
+			for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
+				PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
+				if (ptpAtual.getTime() != null) {
+					if (ptpAtual.getTime().equals(time)) {
+						if (ptpAtual.getPlacar().getResultado() == -1) {
+							return ptpAtual;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public void cancelarChave() {
+
 	}
 
 	public TreeNode getRootNode() {
@@ -464,6 +548,30 @@ public class ChaveMB {
 
 	public void setSelectedNode(TreeNode selectedNode) {
 		this.selectedNode = selectedNode;
+	}
+
+	public String getTIPO_CARREGADOR() {
+		return TIPO_CARREGADOR;
+	}
+
+	public String getTIPO_TIME() {
+		return TIPO_TIME;
+	}
+
+	public PartidaTimePlacar getProximaPtp() {
+		return proximaPtp;
+	}
+
+	public void setProximaPtp(PartidaTimePlacar proximaPtp) {
+		this.proximaPtp = proximaPtp;
+	}
+
+	public Time getTime() {
+		return time;
+	}
+
+	public void setTime(Time time) {
+		this.time = time;
 	}
 
 }

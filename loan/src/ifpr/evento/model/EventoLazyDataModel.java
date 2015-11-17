@@ -61,7 +61,13 @@ public class EventoLazyDataModel extends LazyDataModel<Evento> {
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP) || pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
 			source = eventoDao.listByTecnico(first, pageSize, pessoaLogada);
 			this.setRowCount(eventoDao.getRowCountTecnico(pessoaLogada));
-		} else {
+		} 
+		if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM))
+		{
+			source = eventoDao.listByTecnicoAdm(first, pageSize);
+			this.setRowCount(eventoDao.getRowCountTecnicoAdm());
+		}
+		else {
 			source = eventoDao.list(first, pageSize);
 			this.setRowCount(eventoDao.getRowCount());
 		}

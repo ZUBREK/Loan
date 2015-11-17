@@ -2,6 +2,7 @@ package ifpr.evento.dao;
 
 import ifpr.dao.GenericDao;
 import ifpr.evento.Evento;
+import ifpr.evento.TipoEvento;
 import ifpr.pessoa.Pessoa;
 
 import java.util.List;
@@ -49,6 +50,25 @@ public class EventoDaoImpl  extends GenericDao<Evento> implements EventoDao {
 		EntityManager em = emf.createEntityManager();
 		Query query = em.createQuery("SELECT count(a) from Evento a where a.responsavel = :pessoa");
 		query.setParameter("pessoa", pessoa);
+		return Integer.parseInt(query.getSingleResult().toString());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Evento> listByTecnicoAdm(int first, int size) {
+		EntityManager em = emf.createEntityManager();
+		Query query = em.createQuery("SELECT a from Evento a where a.tipo = :tipo  order by a.id desc");
+		query.setParameter("tipo", TipoEvento.MAPAMODALIDADE);
+		query.setFirstResult(first);
+		query.setMaxResults(size);
+		return query.getResultList();
+	}
+
+	@Override
+	public int getRowCountTecnicoAdm() {
+		EntityManager em = emf.createEntityManager();
+		Query query = em.createQuery("SELECT count(a) from Evento a where a.tipo = :tipo");
+		query.setParameter("tipo", TipoEvento.MAPAMODALIDADE);
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 	

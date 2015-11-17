@@ -18,6 +18,7 @@ import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.estudante.dao.EstudanteDao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -86,15 +87,16 @@ public class EventoMB {
 	private boolean isTecAdm;
 
 	private boolean isAdm;
+	
+	private boolean isTecEsp;
 
-	private boolean disableTipoPessoa;
-
-	private boolean isAcesso;
 
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
 		isAdm = false;
 		isUpdate = true;
+		isTecAdm = false;
+		isTecEsp = false;
 		tipoEventoSelecionado = TipoEvento.REFEICAO;
 		tipoPessoaSelecionado = TipoPessoa.ROLE_ADMIN;
 		estudantesSelecionados = new ArrayList<Estudante>();
@@ -121,7 +123,8 @@ public class EventoMB {
 			isTecAdm = true;
 		else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
 			isAdm = true;
-		disableTipoPessoa = true;
+		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP) || pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD))
+			isTecEsp = true;
 	}
 
 	public void cancelar() {
@@ -133,6 +136,14 @@ public class EventoMB {
 			removerPessoa();
 			modalidade = null;
 			campus = null;
+			isUpdate = true;
+		}
+	}
+	
+	public void cancelarEventoAdm(){
+		if (isUpdate == true) {
+			evento = null;
+		} else {
 			isUpdate = true;
 		}
 	}
@@ -150,25 +161,6 @@ public class EventoMB {
 
 	}
 
-	public void salvarEventoAdm() {
-
-		evento.setResponsavel(pessoaLogada);
-		evento.setTipo(tipoEventoSelecionado);
-		eventoDao.salvar(evento);
-		List<Pessoa> pessoas = pessoaDao.findByRole(tipoPessoaSelecionado);
-		EventoPessoa evp;
-		for (int i = 0; i < pessoas.size(); ++i) {
-			evp = new EventoPessoa();
-			evp.setPessoa(pessoas.get(i));
-			evp.setEvento(evento);
-			eventoPessoaDao.salvar(evp);
-			evento.getEventoPessoas().add(evp);
-		}
-		eventoDao.update(evento);
-
-		tipoEventoSelecionado = TipoEvento.REFEICAO;
-		tipoPessoaSelecionado = TipoPessoa.ROLE_ESTUDANTE;
-	}
 
 	public void adicionarEstudante() {
 		evento.setResponsavel(pessoaLogada);
@@ -186,20 +178,29 @@ public class EventoMB {
 
 	}
 
-	public void adicionarPessoas() {
-
-		evento.setResponsavel(pessoaLogada);
-		evento.setTipo(tipoEventoSelecionado);
-		eventoDao.salvar(evento);
-		EventoPessoa evp;
-		for (int i = 0; i < pessoasSelecionadas.size(); ++i) {
-			evp = new EventoPessoa();
-			evp.setPessoa(pessoasSelecionadas.get(i));
-			evp.setEvento(evento);
-			eventoPessoaDao.salvar(evp);
-			evento.getEventoPessoas().add(evp);
+	
+	public void salvarEventoRef(){
+		
+		if (evento.getId() != null) {
+			eventoDao.update(evento);
+		} else {
+			evento.setTipo(TipoEvento.REFEICAO);
+			evento.setResponsavel(pessoaLogada);
+			eventoDao.salvar(evento);
 		}
-
+	}
+	
+	public void salvarEvtArquivo(){
+		if (evento.getId() != null) {
+			eventoDao.update(evento);
+		} else {
+			   //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			   //Date date = new Date();
+			evento.setTipo(TipoEvento.MAPAMODALIDADE);
+			evento.setDataHoraInicio(new Date());
+			evento.setResponsavel(pessoaLogada);
+			eventoDao.salvar(evento);
+		}
 	}
 
 	public void removerPessoa() {
@@ -411,13 +412,7 @@ public class EventoMB {
 		this.tipoPessoaSelecionado = tipoPessoa;
 	}
 
-	public boolean isDisableTipoPessoa() {
-		return disableTipoPessoa;
-	}
-
-	public void setDisableTipoPessoa(boolean disableTipoPessoa) {
-		this.disableTipoPessoa = disableTipoPessoa;
-	}
+	
 
 	public boolean isAdm() {
 		return isAdm;
@@ -439,13 +434,19 @@ public class EventoMB {
 		return pessoaDao.findByRole(tipoPessoaSelecionado);
 	}
 
-	public boolean isAcesso() {
-		return isAcesso;
+	public boolean isTecEsp() {
+		return isTecEsp;
 	}
 
-	public void setAcesso(boolean isAcesso) {
-		this.isAcesso = isAcesso;
+	public void setTecEsp(boolean isTecEsp) {
+		this.isTecEsp = isTecEsp;
 	}
+
+	public void setTipoEventoSelecionado(TipoEvento tipoEventoSelecionado) {
+		this.tipoEventoSelecionado = tipoEventoSelecionado;
+	}
+
+
 
 
 }

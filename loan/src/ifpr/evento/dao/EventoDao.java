@@ -14,5 +14,9 @@ public interface EventoDao extends Dao<Evento> {
 
 	public int getRowCountTecnico(Pessoa pessoa);
 	
+	public List<Evento> listByTecnicoAdm(int first,int size);
+
+	public int getRowCountTecnicoAdm();
+	
 	
 }

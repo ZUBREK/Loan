@@ -126,7 +126,7 @@
 						<p:commandButton id="salvarPartidaBt" value="Salvar" icon="salvar16"
 							actionListener="#{chaveMB.salvarPartidaPlacar}"
 							update="editarChavDialog"
-							oncomplete="if(!args.validationFailed) #{chaveMB.onCompleteSalvarPartidaBt()}">
+							oncomplete="if(!args.validationFailed) PF('partidaChavDialog').hide()">
 							<p:resetInput target=":part_form" />
 						</p:commandButton>
 

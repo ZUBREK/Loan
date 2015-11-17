@@ -133,12 +133,6 @@ public class ChaveMB {
 		}
 	}
 
-	public void onCompleteSalvarPartidaBt() {
-		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
-		RequestContext.getCurrentInstance().execute("PF('editarChavDialog').show()");
-
-	}
-
 	public void pegarTimes() {
 		times = new ArrayList<>();
 		List<Partida> partidas = chave.getPartidas();

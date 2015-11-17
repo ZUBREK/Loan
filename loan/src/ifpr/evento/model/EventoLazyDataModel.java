@@ -62,7 +62,7 @@ public class EventoLazyDataModel extends LazyDataModel<Evento> {
 			source = eventoDao.listByTecnico(first, pageSize, pessoaLogada);
 			this.setRowCount(eventoDao.getRowCountTecnico(pessoaLogada));
 		} 
-		if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM))
+		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM))
 		{
 			source = eventoDao.listByTecnicoAdm(first, pageSize);
 			this.setRowCount(eventoDao.getRowCountTecnicoAdm());

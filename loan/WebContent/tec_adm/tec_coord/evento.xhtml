@@ -41,17 +41,14 @@
 					<p:menuitem value="Visualizar" update=":visEventoDlg"
 						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
 
-					<p:menuitem value="Editar" update=":eventoDlg :confirm" icon="editar16"
-						oncomplete="PF('eventoDialog').show()">
+					<p:menuitem value="Editar" update="evento_form:grid :confirm" 
+						icon="editar16" oncomplete="PF('eventoDialog').show()">
 
-						<f:setPropertyActionListener value="#{evento}"
-							target="#{eventoMB.evento}" />
 
 					</p:menuitem>
 
 					<p:menuitem value="Remover" update="eventoTable :confirm"
-						 icon="remover16"
-						oncomplete="PF('eventoConfirmDialog').show()" />
+						icon="remover16" oncomplete="PF('eventoConfirmDialog').show()" />
 
 				</p:contextMenu>
 
@@ -61,25 +58,23 @@
 					<p:menuitem value="Visualizar" update=":visEventoDlg"
 						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
 
-					<p:menuitem value="Editar" update=":eventoAdmDlg :confirm" icon="editar16"
-						oncomplete="PF('eventoAdmDialog').show()">
-
-						<f:setPropertyActionListener value="#{evento}" 
-							target="#{eventoMB.evento}" />
+					<p:menuitem value="Editar" update="eventoAdmDlg :confirm" 
+						icon="editar16" oncomplete="PF('eventoAdmDialog').show()">
 
 					</p:menuitem>
 
-					<p:menuitem value="Remover" update="eventoTable :confirm" icon="remover16"
-						oncomplete="PF('eventoConfirmDialog').show()" />
+					<p:menuitem value="Remover" update="eventoTable :confirm"
+						icon="remover16" oncomplete="PF('eventoConfirmDialog').show()" />
 
 				</p:contextMenu>
-				
+
 				<p:contextMenu id="contextMenuTecAdm" for="eventoTable"
 					rendered="#{eventoMB.tecAdm}">
 
 					<p:menuitem value="Visualizar" update=":visEventoTecAdmDlg"
-						icon="ui-icon-search" oncomplete="PF('visEventoTecAdmDialog').show()" />
-						
+						icon="ui-icon-search"
+						oncomplete="PF('visEventoTecAdmDialog').show()" />
+
 				</p:contextMenu>
 
 
@@ -97,6 +92,9 @@
 
 						</p:outputPanel>
 					</f:facet>
+					<!-- <p:ajax event="rowSelect" update=":evento_form :eventoAdm_form" /> -->
+					
+					<!--  <p:ajax event="rowUnselect" update="@this" /> -->
 
 					<p:column headerText="Nome" filterBy="#{evento.nome}"
 						filterMatchMode="contains">
@@ -128,12 +126,13 @@
 
 			<h:form id="evento_form">
 
-				<p:panelGrid columns="2">
+				<p:panelGrid id="grid" columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60" maxlength="60"
-						required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
+						maxlength="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
 
@@ -207,7 +206,8 @@
 
 						</p:selectCheckboxMenu>
 
-						<p:spacer width="10px" /><p:spacer width="10px" />
+						<p:spacer width="10px" />
+						<p:spacer width="10px" />
 						<p:spacer />
 						<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes"
 							disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
@@ -269,12 +269,13 @@
 
 			<h:form id="eventoArq_form">
 
-				<p:panelGrid columns="2">
+				<p:panelGrid id="grid" columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60" maxlength="60"
-						required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
+						maxlength="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
 
@@ -313,17 +314,18 @@
 		</p:dialog>
 
 		<p:dialog id="eventoAdmDlg" widgetVar="eventoAdmDialog"
-			header="Dados do evento" width="750" height="300" modal="true"
+			header="Dados do evento" width="750" height="200" modal="true" 
 			closable="false">
 
 			<h:form id="eventoAdm_form">
 
-				<p:panelGrid columns="2">
+				<p:panelGrid id="grid" columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60" maxlength="60"
-						required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
+						maxlength="60" required="true" 
+						requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
 
@@ -428,9 +430,10 @@
 			</h:form>
 
 		</p:dialog>
-		
+
 		<p:dialog id="visEventoTecAdmDlg" widgetVar="visEventoTecAdmDialog"
-					header="Informações sobre o evento" width="750" height="300" modal="true">
+			header="Informações sobre o evento" width="750" height="300"
+			modal="true">
 
 			<h:form id="visEventoTecAdm_form">
 
@@ -443,7 +446,7 @@
 					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
 
 					<p:outputLabel id="descricao" value="#{eventoMB.evento.descricao}" />
-						
+
 					<p:outputLabel value="Tipo:" />
 
 					<p:outputLabel value="#{eventoMB.evento.tipo.label}" />
@@ -460,11 +463,11 @@
 
 
 				</p:panelGrid>
-			
+
 			</h:form>
 
 		</p:dialog>
-		
+
 		<p:confirmDialog id="confirm" widgetVar="eventoConfirmDialog"
 			global="true" header="Confirma exclusão do evento?" showEffect="fade"
 			hideEffect="fade" severity="alert"
@@ -509,6 +512,6 @@
 		</p:confirmDialog>
 
 	</ui:define>
-	
+
 
 </ui:composition>

@@ -23,12 +23,12 @@
 
 			<c:choose>
 				<c:when test="#{loginControllerMB.logado}">
-					<div id="header">
+					<div id="header" >
 						<ui:include src="/layout/headers/header.xhtml" />
 					</div>
 				</c:when>
 				<c:otherwise>
-					<div id="headerLogar">
+					<div id="headerLogar" >
 						<ui:include src="/layout/headers/headerLogar.xhtml" />
 					</div>
 				</c:otherwise>

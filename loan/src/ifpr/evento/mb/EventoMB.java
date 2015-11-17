@@ -138,6 +138,7 @@ public class EventoMB {
 			campus = null;
 			isUpdate = true;
 		}
+
 	}
 	
 	public void cancelarEventoAdm(){
@@ -194,8 +195,6 @@ public class EventoMB {
 		if (evento.getId() != null) {
 			eventoDao.update(evento);
 		} else {
-			   //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			   //Date date = new Date();
 			evento.setTipo(TipoEvento.MAPAMODALIDADE);
 			evento.setDataHoraInicio(new Date());
 			evento.setResponsavel(pessoaLogada);
@@ -411,8 +410,6 @@ public class EventoMB {
 	public void setTipoPessoaSelecionado(TipoPessoa tipoPessoa) {
 		this.tipoPessoaSelecionado = tipoPessoa;
 	}
-
-	
 
 	public boolean isAdm() {
 		return isAdm;

@@ -125,7 +125,6 @@ public class CrachasPdf {
 				doc.newPage();
 			}
 			doc.close();
-			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -189,7 +188,6 @@ public class CrachasPdf {
 				doc.newPage();
 			}
 			doc.close();
-			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -320,8 +318,9 @@ public class CrachasPdf {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
 			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasJIFPR.pdf");
 		} catch (FileNotFoundException e) {
-			System.out.println("Erro no download do arquivo!");
+			System.out.println("Erro no download de imagem");
 		}
+
 		return arqStreamed;
 	}
 
@@ -343,22 +342,6 @@ public class CrachasPdf {
 
 	public void setMoldura(Image moldura) {
 		this.moldura = moldura;
-	}
-
-	public Image getLogo() {
-		return logo;
-	}
-
-	public void setLogo(Image logo) {
-		this.logo = logo;
-	}
-
-	public QRCode getQrCode() {
-		return qrCode;
-	}
-
-	public void setQrCode(QRCode qrCode) {
-		this.qrCode = qrCode;
 	}
 
 }

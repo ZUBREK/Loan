@@ -52,7 +52,6 @@
 								target="#{chaveMB.chave}" />
 						</p:commandButton>
 					</p:column>
-
 				</p:dataTable>
 
 			</h:form>
@@ -62,6 +61,13 @@
 			closable="false">
 
 			<h:form id="chav_form">
+				<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}" filter="true"
+						filterMatchMode="startsWith" required="true"
+						requiredMessage="Local é obrigatório!"
+						converter="#{timeConverter}">
+						<f:selectItems value="#{chaveMB.times}" var="team"
+							itemLabel="#{team.nome}" itemValue="#{team}" />
+				</p:selectOneMenu>
 				<p:tree value="#{chaveMB.rootNode}" var="node"
 					selection="#{chaveMB.selectedNode}"
 					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
@@ -87,7 +93,6 @@
 					oncomplete="PF('editarChavDialog').hide()"
 					actionListener="#{chaveMB.cancelarChave()}">
 				</p:commandButton>
-
 			</h:form>
 		</p:dialog>
 
@@ -126,10 +131,9 @@
 						<p:commandButton id="salvarPartidaBt" value="Salvar" icon="salvar16"
 							actionListener="#{chaveMB.salvarPartidaPlacar}"
 							update="editarChavDialog"
-							oncomplete="if(!args.validationFailed) PF('partidaChavDialog').hide()">
+							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
 							<p:resetInput target=":part_form" />
 						</p:commandButton>
-
 
 						<p:commandButton id="cancelarPartidaBt" value="Cancelar"
 							icon="cancelar16" onsuccess="PF('partidaChavDialog').hide()"

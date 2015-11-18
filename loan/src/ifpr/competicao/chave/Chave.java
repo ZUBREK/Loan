@@ -41,7 +41,6 @@ public class Chave {
 
 	@JoinColumn(name = "id_chave", referencedColumnName = "id_chave")
 	@OneToMany(cascade = CascadeType.REMOVE)
-	
 	private List<Partida> partidas;
 
 	private boolean isPrimeiraFase;

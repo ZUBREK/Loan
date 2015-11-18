@@ -57,16 +57,13 @@
 			</h:form>
 		</p:panel>
 		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog" 
-			header="Partidas da chave:" width="1000" height="500" modal="true"
-			closable="false">
-
+			header="Partidas da chave:" width="1000" height="500" modal="true">
 			<h:form id="chav_form">
-				<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}" filter="true"
-						filterMatchMode="startsWith" required="true"
-						requiredMessage="Local é obrigatório!"
+				<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
 						converter="#{timeConverter}">
 						<f:selectItems value="#{chaveMB.times}" var="team"
 							itemLabel="#{team.nome}" itemValue="#{team}" />
+						<p:ajax event="change" update=":chav_form"/>
 				</p:selectOneMenu>
 				<p:tree value="#{chaveMB.rootNode}" var="node"
 					selection="#{chaveMB.selectedNode}"

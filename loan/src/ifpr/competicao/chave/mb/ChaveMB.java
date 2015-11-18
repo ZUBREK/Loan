@@ -147,6 +147,7 @@ public class ChaveMB {
 
 	private void gerarNodeTipoMataMata() {
 		pegarTimes();
+		
 		Collections.reverse(times);
 		int i2 = 0;
 		for (int i = 0; i < times.size(); i++) {
@@ -172,26 +173,45 @@ public class ChaveMB {
 		});
 		for (Partida partida : chave.getPartidas()) {
 			List<PartidaTimePlacar> ptps = partida.getPartidasTimesPlacares();
-			Collections.sort(ptps, new Comparator<PartidaTimePlacar>() {
-				@Override
-				public int compare(PartidaTimePlacar ptp1, PartidaTimePlacar ptp2) {
-					return ptp1.getId() - ptp2.getId();
-				}
-
-			});
-
-			for (PartidaTimePlacar partidaTimePlacar : ptps) {
-				Time time = partidaTimePlacar.getTime();
-				if (time == null) {
-					time = new Time();
-					time.setNome("");
-
-					time.setId(partidaTimePlacar.getId());
-				}
-				times.add(time);
+			if (!chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
+				Collections.sort(ptps, new Comparator<PartidaTimePlacar>() {
+					@Override
+					public int compare(PartidaTimePlacar ptp1, PartidaTimePlacar ptp2) {
+						return ptp1.getId() - ptp2.getId();
+					}
+				});
+				adicionarItensLista(ptps);
+			} else if (verificarTimeEmPtps(ptps)) {
+				adicionarItensLista(ptps);
 			}
 		}
 		qtdTimes = times.size();
+	}
+
+	private boolean verificarTimeEmPtps(List<PartidaTimePlacar> ptps) {
+		for (PartidaTimePlacar partidaTimePlacar : ptps) {
+			Time time = partidaTimePlacar.getTime();
+			if (time != null) {
+				if (time.equals(timeSelectOne)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void adicionarItensLista(List<PartidaTimePlacar> ptps) {
+		for (PartidaTimePlacar partidaTimePlacar : ptps) {
+			Time time = partidaTimePlacar.getTime();
+			if (time == null) {
+				time = new Time();
+				time.setNome("");
+
+				time.setId(partidaTimePlacar.getId());
+			}
+			times.add(time);
+		}
+
 	}
 
 	public void criar() {
@@ -501,6 +521,7 @@ public class ChaveMB {
 	}
 
 	public List<Time> getTimes() {
+		
 		return times;
 	}
 

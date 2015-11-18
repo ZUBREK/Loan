@@ -11,17 +11,17 @@ import javax.faces.convert.ConverterException;
 import ifpr.competicao.time.Time;
 import ifpr.competicao.time.dao.TimeDao;
 
-@ManagedBean(name = "modalidadeConverter")
+@ManagedBean(name = "timeConverter")
 @ApplicationScoped
 public class TimeConverter implements Converter {
 
-	@ManagedProperty(value = "#{modalidadeDao}")
-	private TimeDao modalidadeDao;
+	@ManagedProperty(value = "#{timeDao}")
+	private TimeDao timeDao;
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
 		if (value != null && !value.isEmpty() && !value.equalsIgnoreCase("Selecione um")) {
-			return modalidadeDao.pesquisarPorNome(value).get(0);
+			return timeDao.pesquisarPorNome(value).get(0);
 		}
 		return null;
 	}
@@ -33,12 +33,12 @@ public class TimeConverter implements Converter {
 		return null;
 	}
 
-	public TimeDao getModalidadeDao() {
-		return modalidadeDao;
+	public TimeDao getTimeDao() {
+		return timeDao;
 	}
 
-	public void setModalidadeDao(TimeDao modalidadeDao) {
-		this.modalidadeDao = modalidadeDao;
+	public void setTimeDao(TimeDao timeDao) {
+		this.timeDao = timeDao;
 	}
 
 }

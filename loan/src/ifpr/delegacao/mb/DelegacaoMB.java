@@ -8,7 +8,7 @@ import ifpr.delegacao.delegacaoPessoa.DelegacaoPessoa;
 import ifpr.delegacao.delegacaoPessoa.dao.DelegacaoPessoaDao;
 import ifpr.delegacao.delegacaoPessoa.mb.DelegacaoPessoaMB;
 import ifpr.delegacao.model.DelegacaoLazyDataModel;
-import ifpr.geradorPdf.CertificadosPdf;
+import ifpr.geradorPdf.DeclaracoesPdf;
 import ifpr.geradorPdf.CrachasPdf;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
@@ -68,8 +68,8 @@ public class DelegacaoMB {
 	@ManagedProperty(value = "#{crachasPdf}")
 	public CrachasPdf crachasPdf;
 
-	@ManagedProperty(value = "#{certificadosPdf}")
-	public CertificadosPdf certificadosPdf;
+	@ManagedProperty(value = "#{declaracoesPdf}")
+	public DeclaracoesPdf declaracoesPdf;
 
 	public DelegacaoMB() {
 
@@ -169,8 +169,8 @@ public class DelegacaoMB {
 		crachasPdf.gerarPdfDelegacao(delegacaoDao.listarPessoas(delegacao));
 	}
 
-	public void gerarCertificados(Delegacao delegacao) {
-		certificadosPdf.gerarCertificados(delegacaoDao.listarPessoas(delegacao));
+	public void gerarDeclaracoes(Delegacao delegacao) {
+		declaracoesPdf.gerarDeclaracoes(delegacaoDao.listarPessoas(delegacao));
 	}
 
 	public void marcarChefe() {
@@ -297,12 +297,12 @@ public class DelegacaoMB {
 		this.crachasPdf = crachasPdf;
 	}
 
-	public CertificadosPdf getCertificadosPdf() {
-		return certificadosPdf;
+	public DeclaracoesPdf getDeclaracoesPdf() {
+		return declaracoesPdf;
 	}
 
-	public void setCertificadosPdf(CertificadosPdf certificadosPdf) {
-		this.certificadosPdf = certificadosPdf;
+	public void setDeclaracoesPdf(DeclaracoesPdf declaracoesPdf) {
+		this.declaracoesPdf = declaracoesPdf;
 	}
-
+	
 }

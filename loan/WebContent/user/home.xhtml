@@ -24,6 +24,15 @@
 					<p:column headerText="Seus Dados:">
 						<h:outputText value="#{atrib}" />
 					</p:column>
+					<p:column headerText="Relatorio Final" width="70">
+
+						<p:commandButton id="gerarRelatorioFinal" icon="pdf16" value=" "
+							style="margin-left: 20px;" ajax="false"
+							actionListener="#{homeMB.gerarRelatorio()}" 
+							styleClass="apenasIcone">
+							<p:fileDownload id="download" value="#{relatorioFinal.arqStreamed}" />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 			</h:form>
 

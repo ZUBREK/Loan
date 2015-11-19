@@ -8,7 +8,7 @@
 
 	<ui:define name="body">
 
-		<p:growl id="msg" />
+		<p:growl id="msg" showDetail="true" />
 		<p:panel id="painelPrincipal"
 			header="Gerenciamento de Tec. Administrativos">
 
@@ -75,14 +75,14 @@
 			modal="true" closable="false">
 
 			<h:form id="tecadm_form">
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{tecnicoAdmMB.tecnicoAdm.nome}" maxlength="60"
 						size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
-					<p:message for="nome" />
+		
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
@@ -95,16 +95,14 @@
 
 					</p:inputText>
 
-					<p:message for="email" />
-
-					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
+					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape"  />
 
 					<p:inputText id="codSiape" value="#{tecnicoAdmMB.tecnicoAdm.siape}"
-						size="50" maxlength="20" required="true"
+						size="50" maxlength="20" required="true" 
 						requiredMessage="Siape é obrigatório!" />
-					<p:message for="codSiape" />
+					
 
-					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+					<p:outputLabel id="campusLb" value="Câmpus:" />
 
 					<p:selectOneMenu id="campus" value="#{tecnicoAdmMB.campus}"
 						filter="true" filterMatchMode="startsWith" required="true"
@@ -116,7 +114,7 @@
 						<f:selectItems value="#{tecnicoAdmMB.listaCampus}" var="camp"
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 					</p:selectOneMenu>
-					<p:message for="campus" />
+					
 
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"

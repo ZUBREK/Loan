@@ -21,9 +21,11 @@ public class LoginControllerMB {
 	private PessoaDao pessoaDao;
 	
 	public Pessoa getPessoaLogada() {
+		
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		pessoaLogada = pessoaDao.findByLogin(user.getUsername());
+		
 		return pessoaLogada;
 	}
 

@@ -4,6 +4,8 @@ import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.evento.Evento;
 import ifpr.evento.TipoEvento;
+import ifpr.evento.arquivo.ArquivoEvento;
+import ifpr.evento.arquivo.dao.ArquivoEventoDao;
 import ifpr.evento.dao.EventoDao;
 import ifpr.evento.eventoPessoa.EventoPessoa;
 import ifpr.evento.eventoPessoa.dao.EventoPessoaDao;
@@ -16,7 +18,14 @@ import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +35,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @ManagedBean(name = "eventoMB")
 @ViewScoped
@@ -60,6 +73,15 @@ public class EventoMB {
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
 
+	@ManagedProperty(value = "#{arquivoEventoDao}")
+	private ArquivoEventoDao arquivoEventoDao;
+
+	private StreamedContent arqStreamed;
+
+	private List<ArquivoEvento> arquivos;
+
+	private ArquivoEvento arquivoEvento;
+
 	private List<Campus> listaCampus;
 
 	private Campus campus;
@@ -87,9 +109,10 @@ public class EventoMB {
 	private boolean isTecAdm;
 
 	private boolean isAdm;
-	
+
 	private boolean isTecEsp;
 
+	private final String CAMINHO_ARQUIVO_EVENTO = "C:/home/loan_docs/evento";
 
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
@@ -123,7 +146,8 @@ public class EventoMB {
 			isTecAdm = true;
 		else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
 			isAdm = true;
-		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP) || pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD))
+		else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)
+				|| pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD))
 			isTecEsp = true;
 	}
 
@@ -140,8 +164,8 @@ public class EventoMB {
 		}
 
 	}
-	
-	public void cancelarEventoAdm(){
+
+	public void cancelarEventoAdm() {
 		if (isUpdate == true) {
 			evento = null;
 		} else {
@@ -157,11 +181,10 @@ public class EventoMB {
 			evento.setTipo(TipoEvento.TREINO);
 			evento.setResponsavel(pessoaLogada);
 			eventoDao.salvar(evento);
-
 		}
+		isUpdate = true;
 
 	}
-
 
 	public void adicionarEstudante() {
 		evento.setResponsavel(pessoaLogada);
@@ -179,9 +202,8 @@ public class EventoMB {
 
 	}
 
-	
-	public void salvarEventoRef(){
-		
+	public void salvarEventoRef() {
+
 		if (evento.getId() != null) {
 			eventoDao.update(evento);
 		} else {
@@ -190,8 +212,8 @@ public class EventoMB {
 			eventoDao.salvar(evento);
 		}
 	}
-	
-	public void salvarEvtArquivo(){
+
+	public void salvarEvtArquivo() {
 		if (evento.getId() != null) {
 			eventoDao.update(evento);
 		} else {
@@ -206,6 +228,99 @@ public class EventoMB {
 		eventoPessoaDao.remover(eventoPessoa);
 		evento.getEventoPessoas().remove(eventoPessoa);
 		eventoDao.remover(evento);
+	}
+
+	public String popularArquivos() {
+		arquivos = arquivoEventoDao.pesquisarPorEvento(evento);
+		return "";
+	}
+
+	public String procurarArquivo() {
+		try {
+			eventoPessoa = eventoPessoaDao.pesquisarPorEventoPessoa(evento,
+					pessoaLogada);
+			arquivoEvento = arquivoEventoDao
+					.pesquisarPorEventoPessoa(eventoPessoa);
+		} catch (Exception nr) {
+
+		}
+		return "";
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+		if (eventoPessoa == null) {
+			eventoPessoa = new EventoPessoa();
+			eventoPessoa.setEvento(evento);
+			eventoPessoa.setPessoa(pessoaLogada);
+			eventoPessoa.setDataHora(new Date());
+			eventoPessoaDao.salvar(eventoPessoa);
+			
+		}
+		if(arquivoEvento == null){
+			arquivoEvento = new ArquivoEvento();
+		}
+		try {
+			TecnicoAdministrativo tecAdm = (TecnicoAdministrativo) pessoaLogada;
+			String nomeArquivoStreamed = tecAdm.getCampus().toString() + "-"
+					+ event.getFile().getFileName();
+			byte[] arquivoByte = event.getFile().getContents();
+			String caminho = CAMINHO_ARQUIVO_EVENTO
+					+ "/"
+					+ pessoaLogada.getId()
+					+ nomeArquivoStreamed.substring(
+							nomeArquivoStreamed.lastIndexOf('.'),
+							nomeArquivoStreamed.length());
+			criarArquivoDisco(arquivoByte, caminho);
+			arquivoEvento.setEventoPessoa(eventoPessoa);
+			arquivoEvento.setUploader(pessoaLogada);
+			arquivoEvento.setCaminho(caminho);
+			arquivoEvento.setNome(nomeArquivoStreamed);
+			if (arquivoEvento.getId() != null) {
+				arquivoEventoDao.update(arquivoEvento);
+			} else {
+				arquivoEventoDao.salvar(arquivoEvento);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return;
+	}
+
+	public void apagarArquivo() {
+		if (arquivoEvento != null) {
+			File file = new File(arquivoEvento.getCaminho());
+			file.delete();
+			
+			arquivoEventoDao.remover(arquivoEvento);
+			eventoPessoaDao.remover(arquivoEvento.getEventoPessoa());
+			arquivoEvento = null;
+			eventoPessoa = null;
+		}
+		return;
+	}
+
+	private void criarArquivoDisco(byte[] bytes, String arquivoPath)
+			throws IOException {
+		File file = new File(CAMINHO_ARQUIVO_EVENTO);
+		file.mkdirs();
+		FileOutputStream fos;
+		fos = new FileOutputStream(arquivoPath);
+		fos.write(bytes);
+		fos.close();
+	}
+
+	public StreamedContent getArqStreamed() {
+		InputStream stream;
+		try {
+			stream = new FileInputStream(arquivoEvento.getCaminho());
+			arqStreamed = new DefaultStreamedContent(stream, null,
+					arquivoEvento.getNome());
+		} catch (FileNotFoundException e) {
+			System.out.println("Erro no download do arquivo");
+		}
+
+		return arqStreamed;
 	}
 
 	public EventoPessoa getEventoPessoa() {
@@ -289,9 +404,7 @@ public class EventoMB {
 	}
 
 	public List<Estudante> getEstudantes() {
-		// estudantes = estudanteDao.listarPorCampusModalidade(campus,
-		// modalidade);
-		estudantes = estudanteDao.listAsc();
+		estudantes = estudanteDao.listarPorCampusModalidade(campus, modalidade);
 		return estudantes;
 	}
 
@@ -443,7 +556,28 @@ public class EventoMB {
 		this.tipoEventoSelecionado = tipoEventoSelecionado;
 	}
 
+	public ArquivoEventoDao getArquivoEventoDao() {
+		return arquivoEventoDao;
+	}
 
+	public void setArquivoEventoDao(ArquivoEventoDao arquivoEventoDao) {
+		this.arquivoEventoDao = arquivoEventoDao;
+	}
 
+	public ArquivoEvento getArquivoEvento() {
+		return arquivoEvento;
+	}
+
+	public void setArquivoEvento(ArquivoEvento arquivoEvento) {
+		this.arquivoEvento = arquivoEvento;
+	}
+
+	public List<ArquivoEvento> getArquivos() {
+		return arquivos;
+	}
+
+	public void setArquivos(List<ArquivoEvento> arquivos) {
+		this.arquivos = arquivos;
+	}
 
 }

@@ -93,7 +93,7 @@ public class HomeMB {
 		salvarArquivo();
 	}
 
-	public void salvarArquivo() {
+	private void salvarArquivo() {
 		if (arquivo.getId() == null) {
 			arquivoDao.salvar(arquivo);
 		} else {
@@ -101,7 +101,7 @@ public class HomeMB {
 		}
 	}
 
-	public void criarArquivoDisco(byte[] bytes, String arquivo)
+	private void criarArquivoDisco(byte[] bytes, String arquivo)
 			throws IOException {
 		File file = new File(CAMINHO_FOTO_PERFIL);
 		file.mkdirs();

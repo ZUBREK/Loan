@@ -38,13 +38,12 @@
 
 				<p:contextMenu id="contextMenuTecEsp" for="eventoTable"
 					rendered="#{eventoMB.tecEsp}">
+
 					<p:menuitem value="Visualizar" update=":visEventoDlg"
 						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
 
-					<p:menuitem value="Editar" update="evento_form:grid :confirm" 
+					<p:menuitem value="Editar" update=":eventoDlg :confirm"
 						icon="editar16" oncomplete="PF('eventoDialog').show()">
-
-
 					</p:menuitem>
 
 					<p:menuitem value="Remover" update="eventoTable :confirm"
@@ -56,10 +55,12 @@
 					rendered="#{eventoMB.adm}">
 
 					<p:menuitem value="Visualizar" update=":visEventoDlg"
-						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
+						action="#{eventoMB.popularArquivos()}" icon="ui-icon-search"
+						oncomplete="PF('visEventoDialog').show()" />
 
-					<p:menuitem value="Editar" update="eventoAdmDlg :confirm" 
-						icon="editar16" oncomplete="PF('eventoAdmDialog').show()">
+					<p:menuitem value="Editar" update="eventoAdmDlg :confirm"
+						action="#{eventoMB.popularArquivos()}" icon="editar16"
+						oncomplete="PF('eventoAdmDialog').show()">
 
 					</p:menuitem>
 
@@ -72,7 +73,7 @@
 					rendered="#{eventoMB.tecAdm}">
 
 					<p:menuitem value="Visualizar" update=":visEventoTecAdmDlg"
-						icon="ui-icon-search"
+						icon="ui-icon-search" action="#{eventoMB.procurarArquivo()}"
 						oncomplete="PF('visEventoTecAdmDialog').show()" />
 
 				</p:contextMenu>
@@ -85,7 +86,6 @@
 					selection="#{eventoMB.evento}" selectionMode="single"
 					filteredValue="#{eventoMB.eventoFiltered}">
 
-
 					<f:facet name="header">
 						<p:outputPanel>
 							<p:outputLabel value="Eventos" />
@@ -93,7 +93,7 @@
 						</p:outputPanel>
 					</f:facet>
 					<!-- <p:ajax event="rowSelect" update=":evento_form :eventoAdm_form" /> -->
-					
+
 					<!--  <p:ajax event="rowUnselect" update="@this" /> -->
 
 					<p:column headerText="Nome" filterBy="#{evento.nome}"
@@ -206,8 +206,8 @@
 
 						</p:selectCheckboxMenu>
 
-						<p:spacer width="10px" />
-						<p:spacer width="10px" />
+						<p:spacer />
+						<p:spacer />
 						<p:spacer />
 						<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes"
 							disabled="#{empty eventoMB.campus or empty eventoMB.modalidade}"
@@ -314,7 +314,7 @@
 		</p:dialog>
 
 		<p:dialog id="eventoAdmDlg" widgetVar="eventoAdmDialog"
-			header="Dados do evento" width="750" height="200" modal="true" 
+			header="Dados do evento" width="750" height="200" modal="true"
 			closable="false">
 
 			<h:form id="eventoAdm_form">
@@ -324,7 +324,7 @@
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
-						maxlength="60" required="true" 
+						maxlength="60" required="true"
 						requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
@@ -461,12 +461,51 @@
 					<p:outputLabel id="dataFim"
 						value="#{eventoMB.evento.dataHoraFinal}" />
 
+					<p:outputLabel id="enviarMapaLb"
+						title="Enviar Mapa de Modalidades:" />
+
+					<p:fileUpload id="mapaModUpload" styleClass="fileupload-boleidous"
+						fileUploadListener="#{eventoMB.handleFileUpload}"
+						label="selecionar" auto="true"
+						update=":visEventoTecAdm_form:arquivo" multiple="false"
+						mode="advanced" cache="false" />
+
+					<p:outputLabel id="arquivoLb" value="Arquivo:" />
+
+					<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+						draggable="false" closable="false" resizable="false">
+						<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+					</p:dialog>
+
+					<p:commandLink id="arquivo" value="#{eventoMB.arquivoEvento.nome}"
+						ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+						<p:fileDownload value="#{eventoMB.arqStreamed}" />
+					</p:commandLink>
+
+					<p:commandButton id="excluirArquivo" value="Excluir"
+						icon="remover16" style="margin-left: 10px;" update=":visEventoTecAdm_form:arquivo"
+						actionListener="#{eventoMB.apagarArquivo()}">
+					</p:commandButton>
+
+
+					<script type="text/javascript">
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
+
 
 				</p:panelGrid>
 
 			</h:form>
 
 		</p:dialog>
+
+	
 
 		<p:confirmDialog id="confirm" widgetVar="eventoConfirmDialog"
 			global="true" header="Confirma exclusão do evento?" showEffect="fade"

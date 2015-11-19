@@ -5,6 +5,7 @@ import java.util.List;
 import ifpr.dao.GenericDao;
 import ifpr.evento.Evento;
 import ifpr.evento.eventoPessoa.EventoPessoa;
+import ifpr.pessoa.Pessoa;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -28,8 +29,17 @@ public class EventoPessoaDaoImpl  extends GenericDao<EventoPessoa> implements Ev
 		EntityManager em = emf.createEntityManager();
 		Query q = em.createQuery("select ep from EventoPessoa as ep where ep.evento = :evento");
 		q.setParameter("evento", evento);
-		List<EventoPessoa> lista = q.getResultList();
-		return lista;
+		return q.getResultList();
+	}
+
+	@Override
+	public EventoPessoa pesquisarPorEventoPessoa(Evento evento,
+			Pessoa pessoa) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select ep from EventoPessoa as ep where ep.evento = :evento and ep.pessoa = :pessoa");
+		q.setParameter("evento", evento);
+		q.setParameter("pessoa", pessoa);
+		return (EventoPessoa) q.getSingleResult();
 	}
 	
 	

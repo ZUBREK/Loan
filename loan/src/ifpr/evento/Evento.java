@@ -22,8 +22,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 
-//actionListener="#{buttonView.buttonAction}"
-
 
 @Entity
 @Table(name = "tbEvento")
@@ -60,6 +58,7 @@ public class Evento {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_hora_final_evento")
 	private Date dataHoraFinal;
+	
 
 	public Pessoa getResponsavel() {
 		return responsavel;

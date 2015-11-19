@@ -36,7 +36,7 @@
 					<p:column headerText="Visualizar" width="35">
 
 						<p:commandButton id="visualizarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":chav_form"
+							style="margin-left: 3px;" update=":editarChavDialog"
 							oncomplete="PF('editarChavDialog').show()"
 							action="#{chaveMB.iniciarTreeNode()}" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{chav}"
@@ -56,37 +56,39 @@
 
 			</h:form>
 		</p:panel>
-		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog" 
+		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
 			header="Partidas da chave:" width="1000" height="500" modal="true">
 			<h:form id="chav_form">
 				<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
-						converter="#{timeConverter}">
-						<f:selectItems value="#{chaveMB.times}" var="team"
-							itemLabel="#{team.nome}" itemValue="#{team}" />
-						<p:ajax event="change" update=":chav_form"/>
+					converter="#{timeConverter}" >
+					<p:ajax event="change" update="treeNodeChave"
+						listener="#{chaveMB.subjectSelectionChanged}" />
+					<f:selectItem itemLabel="Mostrar Todos" itemValue="Mostrar Todos" />
+					<f:selectItems value="#{chaveMB.timesSemNullSemDuplicado}"
+						var="team" itemLabel="#{team.nome}" itemValue="#{team}"/>
 				</p:selectOneMenu>
-				<p:tree value="#{chaveMB.rootNode}" var="node"
-					selection="#{chaveMB.selectedNode}"
-					rendered="#{not empty chaveMB.chave}" orientation="horizontal"
-					dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
-					id="treeNodeChave">
-					<p:treeNode type="default">
-						<h:outputText value="#{node}" />
-					</p:treeNode>
-					
-					<p:treeNode type="#{chaveMB.TIPO_CARREGADOR}">
-						<h:outputText value="#{node}" />
-					</p:treeNode>
-					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
-					
-					<p:treeNode type="#{chaveMB.TIPO_TIME}">
-						<h:outputText value="#{node}" />
-					</p:treeNode>
-					<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
-				</p:tree>
+					<p:tree value="#{chaveMB.rootNode}" var="node"
+						selection="#{chaveMB.selectedNode}"
+						rendered="#{not empty chaveMB.chave}" orientation="horizontal"
+						dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
+						id="treeNodeChave">
+						<p:treeNode type="default">
+							<h:outputText value="#{node}" />
+						</p:treeNode>
+
+						<p:treeNode type="#{chaveMB.TIPO_CARREGADOR}">
+							<h:outputText value="#{node}" />
+						</p:treeNode>
+						<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+
+						<p:treeNode type="#{chaveMB.TIPO_TIME}">
+							<h:outputText value="#{node}" />
+						</p:treeNode>
+						<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+					</p:tree>
 				<p:spacer height="10px" />
-				<p:commandButton id="cancelarChaveBt" value="Cancelar" icon="cancelar16"
-					immediate="true"
+				<p:commandButton id="cancelarChaveBt" value="Cancelar"
+					icon="cancelar16" immediate="true"
 					oncomplete="PF('editarChavDialog').hide()"
 					actionListener="#{chaveMB.cancelarChave()}">
 				</p:commandButton>
@@ -98,12 +100,13 @@
 			closable="false">
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
-				
-					<p:outputLabel id="resultadoLb" value="Pontos do #{chaveMB.time}:" for="resultado" />
+
+					<p:outputLabel id="resultadoLb" value="Pontos do #{chaveMB.time}:"
+						for="resultado" />
 
 					<p:inputText id="resultado" value="#{chaveMB.placar.resultado}"
 						required="true" requiredMessage="Preencha os pontos do time!" />
-				
+
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.partida.dataHora}"
@@ -125,8 +128,8 @@
 
 					<p:spacer height="10px" />
 					<f:facet name="footer">
-						<p:commandButton id="salvarPartidaBt" value="Salvar" icon="salvar16"
-							actionListener="#{chaveMB.salvarPartidaPlacar}"
+						<p:commandButton id="salvarPartidaBt" value="Salvar"
+							icon="salvar16" actionListener="#{chaveMB.salvarPartidaPlacar}"
 							update="editarChavDialog"
 							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
 							<p:resetInput target=":part_form" />
@@ -135,8 +138,8 @@
 						<p:commandButton id="cancelarPartidaBt" value="Cancelar"
 							icon="cancelar16" onsuccess="PF('partidaChavDialog').hide()"
 							update="editarChavDialog"
-							oncomplete="PF('editarChavDialog').show()"
-							immediate="true" actionListener="#{chaveMB.cancelar()}">
+							oncomplete="PF('editarChavDialog').show()" immediate="true"
+							actionListener="#{chaveMB.cancelar()}">
 							<p:resetInput target=":part_form" />
 						</p:commandButton>
 					</f:facet>

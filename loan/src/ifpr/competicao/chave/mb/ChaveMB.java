@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.validation.ConstraintViolationException;
 
 import org.primefaces.context.RequestContext;
@@ -71,6 +74,7 @@ public class ChaveMB {
 	private List<TreeNode> nodes;
 
 	private List<Time> times;
+	private List<Time> timesSemNullSemDuplicado;
 
 	private Modalidade modalidade;
 
@@ -147,7 +151,7 @@ public class ChaveMB {
 
 	private void gerarNodeTipoMataMata() {
 		pegarTimes();
-		
+
 		Collections.reverse(times);
 		int i2 = 0;
 		for (int i = 0; i < times.size(); i++) {
@@ -171,29 +175,51 @@ public class ChaveMB {
 				return p1.getId() - p2.getId();
 			}
 		});
-		for (Partida partida : chave.getPartidas()) {
+		for (Partida partida : partidas) {
 			List<PartidaTimePlacar> ptps = partida.getPartidasTimesPlacares();
-			if (!chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
-				Collections.sort(ptps, new Comparator<PartidaTimePlacar>() {
-					@Override
-					public int compare(PartidaTimePlacar ptp1, PartidaTimePlacar ptp2) {
-						return ptp1.getId() - ptp2.getId();
-					}
-				});
+			Collections.sort(ptps, new Comparator<PartidaTimePlacar>() {
+				@Override
+				public int compare(PartidaTimePlacar ptp1, PartidaTimePlacar ptp2) {
+					return ptp1.getId() - ptp2.getId();
+				}
+			});
+
+			if (!chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS) || timeSelectOne == null) {
 				adicionarItensLista(ptps);
 			} else if (verificarTimeEmPtps(ptps)) {
 				adicionarItensLista(ptps);
 			}
 		}
 		qtdTimes = times.size();
+		resetarListaSelectOne();
+		if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
+			setarListaSelectOneMenu();
+		}
+	}
+
+	private void setarListaSelectOneMenu() {
+		Set<Time> hs = new HashSet<>();
+		hs.addAll(times);
+		timesSemNullSemDuplicado.addAll(hs);
+		for (Time time : times) {
+			if (time.getNome().equals("")) {
+				timesSemNullSemDuplicado.remove(time);
+			}
+		}
+	}
+
+	public void resetarListaSelectOne() {
+		timesSemNullSemDuplicado = new ArrayList<>();
 	}
 
 	private boolean verificarTimeEmPtps(List<PartidaTimePlacar> ptps) {
 		for (PartidaTimePlacar partidaTimePlacar : ptps) {
 			Time time = partidaTimePlacar.getTime();
 			if (time != null) {
-				if (time.equals(timeSelectOne)) {
-					return true;
+				if (timeSelectOne != null) {
+					if (time.equals(timeSelectOne)) {
+						return true;
+					}
 				}
 			}
 		}
@@ -202,16 +228,14 @@ public class ChaveMB {
 
 	private void adicionarItensLista(List<PartidaTimePlacar> ptps) {
 		for (PartidaTimePlacar partidaTimePlacar : ptps) {
-			Time time = partidaTimePlacar.getTime();
-			if (time == null) {
-				time = new Time();
-				time.setNome("");
-
-				time.setId(partidaTimePlacar.getId());
+			Time time2 = partidaTimePlacar.getTime();
+			if (time2 == null) {
+				time2 = new Time();
+				time2.setNome("");
+				time2.setId(partidaTimePlacar.getId());
 			}
-			times.add(time);
+			times.add(time2);
 		}
-
 	}
 
 	public void criar() {
@@ -342,15 +366,38 @@ public class ChaveMB {
 		meuPai = selectedNode.getParent();
 		if (!time.getNome().equals("")) {
 			if (!meuPai.getData().equals(time)) {
-				for (Partida partida : chave.getPartidas()) {
+				if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
+					if (meuPai.getType().equals(TIPO_CARREGADOR)) {
+						partidaTimePlacar = partidaTimePlacarDao.findById(((Time) (meuPai.getData())).getId());
+					} else {
+						partidaTimePlacar = procurarPartidaTimePlacar((Time) meuPai.getData());
+					}
+					partida = partidaTimePlacar.getPartida();
 					for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
 						PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
 						if (ptpAtual.getTime() != null) {
 							if (ptpAtual.getTime().equals(time)) {
 								if (ptpAtual.getPlacar().getResultado() == -1) {
-									if (pegarPartidaTimePlacar(i + 1, ptpAtual, partida)) {
-									} else {
-										pegarPartidaTimePlacar(i - 1, ptpAtual, partida);
+									placar = ptpAtual.getPlacar();
+									RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
+								}
+							} else {
+								proximaPtp = ptpAtual;
+							}
+						}
+					}
+
+				} else {
+					for (Partida partida : chave.getPartidas()) {
+						for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
+							PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
+							if (ptpAtual.getTime() != null) {
+								if (ptpAtual.getTime().equals(time)) {
+									if (ptpAtual.getPlacar().getResultado() == -1) {
+										if (pegarPartidaTimePlacar(i + 1, ptpAtual, partida)) {
+										} else {
+											pegarPartidaTimePlacar(i - 1, ptpAtual, partida);
+										}
 									}
 								}
 							}
@@ -416,7 +463,7 @@ public class ChaveMB {
 	}
 
 	public void cancelarChave() {
-
+		timeSelectOne = null;
 	}
 
 	public TreeNode getRootNode() {
@@ -521,7 +568,6 @@ public class ChaveMB {
 	}
 
 	public List<Time> getTimes() {
-		
 		return times;
 	}
 
@@ -655,6 +701,19 @@ public class ChaveMB {
 
 	public void setNode(TreeNode node) {
 		this.node = node;
+	}
+
+	public List<Time> getTimesSemNullSemDuplicado() {
+		return timesSemNullSemDuplicado;
+	}
+
+	public void setTimesSemNullSemDuplicado(List<Time> timesSemNullSemDuplicado) {
+		this.timesSemNullSemDuplicado = timesSemNullSemDuplicado;
+	}
+
+	public void subjectSelectionChanged(final AjaxBehaviorEvent event) {
+		chaveDao.findById(chave.getId());
+		iniciarTreeNode();
 	}
 
 }

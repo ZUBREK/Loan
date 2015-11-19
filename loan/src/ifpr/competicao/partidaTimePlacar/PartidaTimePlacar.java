@@ -65,4 +65,8 @@ public class PartidaTimePlacar {
 		this.partida = partida;
 	}
 
+	@Override
+	public String toString() {
+		return ""+id;
+	}
 }

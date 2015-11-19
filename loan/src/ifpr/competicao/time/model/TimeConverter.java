@@ -20,7 +20,7 @@ public class TimeConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-		if (value != null && !value.isEmpty() && !value.equalsIgnoreCase("Selecione um")) {
+		if (value != null && !value.isEmpty() && !value.equalsIgnoreCase("Mostrar Todos")) {
 			return timeDao.pesquisarPorNome(value).get(0);
 		}
 		return null;

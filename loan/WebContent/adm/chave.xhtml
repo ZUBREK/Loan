@@ -125,7 +125,7 @@
 
 					<p:outputLabel id="resultadoLb" value="Pontos:" for="resultado" />
 
-					<p:inputText id="resultado" value="#{chaveMB.placar.pontos}"
+					<p:inputText id="resultado" value="#{chaveMB.partidaTime.pontos}"
 						required="true" requiredMessage="Preencha os pontos do time!" />
 
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
@@ -150,7 +150,7 @@
 					<p:spacer height="10px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarPartidaBt" value="Salvar"
-							icon="salvar16" actionListener="#{chaveMB.salvarPartidaPlacar}"
+							icon="salvar16" actionListener="#{chaveMB.salvarPartidaTime}"
 							update="editarChavDialog"
 							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
 							<p:resetInput target=":part_form" />

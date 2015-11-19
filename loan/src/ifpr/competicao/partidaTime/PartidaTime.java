@@ -1,10 +1,7 @@
-package ifpr.competicao.partidaTimePlacar;
-
-import ifpr.competicao.partida.Partida;
-import ifpr.competicao.placar.Placar;
-import ifpr.competicao.time.Time;
+package ifpr.competicao.partidaTime;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,17 +10,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import ifpr.competicao.partida.Partida;
+import ifpr.competicao.time.Time;
+
 @Entity
-@Table(name = "tbPartidaTimePlacar")
-public class PartidaTimePlacar {
+@Table(name = "tbPartidaTime")
+public class PartidaTime {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
-	@JoinColumn(name = "id_placar", referencedColumnName = "id_placar")
-	@ManyToOne(cascade = CascadeType.REMOVE)
-	private Placar placar;
 
 	@JoinColumn(name = "id_time", referencedColumnName = "id_time")
 	@ManyToOne()
@@ -33,20 +29,15 @@ public class PartidaTimePlacar {
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Partida partida;
 	
+	@Column(name="pontos_time")
+	private int pontos;
+	
 	public Integer getId() {
 		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Placar getPlacar() {
-		return placar;
-	}
-
-	public void setPlacar(Placar placar) {
-		this.placar = placar;
 	}
 
 	public Time getTime() {
@@ -72,5 +63,13 @@ public class PartidaTimePlacar {
 		} else {
 			return "";
 		}
+	}
+
+	public int getPontos() {
+		return pontos;
+	}
+
+	public void setPontos(int pontos) {
+		this.pontos = pontos;
 	}
 }

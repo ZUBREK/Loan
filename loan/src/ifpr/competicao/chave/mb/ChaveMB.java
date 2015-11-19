@@ -97,10 +97,13 @@ public class ChaveMB {
 	private PartidaTimePlacar partidaTime;
 	private PartidaTimePlacar partidaTimeMeuPai;
 	private Time timeSelectOne;
+	private Time timeDataTable;
 	private TreeNode meuPai;
 	private TreeNode node;
 	private PontosTime pontosTime;
 	private List<Time> times;
+
+	TipoCompeticao[] tipos;
 
 	public ChaveMB() {
 		chave = new Chave();
@@ -146,13 +149,11 @@ public class ChaveMB {
 		for (int i = 0; i < partidaTimesPlacares.size(); i++) {
 			if (i % 3 == 0) {
 				if (partidaTimesPlacares.get(i).getPlacar().getPontos() == -2) {
-					node = adicionarNodeParentTipo(partidaTimesPlacares.get(i), nodes.get(0));
-				} else {
 					Time time = new Time();
 					time.setNome("EMPATE");
 					partidaTimesPlacares.get(i).setTime(time);
-					node = adicionarNodeParentTipo(partidaTimesPlacares.get(i), nodes.get(0));
 				}
+				node = adicionarNodeParentTipo(partidaTimesPlacares.get(i), nodes.get(0));
 			} else {
 				adicionarNodeParentTipo(partidaTimesPlacares.get(i), node);
 			}
@@ -197,9 +198,7 @@ public class ChaveMB {
 		}
 		qtdTimes = partidaTimesPlacares.size();
 		resetarListaSelectOne();
-		if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
-			setarListaSelectOneMenu();
-		}
+		setarListaSelectOneMenu();
 	}
 
 	private void setarListaSelectOneMenu() {
@@ -209,6 +208,12 @@ public class ChaveMB {
 				timesSemNullSemDuplicado.add(time);
 			}
 		}
+		Collections.sort(timesSemNullSemDuplicado, new Comparator<Time>() {
+			@Override
+			public int compare(Time time1, Time time2) {
+				return time1.getPontosTime().getVitorias() - time2.getPontosTime().getVitorias();
+			}
+		});
 	}
 
 	public void resetarListaSelectOne() {
@@ -242,6 +247,15 @@ public class ChaveMB {
 	public void remover() {
 		try {
 			chaveDao.remover(chave);
+			pegarTimes();
+			for (Time time : times) {
+				PontosTime pt = time.getPontosTime();
+				pt.setDerrotas(0);
+				pt.setEmpates(0);
+				pt.setSaldoPontos(0);
+				pt.setVitorias(0);
+				pontosTimeDao.update(pt);
+			}
 		} catch (ConstraintViolationException e) {
 			// facesmessage bagaça
 		}
@@ -359,23 +373,29 @@ public class ChaveMB {
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
-		partidaTime = (PartidaTimePlacar) selectedNode.getData();
-		meuPai = selectedNode.getParent();
-		partidaTimeMeuPai = (PartidaTimePlacar) meuPai.getData();
-		List<TreeNode> nodesCompetidores = meuPai.getChildren();
-		if (partidaTime.getTime() != null) {
-			if (partidaTimeMeuPai.getTime() == null) {
-				pontosTime = partidaTime.getTime().getPontosTime();
-				partida = partidaTime.getPartida();
-				placar = partidaTime.getPlacar();
-				for (int i = 0; i < nodesCompetidores.size(); i++) {
-					PartidaTimePlacar ptpAtual = (PartidaTimePlacar) nodesCompetidores.get(i).getData();
-					if (!ptpAtual.equals(partidaTime)) {
-						ptpAdversario = ptpAtual;
-						RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
+		try {
+			partidaTime = (PartidaTimePlacar) selectedNode.getData();
+			meuPai = selectedNode.getParent();
+			partidaTimeMeuPai = (PartidaTimePlacar) meuPai.getData();
+			List<TreeNode> nodesCompetidores = meuPai.getChildren();
+			if (partidaTime.getTime() != null) {
+				if (partidaTimeMeuPai.getTime() == null) {
+					if (partidaTime.getPlacar().getPontos() == -1) {
+						pontosTime = partidaTime.getTime().getPontosTime();
+						partida = partidaTime.getPartida();
+						placar = partidaTime.getPlacar();
+						for (int i = 0; i < nodesCompetidores.size(); i++) {
+							PartidaTimePlacar ptpAtual = (PartidaTimePlacar) nodesCompetidores.get(i).getData();
+							if (!ptpAtual.equals(partidaTime)) {
+								ptpAdversario = ptpAtual;
+								RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
+							}
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+
 		}
 	}
 
@@ -400,10 +420,9 @@ public class ChaveMB {
 					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
 				setarEmpateTime(pontosTime);
 				setarEmpateTime(pontosTimeAdversario);
-				Placar placar = new Placar();
+				Placar placar = partidaTimeMeuPai.getPlacar();
 				placar.setPontos(-2);
-				partidaTimeMeuPai.setPlacar(placar);
-				partidaTimePlacarDao.update(partidaTimeMeuPai);
+				placarDao.update(placar);
 			}
 			setarPontoTotalTime(pontosTime);
 			chave = chaveDao.findById(chave.getId());
@@ -503,17 +522,7 @@ public class ChaveMB {
 	}
 
 	public TipoCompeticao[] getTipos() {
-		chave.setModalidade(modalidade);
-		TipoCompeticao[] tipos = TipoCompeticao.values();
-		times = timeDao.pesquisarPorModalidade(chave.getModalidade());
-		if (verificarTamanhoTime()) {
-			return tipos;
-		} else {
-			ArrayList<TipoCompeticao> tiposOld = new ArrayList<TipoCompeticao>(Arrays.asList(tipos));
-			tiposOld.remove(0);
-			TipoCompeticao[] tiposNew = tiposOld.toArray(new TipoCompeticao[tiposOld.size()]);
-			return tiposNew;
-		}
+		return tipos;
 	}
 
 	public boolean verificarTamanhoTime() {
@@ -663,9 +672,21 @@ public class ChaveMB {
 		this.timesSemNullSemDuplicado = timesSemNullSemDuplicado;
 	}
 
-	public void subjectSelectionChanged(final AjaxBehaviorEvent event) {
+	public void timeSelectionChanged(final AjaxBehaviorEvent event) {
 		chaveDao.findById(chave.getId());
 		iniciarTreeNode();
+	}
+
+	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) {
+		chave.setModalidade(modalidade);
+		tipos = TipoCompeticao.values();
+		times = timeDao.pesquisarPorModalidade(chave.getModalidade());
+		if (!verificarTamanhoTime()) {
+			ArrayList<TipoCompeticao> tiposOld = new ArrayList<TipoCompeticao>(Arrays.asList(tipos));
+			tiposOld.remove(TipoCompeticao.MATA_MATA);
+			TipoCompeticao[] tiposNew = tiposOld.toArray(new TipoCompeticao[tiposOld.size()]);
+			tipos = tiposNew;
+		}
 	}
 
 	public PontosTimeDao getPontosTimeDao() {
@@ -714,6 +735,18 @@ public class ChaveMB {
 
 	public void setPartidaTimeMeuPai(PartidaTimePlacar partidaTimeMeuPai) {
 		this.partidaTimeMeuPai = partidaTimeMeuPai;
+	}
+
+	public Time getTimeDataTable() {
+		return timeDataTable;
+	}
+
+	public void setTimeDataTable(Time timeDataTable) {
+		this.timeDataTable = timeDataTable;
+	}
+
+	public TipoCompeticao getTipoMataMata() {
+		return TipoCompeticao.MATA_MATA;
 	}
 
 }

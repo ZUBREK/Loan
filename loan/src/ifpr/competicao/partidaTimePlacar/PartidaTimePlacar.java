@@ -32,7 +32,7 @@ public class PartidaTimePlacar {
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Partida partida;
-
+	
 	public Integer getId() {
 		return id;
 	}

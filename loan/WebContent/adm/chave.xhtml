@@ -15,9 +15,20 @@
 					oncomplete="PF('chavDialog').show()" update=":chavDlg" />
 			</h:form>
 			<h:form id="table_form">
+				<p:contextMenu id="contextMenuChave" for="chaveTable">
+					<p:menuitem value="Visualizar" update=":editarChavDialog"
+						icon="ui-icon-search" action="#{chaveMB.iniciarTreeNode()}"
+						oncomplete="PF('editarChavDialog').show()" />
+
+					<p:menuitem value="Remover" update=":confirm" icon="remover16"
+						oncomplete="PF('confirmDialog').show()" />
+
+				</p:contextMenu>
+
 				<p:dataTable id="chaveTable" value="#{chaveMB.chaveLazyDataModel}"
 					var="chav" emptyMessage="Nenhum registro encontrado!" rows="15"
-					rowKey="#{chav.id}" paginator="true" lazy="true">
+					rowKey="#{chav.id}" paginator="true" lazy="true"
+					selection="#{chaveMB.chave}" selectionMode="single">
 
 					<f:facet name="header">
 						<h:outputText value="Chaves cadastradas" />
@@ -32,65 +43,76 @@
 					<p:column headerText="Tipo">
 						<h:outputText value="#{chav.tipo}" />
 					</p:column>
-
-					<p:column headerText="Visualizar" width="35">
-
-						<p:commandButton id="visualizarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":editarChavDialog"
-							oncomplete="PF('editarChavDialog').show()"
-							action="#{chaveMB.iniciarTreeNode()}" styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{chav}"
-								target="#{chaveMB.chave}" />
-						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
-						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;"
-							oncomplete="PF('confirmDialog').show()" update=":confirm"
-							styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{chav}"
-								target="#{chaveMB.chave}" />
-						</p:commandButton>
-					</p:column>
 				</p:dataTable>
 
 			</h:form>
 		</p:panel>
 		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
 			header="Partidas da chave:" width="1000" height="500" modal="true">
-			
+
 			<h:form id="chav_form">
-			<p:tabView id="tabView" widgetVar="tabBagaca">
+				<p:tabView id="tabView" widgetVar="tabBagaca">
 					<p:tab title="Dados Em Geral">
-				<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
-					converter="#{timeConverter}" >
-					<p:ajax event="change" update="treeNodeChave"
-						listener="#{chaveMB.subjectSelectionChanged}" />
-					<f:selectItem itemLabel="Mostrar Todos" itemValue="Mostrar Todos" />
-					<f:selectItems value="#{chaveMB.timesSemNullSemDuplicado}"
-						var="team" itemLabel="#{team.nome}" itemValue="#{team}"/>
-				</p:selectOneMenu>
-					<p:tree value="#{chaveMB.rootNode}" var="node"
-						selection="#{chaveMB.selectedNode}"
-						rendered="#{not empty chaveMB.chave}" orientation="horizontal"
-						dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
-						id="treeNodeChave">
-						<p:treeNode>
-							<h:outputText value="#{node}" />
-						</p:treeNode>
-						<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
-						
-					</p:tree>
-				<p:spacer height="10px" />
-				<p:commandButton id="cancelarChaveBt" value="Cancelar"
-					icon="cancelar16" immediate="true"
-					oncomplete="PF('editarChavDialog').hide()"
-					actionListener="#{chaveMB.cancelarChave()}">
-				</p:commandButton>
-				</p:tab>
-				<p:tab title="Tabela de Resultados">
-					
-				</p:tab>
+						<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
+							converter="#{timeConverter}" disabled="#{chaveMB.chave.tipo == chaveMB.tipoMataMata}">
+							<p:ajax event="change" update="treeNodeChave"
+								listener="#{chaveMB.timeSelectionChanged}" />
+							<f:selectItem itemLabel="Mostrar Todos" itemValue="Mostrar Todos" />
+							<f:selectItems value="#{chaveMB.timesSemNullSemDuplicado}"
+								var="team" itemLabel="#{team.nome}" itemValue="#{team}" />
+						</p:selectOneMenu>
+						<p:tree value="#{chaveMB.rootNode}" var="node"
+							selection="#{chaveMB.selectedNode}"
+							rendered="#{not empty chaveMB.chave}" orientation="horizontal"
+							dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
+							id="treeNodeChave">
+							<p:treeNode>
+								<h:outputText value="#{node}" />
+							</p:treeNode>
+							<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+
+						</p:tree>
+						<p:spacer height="10px" />
+						<p:commandButton id="cancelarChaveBt" value="Cancelar"
+							icon="cancelar16" immediate="true"
+							oncomplete="PF('editarChavDialog').hide()"
+							actionListener="#{chaveMB.cancelarChave()}">
+						</p:commandButton>
+					</p:tab>
+					<p:tab title="Tabela de Resultados">
+						<p:contextMenu id="contextMenuChave" for="timeTable" rendered="#{chaveMB.chave.tipo != chaveMB.tipoMataMata}">
+							<p:menuitem value="Ver Partidas do time" update=":editarChavDialog"
+								icon="ui-icon-search" action="#{chaveMB.iniciarTreeNode()}"
+								oncomplete="PF('editarChavDialog').show()" />
+
+						</p:contextMenu>
+
+						<p:dataTable id="timeTable"
+							value="#{chaveMB.timesSemNullSemDuplicado}" var="time"
+							emptyMessage="Nenhum registro encontrado!" rowKey="#{time.id}"
+							selection="#{chaveMB.timeDataTable}" selectionMode="single">
+
+							<f:facet name="header">
+								<h:outputText value="Times Competidores" />
+							</f:facet>
+
+							<p:column headerText="Nome">
+								<h:outputText value="#{time.nome}" />
+							</p:column>
+							<p:column headerText="Vitorias">
+								<h:outputText value="#{time.pontosTime.vitorias}" />
+							</p:column>
+							<p:column headerText="Empates">
+								<h:outputText value="#{time.pontosTime.empates}" />
+							</p:column>
+							<p:column headerText="Derrotas">
+								<h:outputText value="#{time.pontosTime.derrotas}" />
+							</p:column>
+							<p:column headerText="Total de Pontos">
+								<h:outputText value="#{time.pontosTime.saldoPontos}" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
 				</p:tabView>
 			</h:form>
 		</p:dialog>
@@ -101,8 +123,7 @@
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
 
-					<p:outputLabel id="resultadoLb" value="Pontos:"
-						for="resultado" />
+					<p:outputLabel id="resultadoLb" value="Pontos:" for="resultado" />
 
 					<p:inputText id="resultado" value="#{chaveMB.placar.pontos}"
 						required="true" requiredMessage="Preencha os pontos do time!" />
@@ -164,7 +185,8 @@
 						filter="true" filterMatchMode="startsWith" required="true"
 						requiredMessage="Modalidade é obrigatório!"
 						converter="#{modalidadeConverter}">
-						<p:ajax update=":chave_form" />
+						<p:ajax event="change" update=":chave_form:tipo"
+								listener="#{chaveMB.modalidadeSelectionChanged}" />
 						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
 						<f:selectItems value="#{timeMB.listaModalidade}" var="modalidd"
@@ -172,8 +194,7 @@
 					</p:selectOneMenu>
 					<p:outputLabel id="tipoLb" value="Tipo do competição:" for="tipo" />
 					<p:selectOneMenu id="tipo" value="#{chaveMB.tipo}" label=""
-						disabled="#{empty chaveMB.modalidade}" required="true"
-						rendered="#{not empty chaveMB.modalidade}">
+						disabled="#{empty chaveMB.modalidade}" required="true">
 						<f:selectItems value="#{chaveMB.tipos}" var="tip"
 							itemValue="#{tip}" itemLabel="#{tip.label}" />
 					</p:selectOneMenu>

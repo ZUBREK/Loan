@@ -89,5 +89,9 @@ public class Partida {
 	public void setPartidasTimesPlacares(List<PartidaTimePlacar> partidasTimesPlacares) {
 		this.partidasTimesPlacares = partidasTimesPlacares;
 	}
-
+	
+	@Override
+	public String toString() {
+		return ""+id;
+	}
 }

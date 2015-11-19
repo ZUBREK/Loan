@@ -3,11 +3,6 @@ package ifpr.competicao.time;
 import java.util.ArrayList;
 import java.util.List;
 
-import ifpr.campus.Campus;
-import ifpr.competicao.time.estudante.TimeEstudante;
-import ifpr.modalidade.Modalidade;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import ifpr.campus.Campus;
+import ifpr.competicao.time.estudante.TimeEstudante;
+import ifpr.modalidade.Modalidade;
+import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
 
 @Entity
 @Table(name = "tbTime")
@@ -46,10 +46,10 @@ public class Time {
 	@OneToMany()
 	private List<TimeEstudante> timeEstudante;
 
-	public Time(){
+	public Time() {
 		timeEstudante = new ArrayList<TimeEstudante>();
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -97,9 +97,17 @@ public class Time {
 	public void setTimeEstudante(List<TimeEstudante> timeEstudante) {
 		this.timeEstudante = timeEstudante;
 	}
-	
+
 	@Override
 	public String toString() {
-		return this.nome;
+		return nome;
+	}
+
+	public boolean equals(Object other) {
+		return other instanceof Time && (id != null) ? id.equals(((Time) other).getId()) : (other == this);
+	}
+
+	public int hashCode() {
+		return id != null ? this.getClass().hashCode() + id.hashCode() : super.hashCode();
 	}
 }

@@ -230,4 +230,11 @@ public class RelatorioFinal {
 		this.modalidade = modalidade;
 	}
 
+	public ModalidadeDao getModalidadeDao() {
+		return modalidadeDao;
+	}
+
+	public void setModalidadeDao(ModalidadeDao modalidadeDao) {
+		this.modalidadeDao = modalidadeDao;
+	}
 }

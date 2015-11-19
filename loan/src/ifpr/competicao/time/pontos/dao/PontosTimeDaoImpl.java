@@ -9,13 +9,10 @@ import javax.faces.bean.ManagedBean;
 @ManagedBean(name = "pontosTimeDao")
 @ApplicationScoped
 public class PontosTimeDaoImpl extends GenericDao<PontosTime> implements PontosTimeDao {
-
 	private static final long serialVersionUID = 1L;
 
 	public PontosTimeDaoImpl() {
 		super(PontosTime.class);
 	}
-
-	
 
 }

@@ -1,14 +1,10 @@
 package ifpr.competicao.time.pontos;
 
-import ifpr.competicao.time.Time;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -28,13 +24,16 @@ public class PontosTime {
 	@Column(name = "empates_time")
 	private int empates;
 
-	@Column(name = "classificacao_time")
-	private int classificacao;
+	@Column(name = "saldo_pontos_time")
+	private int saldoPontos;
 
-	@JoinColumn(name = "id_time", referencedColumnName = "id_time")
-	@ManyToOne()
-	private Time time;
-
+	public PontosTime() {
+		vitorias = 0;
+		derrotas = 0;
+		empates = 0;
+		saldoPontos = 0;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -67,20 +66,12 @@ public class PontosTime {
 		this.empates = empates;
 	}
 
-	public int getClassificacao() {
-		return classificacao;
+	public int getSaldoPontos() {
+		return saldoPontos;
 	}
 
-	public void setClassificacao(int classificacao) {
-		this.classificacao = classificacao;
-	}
-
-	public Time getTime() {
-		return time;
-	}
-
-	public void setTime(Time time) {
-		this.time = time;
+	public void setSaldoPontos(int saldoPontos) {
+		this.saldoPontos = saldoPontos;
 	}
 
 }

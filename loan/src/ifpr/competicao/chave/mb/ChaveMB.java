@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -35,13 +33,13 @@ import ifpr.competicao.placar.Placar;
 import ifpr.competicao.placar.dao.PlacarDao;
 import ifpr.competicao.time.Time;
 import ifpr.competicao.time.dao.TimeDao;
+import ifpr.competicao.time.pontos.PontosTime;
+import ifpr.competicao.time.pontos.dao.PontosTimeDao;
 import ifpr.modalidade.Modalidade;
 
 @ManagedBean(name = "chaveMB")
 @ViewScoped
 public class ChaveMB {
-	private final String TIPO_CARREGADOR = "carregador";
-	private final String TIPO_TIME = "time";
 
 	private Chave chave;
 
@@ -59,6 +57,9 @@ public class ChaveMB {
 	@ManagedProperty(value = "#{timeDao}")
 	private TimeDao timeDao;
 
+	@ManagedProperty(value = "#{pontosTimeDao}")
+	private PontosTimeDao pontosTimeDao;
+
 	@ManagedProperty(value = "#{partidaTimePlacarDao}")
 	private PartidaTimePlacarDao partidaTimePlacarDao;
 
@@ -73,7 +74,7 @@ public class ChaveMB {
 	private TreeNode rootNode;
 	private List<TreeNode> nodes;
 
-	private List<Time> times;
+	private List<PartidaTimePlacar> partidaTimesPlacares;
 	private List<Time> timesSemNullSemDuplicado;
 
 	private Modalidade modalidade;
@@ -92,11 +93,14 @@ public class ChaveMB {
 
 	private TreeNode selectedNode;
 
-	private PartidaTimePlacar proximaPtp;
-	private Time time;
+	private PartidaTimePlacar ptpAdversario;
+	private PartidaTimePlacar partidaTime;
+	private PartidaTimePlacar partidaTimeMeuPai;
 	private Time timeSelectOne;
 	private TreeNode meuPai;
 	private TreeNode node;
+	private PontosTime pontosTime;
+	private List<Time> times;
 
 	public ChaveMB() {
 		chave = new Chave();
@@ -105,12 +109,15 @@ public class ChaveMB {
 
 	@PostConstruct
 	public void init() {
-		listaLocais = localDao.listAsc();
-		listaLocais.get(0);
+		try {
+			listaLocais = localDao.listAsc();
+		} catch (Exception e) {
+			// nao tem local
+		}
 	}
 
-	public TreeNode adicionarNodeParentTipo(Object nome, TreeNode nodeRoot, String tipo) {
-		TreeNode node = new DefaultTreeNode(tipo, nome, nodeRoot);
+	public TreeNode adicionarNodeParentTipo(Object nome, TreeNode nodeRoot) {
+		TreeNode node = new DefaultTreeNode(nome, nodeRoot);
 		node.setExpanded(true);
 		nodes.add(node);
 		return node;
@@ -136,30 +143,28 @@ public class ChaveMB {
 
 	private void gerarNodeTipoPtosCorridos() {
 		pegarTimes();
-		for (int i = 0; i < times.size(); i++) {
+		for (int i = 0; i < partidaTimesPlacares.size(); i++) {
 			if (i % 3 == 0) {
-				if (times.get(i).getNome().equals("")) {
-					node = adicionarNodeParentTipo(times.get(i), nodes.get(0), TIPO_CARREGADOR);
+				if (partidaTimesPlacares.get(i).getPlacar().getPontos() == -2) {
+					node = adicionarNodeParentTipo(partidaTimesPlacares.get(i), nodes.get(0));
 				} else {
-					node = adicionarNodeParentTipo(times.get(i), nodes.get(0), TIPO_TIME);
+					Time time = new Time();
+					time.setNome("EMPATE");
+					partidaTimesPlacares.get(i).setTime(time);
+					node = adicionarNodeParentTipo(partidaTimesPlacares.get(i), nodes.get(0));
 				}
 			} else {
-				adicionarNodeParentTipo(times.get(i), node, TIPO_TIME);
+				adicionarNodeParentTipo(partidaTimesPlacares.get(i), node);
 			}
 		}
 	}
 
 	private void gerarNodeTipoMataMata() {
 		pegarTimes();
-
-		Collections.reverse(times);
+		Collections.reverse(partidaTimesPlacares);
 		int i2 = 0;
-		for (int i = 0; i < times.size(); i++) {
-			if (times.get(i).getNome().equals("")) {
-				adicionarNodeParentTipo(times.get(i), nodes.get(i2), TIPO_CARREGADOR);
-			} else {
-				adicionarNodeParentTipo(times.get(i), nodes.get(i2), TIPO_TIME);
-			}
+		for (int i = 0; i < partidaTimesPlacares.size(); i++) {
+			adicionarNodeParentTipo(partidaTimesPlacares.get(i), nodes.get(i2));
 			if (i % 2 == 0) {
 				i2++;
 			}
@@ -167,7 +172,7 @@ public class ChaveMB {
 	}
 
 	public void pegarTimes() {
-		times = new ArrayList<>();
+		partidaTimesPlacares = new ArrayList<>();
 		List<Partida> partidas = chave.getPartidas();
 		Collections.sort(partidas, new Comparator<Partida>() {
 			@Override
@@ -190,7 +195,7 @@ public class ChaveMB {
 				adicionarItensLista(ptps);
 			}
 		}
-		qtdTimes = times.size();
+		qtdTimes = partidaTimesPlacares.size();
 		resetarListaSelectOne();
 		if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
 			setarListaSelectOneMenu();
@@ -198,12 +203,10 @@ public class ChaveMB {
 	}
 
 	private void setarListaSelectOneMenu() {
-		Set<Time> hs = new HashSet<>();
-		hs.addAll(times);
-		timesSemNullSemDuplicado.addAll(hs);
-		for (Time time : times) {
-			if (time.getNome().equals("")) {
-				timesSemNullSemDuplicado.remove(time);
+		for (int i = 0; i < partidaTimesPlacares.size(); i++) {
+			Time time = partidaTimesPlacares.get(i).getTime();
+			if (time != null && !timesSemNullSemDuplicado.contains(time)) {
+				timesSemNullSemDuplicado.add(time);
 			}
 		}
 	}
@@ -228,13 +231,7 @@ public class ChaveMB {
 
 	private void adicionarItensLista(List<PartidaTimePlacar> ptps) {
 		for (PartidaTimePlacar partidaTimePlacar : ptps) {
-			Time time2 = partidaTimePlacar.getTime();
-			if (time2 == null) {
-				time2 = new Time();
-				time2.setNome("");
-				time2.setId(partidaTimePlacar.getId());
-			}
-			times.add(time2);
+			partidaTimesPlacares.add(partidaTimePlacar);
 		}
 	}
 
@@ -285,7 +282,7 @@ public class ChaveMB {
 
 	private void criarSalvarPlacarPartida(int i) {
 		placar = new Placar();
-		placar.setResultado(-1);
+		placar.setPontos(-1);
 		salvarPlacar(placar);
 		setarPartidaTimePlacar();
 		if (i != -1) {
@@ -362,104 +359,83 @@ public class ChaveMB {
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
-		time = (Time) selectedNode.getData();
+		partidaTime = (PartidaTimePlacar) selectedNode.getData();
 		meuPai = selectedNode.getParent();
-		if (!time.getNome().equals("")) {
-			if (!meuPai.getData().equals(time)) {
-				if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
-					if (meuPai.getType().equals(TIPO_CARREGADOR)) {
-						partidaTimePlacar = partidaTimePlacarDao.findById(((Time) (meuPai.getData())).getId());
-					} else {
-						partidaTimePlacar = procurarPartidaTimePlacar((Time) meuPai.getData());
-					}
-					partida = partidaTimePlacar.getPartida();
-					for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
-						PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
-						if (ptpAtual.getTime() != null) {
-							if (ptpAtual.getTime().equals(time)) {
-								if (ptpAtual.getPlacar().getResultado() == -1) {
-									placar = ptpAtual.getPlacar();
-									RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
-								}
-							} else {
-								proximaPtp = ptpAtual;
-							}
-						}
-					}
-
-				} else {
-					for (Partida partida : chave.getPartidas()) {
-						for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
-							PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
-							if (ptpAtual.getTime() != null) {
-								if (ptpAtual.getTime().equals(time)) {
-									if (ptpAtual.getPlacar().getResultado() == -1) {
-										if (pegarPartidaTimePlacar(i + 1, ptpAtual, partida)) {
-										} else {
-											pegarPartidaTimePlacar(i - 1, ptpAtual, partida);
-										}
-									}
-								}
-							}
-						}
+		partidaTimeMeuPai = (PartidaTimePlacar) meuPai.getData();
+		List<TreeNode> nodesCompetidores = meuPai.getChildren();
+		if (partidaTime.getTime() != null) {
+			if (partidaTimeMeuPai.getTime() == null) {
+				pontosTime = partidaTime.getTime().getPontosTime();
+				partida = partidaTime.getPartida();
+				placar = partidaTime.getPlacar();
+				for (int i = 0; i < nodesCompetidores.size(); i++) {
+					PartidaTimePlacar ptpAtual = (PartidaTimePlacar) nodesCompetidores.get(i).getData();
+					if (!ptpAtual.equals(partidaTime)) {
+						ptpAdversario = ptpAtual;
+						RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
 					}
 				}
 			}
-		}
-	}
-
-	private boolean pegarPartidaTimePlacar(int i, PartidaTimePlacar ptpAtual, Partida partida2) {
-		try {
-			proximaPtp = partida2.getPartidasTimesPlacares().get(i);
-			if (proximaPtp.getTime() != null) {
-				this.partida = partida2;
-				this.partidaTimePlacar = ptpAtual;
-				this.placar = partidaTimePlacar.getPlacar();
-				RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
-				return true;
-			} else {
-				return false;
-			}
-		} catch (IndexOutOfBoundsException ex2) {
-			return false;
 		}
 	}
 
 	public void salvarPartidaPlacar() {
 		salvarPartida();
-		if (placar.getResultado() != -1) {
+		if (placar.getPontos() != -1) {
 			placarDao.update(placar);
-			if (placar.getResultado() != 0) {
-				if (placar.getResultado() > proximaPtp.getPlacar().getResultado()) {
-					if (meuPai.getType().equals(TIPO_CARREGADOR)) {
-						partidaTimePlacar = partidaTimePlacarDao.findById(((Time) (meuPai.getData())).getId());
-					} else {
-						partidaTimePlacar = procurarPartidaTimePlacar((Time) meuPai.getData());
-					}
-					partidaTimePlacar.setTime((Time) selectedNode.getData());
-					partidaTimePlacarDao.update(partidaTimePlacar);
-					chave = chaveDao.findById(chave.getId());
-					iniciarTreeNode();
-				}
+			PontosTime pontosTimeAdversario = ptpAdversario.getTime().getPontosTime();
+			Time timeAdversario = ptpAdversario.getTime();
+			Placar placarAdversario = ptpAdversario.getPlacar();
+			if (placar.getPontos() > placarAdversario.getPontos() && placarAdversario.getPontos() != -1) {
+
+				setarPontosTimeDerrotado(pontosTimeAdversario);
+				setarPontosTimeVitorioso(pontosTime);
+				setarTimeVitoriosoPtp(partidaTime.getTime());
+
+			} else if (placar.getPontos() < placarAdversario.getPontos()) {
+				setarPontosTimeDerrotado(pontosTime);
+				setarPontosTimeVitorioso(pontosTimeAdversario);
+				setarTimeVitoriosoPtp(timeAdversario);
+			} else if (placar.getPontos() == placarAdversario.getPontos()
+					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
+				setarEmpateTime(pontosTime);
+				setarEmpateTime(pontosTimeAdversario);
+				Placar placar = new Placar();
+				placar.setPontos(-2);
+				partidaTimeMeuPai.setPlacar(placar);
+				partidaTimePlacarDao.update(partidaTimeMeuPai);
 			}
+			setarPontoTotalTime(pontosTime);
+			chave = chaveDao.findById(chave.getId());
+			iniciarTreeNode();
 		}
 		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
 	}
 
-	private PartidaTimePlacar procurarPartidaTimePlacar(Time time) {
-		for (Partida partida : chave.getPartidas()) {
-			for (int i = 0; i < partida.getPartidasTimesPlacares().size(); i++) {
-				PartidaTimePlacar ptpAtual = partida.getPartidasTimesPlacares().get(i);
-				if (ptpAtual.getTime() != null) {
-					if (ptpAtual.getTime().equals(time)) {
-						if (ptpAtual.getPlacar().getResultado() == -1) {
-							return ptpAtual;
-						}
-					}
-				}
-			}
-		}
-		return null;
+	private void setarPontoTotalTime(PontosTime pontosTime2) {
+		pontosTime2.setSaldoPontos(pontosTime2.getSaldoPontos() + placar.getPontos());
+		pontosTimeDao.update(pontosTime2);
+	}
+
+	private void setarEmpateTime(PontosTime pontosTime2) {
+		pontosTime2.setVitorias(pontosTime2.getEmpates() + 1);
+		pontosTimeDao.update(pontosTime2);
+	}
+
+	private void setarPontosTimeVitorioso(PontosTime pontosTime2) {
+		pontosTime2.setVitorias(pontosTime2.getVitorias() + 1);
+		pontosTimeDao.update(pontosTime2);
+
+	}
+
+	private void setarPontosTimeDerrotado(PontosTime pontosTime2) {
+		pontosTime2.setDerrotas(pontosTime2.getDerrotas() + 1);
+		pontosTimeDao.update(pontosTime2);
+	}
+
+	public void setarTimeVitoriosoPtp(Time time) {
+		partidaTimeMeuPai.setTime(time);
+		partidaTimePlacarDao.update(partidaTimeMeuPai);
 	}
 
 	public void cancelarChave() {
@@ -567,14 +543,6 @@ public class ChaveMB {
 		this.tipo = tipo;
 	}
 
-	public List<Time> getTimes() {
-		return times;
-	}
-
-	public void setTimes(List<Time> times) {
-		this.times = times;
-	}
-
 	public Modalidade getModalidade() {
 		return modalidade;
 	}
@@ -655,28 +623,12 @@ public class ChaveMB {
 		this.selectedNode = selectedNode;
 	}
 
-	public String getTIPO_CARREGADOR() {
-		return TIPO_CARREGADOR;
+	public PartidaTimePlacar getPtpAdversario() {
+		return ptpAdversario;
 	}
 
-	public String getTIPO_TIME() {
-		return TIPO_TIME;
-	}
-
-	public PartidaTimePlacar getProximaPtp() {
-		return proximaPtp;
-	}
-
-	public void setProximaPtp(PartidaTimePlacar proximaPtp) {
-		this.proximaPtp = proximaPtp;
-	}
-
-	public Time getTime() {
-		return time;
-	}
-
-	public void setTime(Time time) {
-		this.time = time;
+	public void setPtpAdversario(PartidaTimePlacar ptpAdversario) {
+		this.ptpAdversario = ptpAdversario;
 	}
 
 	public Time getTimeSelectOne() {
@@ -714,6 +666,54 @@ public class ChaveMB {
 	public void subjectSelectionChanged(final AjaxBehaviorEvent event) {
 		chaveDao.findById(chave.getId());
 		iniciarTreeNode();
+	}
+
+	public PontosTimeDao getPontosTimeDao() {
+		return pontosTimeDao;
+	}
+
+	public void setPontosTimeDao(PontosTimeDao pontosTimeDao) {
+		this.pontosTimeDao = pontosTimeDao;
+	}
+
+	public PontosTime getPontosTime() {
+		return pontosTime;
+	}
+
+	public void setPontosTime(PontosTime pontosTime) {
+		this.pontosTime = pontosTime;
+	}
+
+	public List<PartidaTimePlacar> getPartidaTimesPlacares() {
+		return partidaTimesPlacares;
+	}
+
+	public void setPartidaTimesPlacares(List<PartidaTimePlacar> partidaTimesPlacares) {
+		this.partidaTimesPlacares = partidaTimesPlacares;
+	}
+
+	public List<Time> getTimes() {
+		return times;
+	}
+
+	public void setTimes(List<Time> times) {
+		this.times = times;
+	}
+
+	public PartidaTimePlacar getPartidaTime() {
+		return partidaTime;
+	}
+
+	public void setPartidaTime(PartidaTimePlacar partidaTime) {
+		this.partidaTime = partidaTime;
+	}
+
+	public PartidaTimePlacar getPartidaTimeMeuPai() {
+		return partidaTimeMeuPai;
+	}
+
+	public void setPartidaTimeMeuPai(PartidaTimePlacar partidaTimeMeuPai) {
+		this.partidaTimeMeuPai = partidaTimeMeuPai;
 	}
 
 }

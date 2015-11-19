@@ -17,8 +17,8 @@ public class Placar {
 	@Column(name="id_placar")
 	private Integer id;
 	
-	@Column(name="resultado_placar")
-	private int resultado;
+	@Column(name="pontos_placar")
+	private int pontos;
 
 	public Integer getId() {
 		return id;
@@ -28,12 +28,12 @@ public class Placar {
 		this.id = id;
 	}
 
-	public int getResultado() {
-		return resultado;
+	public int getPontos() {
+		return pontos;
 	}
 
-	public void setResultado(int resultado) {
-		this.resultado = resultado;
+	public void setPontos(int resultado) {
+		this.pontos = resultado;
 	}	
 
 }

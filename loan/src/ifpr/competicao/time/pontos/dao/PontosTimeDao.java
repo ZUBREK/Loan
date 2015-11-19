@@ -5,6 +5,4 @@ import ifpr.dao.Dao;
 
 public interface PontosTimeDao extends Dao<PontosTime> {
 
-	
-
 }

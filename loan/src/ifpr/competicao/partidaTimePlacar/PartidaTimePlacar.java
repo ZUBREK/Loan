@@ -67,6 +67,10 @@ public class PartidaTimePlacar {
 
 	@Override
 	public String toString() {
-		return ""+id;
+		if(time!= null){
+			return time.getNome();
+		} else {
+			return "";
+		}
 	}
 }

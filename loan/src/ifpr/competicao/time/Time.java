@@ -3,6 +3,7 @@ package ifpr.competicao.time;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,10 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import ifpr.campus.Campus;
 import ifpr.competicao.time.estudante.TimeEstudante;
+import ifpr.competicao.time.pontos.PontosTime;
 import ifpr.modalidade.Modalidade;
 import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
 
@@ -45,9 +48,14 @@ public class Time {
 	@JoinColumn(name = "id_time", referencedColumnName = "id_time")
 	@OneToMany()
 	private List<TimeEstudante> timeEstudante;
-
+	
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name = "id_pontos_time", referencedColumnName = "id_pontos_time")
+	private PontosTime pontosTime;
+	
 	public Time() {
 		timeEstudante = new ArrayList<TimeEstudante>();
+		pontosTime = new PontosTime();
 	}
 
 	public Integer getId() {
@@ -96,6 +104,14 @@ public class Time {
 
 	public void setTimeEstudante(List<TimeEstudante> timeEstudante) {
 		this.timeEstudante = timeEstudante;
+	}
+
+	public PontosTime getPontosTime() {
+		return pontosTime;
+	}
+
+	public void setPontosTime(PontosTime pontosTime) {
+		this.pontosTime = pontosTime;
 	}
 
 	@Override

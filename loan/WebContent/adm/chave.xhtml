@@ -58,7 +58,10 @@
 		</p:panel>
 		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
 			header="Partidas da chave:" width="1000" height="500" modal="true">
+			
 			<h:form id="chav_form">
+			<p:tabView id="tabView" widgetVar="tabBagaca">
+					<p:tab title="Dados Em Geral">
 				<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
 					converter="#{timeConverter}" >
 					<p:ajax event="change" update="treeNodeChave"
@@ -72,19 +75,11 @@
 						rendered="#{not empty chaveMB.chave}" orientation="horizontal"
 						dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
 						id="treeNodeChave">
-						<p:treeNode type="default">
-							<h:outputText value="#{node}" />
-						</p:treeNode>
-
-						<p:treeNode type="#{chaveMB.TIPO_CARREGADOR}">
+						<p:treeNode>
 							<h:outputText value="#{node}" />
 						</p:treeNode>
 						<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
-
-						<p:treeNode type="#{chaveMB.TIPO_TIME}">
-							<h:outputText value="#{node}" />
-						</p:treeNode>
-						<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+						
 					</p:tree>
 				<p:spacer height="10px" />
 				<p:commandButton id="cancelarChaveBt" value="Cancelar"
@@ -92,6 +87,11 @@
 					oncomplete="PF('editarChavDialog').hide()"
 					actionListener="#{chaveMB.cancelarChave()}">
 				</p:commandButton>
+				</p:tab>
+				<p:tab title="Tabela de Resultados">
+					
+				</p:tab>
+				</p:tabView>
 			</h:form>
 		</p:dialog>
 
@@ -101,10 +101,10 @@
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
 
-					<p:outputLabel id="resultadoLb" value="Pontos do #{chaveMB.time}:"
+					<p:outputLabel id="resultadoLb" value="Pontos:"
 						for="resultado" />
 
-					<p:inputText id="resultado" value="#{chaveMB.placar.resultado}"
+					<p:inputText id="resultado" value="#{chaveMB.placar.pontos}"
 						required="true" requiredMessage="Preencha os pontos do time!" />
 
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"

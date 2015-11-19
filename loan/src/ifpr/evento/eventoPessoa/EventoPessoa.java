@@ -34,9 +34,11 @@ public class EventoPessoa {
 	private Pessoa pessoa;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="dataHora_relacao")
 	private Date dataHora;
 
 	private boolean wasPresente;
+
 
 	public Integer getId() {
 		return id;
@@ -77,4 +79,6 @@ public class EventoPessoa {
 	public void setWasPresente(boolean wasPresente) {
 		this.wasPresente = wasPresente;
 	}
+
+	
 }

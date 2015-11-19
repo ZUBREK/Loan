@@ -10,7 +10,7 @@
 	<ui:define name="body">
 		<p:panel id="painelPrincipal" header="Meu Perfil">
 			<h:form id="idForm">
-				<p:fileUpload id="fotoPerfilUpload"
+				<p:fileUpload id="fotoPerfilUpload" rendered="#{!homeMB.aluno}"
 					styleClass="fileupload-boleidous"
 					fileUploadListener="#{homeMB.handleFileUpload}"
 					label="Procurar outra imagem de perfil" auto="true"

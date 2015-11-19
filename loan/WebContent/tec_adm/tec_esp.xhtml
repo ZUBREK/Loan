@@ -9,7 +9,7 @@
 	<ui:define name="body">
 		<p:panel id="painelPrincipal"
 			header="Gerenciamento de Técnicos Esportivos">
-			<p:growl id="msg" showDetail="true" />
+			<p:growl id="msg"  />
 			<h:form>
 				<p:commandButton id="novoTecEsp" value="Novo"
 					actionListener="#{tecEspMB.criar}"
@@ -73,23 +73,23 @@
 		</p:panel>
 
 		<p:dialog id="tecEspDlg" widgetVar="tecEspDialog"
-			header="Dados do Técnico Esportivo" width="600" height="200"
+			header="Dados do Técnico Esportivo" width="600" height="300"
 			modal="true" closable="false">
 
 			<h:form id="tecEsp_form">
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{tecEspMB.tecnicoEsp.nome}" maxlength="60"
-						size="75" required="true" requiredMessage="Nome é obrigatório!" />
+						size="60" required="true" requiredMessage="Nome é obrigatório!" />
 
-					<p:message for="nome" />
+					<p:spacer height="5px" /><p:spacer height="5px" />
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
 					<p:inputText id="email" value="#{tecEspMB.tecnicoEsp.login}" maxlength="255"
-						size="50" required="true" requiredMessage="E-mail é obrigatório!"
+						size="60" required="true" requiredMessage="E-mail é obrigatório!"
 						disabled="#{tecEspMB.tecnicoEsp.id != null}">
 
 						<p:ajax listener="#{tecEspMB.validarLoginExistente}" update=":msg"
@@ -97,16 +97,18 @@
 
 					</p:inputText>
 
-					<p:message for="email" />
+					<p:spacer height="5px" /><p:spacer height="5px" />
 
 					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
 
 					<p:inputText id="codSiape" value="#{tecEspMB.tecnicoEsp.siape}"
-						size="50" maxlength="20" required="true"
+						size="60" maxlength="20" required="true"
 						requiredMessage="Siape é obrigatório!" />
-					<p:message for="codSiape" />
+					
+					<p:spacer height="5px" /><p:spacer height="5px" />
 
-					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+					<p:outputLabel id="campusLb" value="Câmpus:" />
+					
 					<p:selectOneMenu id="campus" value="#{tecEspMB.campus}"
 						filter="true" filterMatchMode="startsWith" required="true"
 						requiredMessage="Câmpus é obrigatório!"
@@ -118,8 +120,8 @@
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 					</p:selectOneMenu>
 
-					<p:message for="campus" />
-
+					<p:spacer height="15px" /><p:spacer height="15px" />
+					
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :tecEsp_form :msg"

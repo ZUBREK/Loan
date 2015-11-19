@@ -1,9 +1,7 @@
 package ifpr.evento.arquivo;
 
-import ifpr.evento.Evento;
+import ifpr.evento.eventoPessoa.EventoPessoa;
 import ifpr.pessoa.Pessoa;
-
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "tbArquivoEvento")
@@ -23,37 +20,25 @@ public class ArquivoEvento {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_arquivo")
+	@Column(name="id_arquivo_evento")
 	private Integer id;
 
-	@Column(name="caminho_arquivo")
+	@Column(name="caminho_arquivo_evento")
 	private String caminho;
 
-	@Column(name="nome_arquivo",length=50)
+	@Column(name="nome_arquivo_evento",length=50)
 	private String nome;
 
 	@ManyToOne
 	@JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
 	private Pessoa uploader;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="data_upload")
-	private Date dataUpload;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_evento", referencedColumnName = "id_evento")
-	private Evento evento;
-
 	
 	
-	public Evento getEvento() {
-		return evento;
-	}
-
-	public void setEvento(Evento evento) {
-		this.evento = evento;
-	}
-
+	@OneToOne
+	@JoinColumn(name = "id_pessoa_evento", referencedColumnName = "id_pessoa_evento")
+	private EventoPessoa eventoPessoa;
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -86,12 +71,14 @@ public class ArquivoEvento {
 		this.uploader = uploader;
 	}
 
-	public Date getDataUpload() {
-		return dataUpload;
+
+	public EventoPessoa getEventoPessoa() {
+		return eventoPessoa;
 	}
 
-	public void setDataUpload(Date dataUpload) {
-		this.dataUpload = dataUpload;
+	public void setEventoPessoa(EventoPessoa eventoPessoa) {
+		this.eventoPessoa = eventoPessoa;
 	}
 
+	
 }

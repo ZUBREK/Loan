@@ -89,5 +89,10 @@ public class Arquivo {
 	public void setDataUpload(Date dataUpload) {
 		this.dataUpload = dataUpload;
 	}
+	
+	@Override
+	public String toString() {
+		return nome;
+	}
 
 }

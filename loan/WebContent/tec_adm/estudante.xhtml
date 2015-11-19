@@ -69,7 +69,7 @@
 		</p:panel>
 
 		<p:dialog id="estudanteDlg" widgetVar="estudanteDialog"
-			header="Dados do Estudante" width="600" height="200" modal="true"
+			header="Dados do Estudante" width="700" height="300" modal="true"
 			closable="false">
 
 			<h:form id="estudante_form">
@@ -78,31 +78,31 @@
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{estudanteMB.estudante.nome}" maxlength="60"
-						size="50" required="true" requiredMessage="Nome é obrigatório!" />
+						size="60" required="true" requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
 						for="dataNasc" />
-					<p:calendar id="dataNasc"
+					<p:calendar id="dataNasc" size="60"
 						value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
 						maxdate="31/12/2005" yearRange="1980:2005" required="true"
 						requiredMessage="Data de nascimento é obrigatória!" />
 
 					<h:outputLabel id="rgLb" value="RG:" for="rg" />
-					<p:inputText id="rg" value="#{estudanteMB.estudante.rg}" size="50"
+					<p:inputText id="rg" value="#{estudanteMB.estudante.rg}" size="60"
 						maxlength="9" required="true" requiredMessage="RG é obrigatório!"
 						placeholder="Apenas números" />
 
 
 					<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
 					<p:inputText id="cpf" value="#{estudanteMB.estudante.cpf}"
-						maxlength="11" placeholder="Apenas números" size="50"
+						maxlength="11" placeholder="Apenas números" size="60"
 						required="true" requiredMessage="CPF é obrigatório!" />
 
 
 					<h:outputLabel id="matriculaLb" value="Matricula:" for="matricula" />
 					<p:inputText id="matricula" maxlength="11"
-						value="#{estudanteMB.estudante.matricula}" size="50"
+						value="#{estudanteMB.estudante.matricula}" size="60"
 						required="true" requiredMessage="Matricula é obrigatório!" />
 
 

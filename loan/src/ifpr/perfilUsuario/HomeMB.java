@@ -1,16 +1,5 @@
 package ifpr.perfilUsuario;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.arquivo.dao.ArquivoDao;
-import ifpr.model.LoginControllerMB;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.coordenadorPea.CoordenadorPea;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.secretario.Secretario;
-import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,8 +20,6 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-<<<<<<< HEAD
-=======
 import ifpr.arquivo.Arquivo;
 import ifpr.arquivo.dao.ArquivoDao;
 import ifpr.geradorPdf.RelatorioFinal;
@@ -45,7 +32,6 @@ import ifpr.pessoa.secretario.Secretario;
 import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
 import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
 
->>>>>>> refs/heads/derikV3-branch
 @ManagedBean(name = "homeMB")
 @SessionScoped
 public class HomeMB {
@@ -63,14 +49,11 @@ public class HomeMB {
 
 	public HomeMB() {
 		FacesContext context = FacesContext.getCurrentInstance();
-<<<<<<< HEAD
 		loginController = context.getApplication().evaluateExpressionGet(
 				context, "#{loginControllerMB}", LoginControllerMB.class);
-=======
 		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
 				LoginControllerMB.class);
 		relatorioFinal = context.getApplication().evaluateExpressionGet(context, "#{relatorioFinal}", RelatorioFinal.class);
->>>>>>> refs/heads/derikV3-branch
 		pessoaLogada = loginController.getPessoaLogada();
 		isAluno = false;
 	}
@@ -231,7 +214,6 @@ public class HomeMB {
 		this.atributos = atributos;
 	}
 
-<<<<<<< HEAD
 	public boolean isAluno() {
 		return isAluno;
 	}
@@ -240,7 +222,6 @@ public class HomeMB {
 		this.isAluno = isAluno;
 	}
 
-=======
 	public RelatorioFinal getRelatorioFinal() {
 		return relatorioFinal;
 	}
@@ -248,7 +229,4 @@ public class HomeMB {
 	public void setRelatorioFinal(RelatorioFinal relatorioFinal) {
 		this.relatorioFinal = relatorioFinal;
 	}
-	
-	
->>>>>>> refs/heads/derikV3-branch
 }

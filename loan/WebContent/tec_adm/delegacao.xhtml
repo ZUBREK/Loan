@@ -37,13 +37,13 @@
 						<p:outputLabel value="#{delegacao.campus.cidade}" />
 					</p:column>
 					
-					<p:column headerText="Certificados" width="70">
+					<p:column headerText="Declarações" width="70">
 
-						<p:commandButton id="gerarCertificadoPessoa" icon="pdf16" value=" "
+						<p:commandButton id="gerarDeclaracaoPessoa" icon="pdf16" value=" "
 							style="margin-left: 20px;" ajax="false"
-							actionListener="#{delegacaoMB.gerarCertificados(delegacao)}" 
+							actionListener="#{delegacaoMB.gerarDeclaracoes(delegacao)}" 
 							styleClass="apenasIcone">
-							<p:fileDownload id="download" value="#{certificadosPdf.arqStreamed}" />
+							<p:fileDownload id="download" value="#{declaracoesPdf.arqStreamed}" />
 						</p:commandButton>
 					</p:column>
 					

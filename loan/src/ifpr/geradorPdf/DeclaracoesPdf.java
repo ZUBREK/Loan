@@ -29,11 +29,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import ifpr.pessoa.Pessoa;
 
-@ManagedBean(name = "certificadosPdf")
+@ManagedBean(name = "declaracoesPdf")
 @ViewScoped
-public class CertificadosPdf {
+public class DeclaracoesPdf {
 	private Document doc;
-	private final String CAMINHO_PASTA_CERTIFICADOS = "C:/home/loan_docs/certificados";
+	private final String CAMINHO_PASTA_DECLARACOES = "C:/home/loan_docs/declaracoes";
 	private final String CAMINHO_ARQ_DEFAULT = "C:/home/loan_docs";
 	private File arquivo;
 	private Image moldura;
@@ -42,19 +42,21 @@ public class CertificadosPdf {
 	private PdfContentByte cb;
 	private StreamedContent arqStreamed;
 
-	public CertificadosPdf() throws BadElementException, MalformedURLException, IOException {
+	public DeclaracoesPdf() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
-		arquivo = new File(CAMINHO_PASTA_CERTIFICADOS);
+		arquivo = new File(CAMINHO_PASTA_DECLARACOES);
 		arquivo.mkdirs();
-		moldura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/molduraCertificados.png");
+		moldura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/molduraDeclaracoes.png");
 		logo = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/logoJIFPR.png");
-		assinatura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/assinaturaCertificado.png");
+		assinatura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/assinaturaDeclaracoes.png");
 		doc.setPageSize(PageSize.A4.rotate());
 	}
 
-	public void gerarCertificados(List<Pessoa> lista) {
-		arquivo = new File(CAMINHO_PASTA_CERTIFICADOS + "/CertificadosJIFPR.pdf");
+	public void gerarDeclaracoes(List<Pessoa> lista) {
+		arquivo = new File(CAMINHO_PASTA_DECLARACOES + "/DeclaracoesJIFPR.pdf");
 		try {
+			doc = new Document();
+			doc.setPageSize(PageSize.A4.rotate());
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(arquivo));
 			doc.open();
 			doc.addAuthor("SISTEMA_LOAN");
@@ -62,11 +64,11 @@ public class CertificadosPdf {
 			for (int i = 0; i < lista.size(); i++) {
 				addMoldura();
 				addLogo();
-				addTituloCertificado(writer);
+				addTituloDeclaracao(writer);
 				Date data = new Date();  
 				SimpleDateFormat formatador = new SimpleDateFormat("yyyy");
 				Pessoa pessoa = (Pessoa) lista.get(i);
-				String texto = "Certificamos que o(a) " + pessoa.getTipo().getLabel() + " " + 
+				String texto = "Declaramos que o(a) " + pessoa.getTipo().getLabel() + " " + 
 						pessoa.getNome() + " participou dos Jogos do Instituto Federal " +
 						"do Paraná (JIFPR), promovido pela Pró-Reitoria de Ensino (PROENS)" +
 						" e pela Diretoria de Assuntos Estudantis e Atividades Especiais " + 
@@ -78,9 +80,9 @@ public class CertificadosPdf {
 					String primeiroTexto = texto.substring(0, particao);
 					String segundoTexto = texto.substring(particao, texto.length());
 					texto = segundoTexto;
-					addLinhaCertificado(writer, primeiroTexto,linha-=20);
+					addLinhaDeclaracao(writer, primeiroTexto,linha-=20);
 				}
-				addLinhaCertificado(writer, texto,linha-=20);
+				addLinhaDeclaracao(writer, texto,linha-=20);
 				addAssinatura();
 				doc.newPage();
 			}
@@ -113,19 +115,19 @@ public class CertificadosPdf {
 		doc.add(assinatura);
 	}
 	
-	private void addTituloCertificado(PdfWriter writer) throws DocumentException, IOException{
+	private void addTituloDeclaracao(PdfWriter writer) throws DocumentException, IOException{
 		cb = writer.getDirectContent();
 		BaseFont bf;
 		bf = BaseFont.createFont(BaseFont.COURIER_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 		cb.saveState();
 		cb.beginText();
 		cb.setFontAndSize(bf, 20);
-		cb.showTextAligned(PdfContentByte.ALIGN_CENTER,"CERTIFICADO", 380, 410, 0);
+		cb.showTextAligned(PdfContentByte.ALIGN_CENTER,"DECLARAÇÃO DE PRESENÇA", 380, 410, 0);
 		cb.endText();
 		cb.restoreState();
 	}
 	
-	private void addLinhaCertificado(PdfWriter writer,String texto,int linha) throws DocumentException, IOException{
+	private void addLinhaDeclaracao(PdfWriter writer,String texto,int linha) throws DocumentException, IOException{
 		cb = writer.getDirectContent();
 		BaseFont bf;
 		bf = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
@@ -142,7 +144,7 @@ public class CertificadosPdf {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
-			arqStreamed = new DefaultStreamedContent(stream, null, "CertificadosJIFPR.pdf");
+			arqStreamed = new DefaultStreamedContent(stream, null, "DeclaraçõesJIFPR.pdf");
 		} catch (FileNotFoundException e) {
 			System.out.println("Erro no download de imagem");
 		}

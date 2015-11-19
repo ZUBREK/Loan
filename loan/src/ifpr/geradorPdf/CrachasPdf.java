@@ -65,6 +65,7 @@ public class CrachasPdf {
 	public void gerarPdfDelegacao(List<Pessoa> listDesc) {
 		arquivo = new File(CAMINHO_PASTA_CRACHAS + "/CrachasJIFPR.pdf");
 		try {
+			doc = new Document();
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(arquivo));
 			doc.open();
 			doc.addAuthor("SISTEMA_LOAN");

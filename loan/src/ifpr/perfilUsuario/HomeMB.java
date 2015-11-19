@@ -22,6 +22,7 @@ import org.primefaces.model.StreamedContent;
 
 import ifpr.arquivo.Arquivo;
 import ifpr.arquivo.dao.ArquivoDao;
+import ifpr.geradorPdf.RelatorioFinal;
 import ifpr.model.LoginControllerMB;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
@@ -43,11 +44,13 @@ public class HomeMB {
 	private Arquivo arquivo;
 	private Pessoa pessoaLogada;
 	private List<String> atributos;
+	public RelatorioFinal relatorioFinal;
 
 	public HomeMB() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
 				LoginControllerMB.class);
+		relatorioFinal = context.getApplication().evaluateExpressionGet(context, "#{relatorioFinal}", RelatorioFinal.class);
 		pessoaLogada = loginController.getPessoaLogada();
 	}
 
@@ -59,6 +62,10 @@ public class HomeMB {
 			criarArqFotoPerfil(pessoaLogada);
 		}
 
+	}
+
+	public void gerarRelatorio() {
+		relatorioFinal.gerarRelatorio();
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -194,4 +201,14 @@ public class HomeMB {
 	public void setAtributos(List<String> atributos) {
 		this.atributos = atributos;
 	}
+
+	public RelatorioFinal getRelatorioFinal() {
+		return relatorioFinal;
+	}
+
+	public void setRelatorioFinal(RelatorioFinal relatorioFinal) {
+		this.relatorioFinal = relatorioFinal;
+	}
+	
+	
 }

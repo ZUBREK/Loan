@@ -39,14 +39,13 @@ import ifpr.modalidade.Modalidade;
 import ifpr.modalidade.dao.ModalidadeDao;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.estudante.Estudante;
+import ifpr.utils.Paths;
 
 @ManagedBean(name = "relatorioFinal")
 @ViewScoped
 public class RelatorioFinal {
 	private Document doc;
-	private final String CAMINHO_PASTA_RELATORIO = "C:/home/loan_docs/relatorioFinal";
-	private final String CAMINHO_ARQ_DEFAULT = "C:/home/loan_docs";
-	private final String CAMINHO_RELATORIO = CAMINHO_PASTA_RELATORIO + "/RelatorioFinalJIFPR.pdf";
+
 	private Font heveltica12Bold = new Font(FontFamily.HELVETICA, 12, Font.BOLD);
 	private Font heveltica10 = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
 	private final int TAMANHO_TABELA_PDF = 5;
@@ -78,13 +77,13 @@ public class RelatorioFinal {
 
 	public RelatorioFinal() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
-		arquivo = new File(CAMINHO_PASTA_RELATORIO);
+		arquivo = new File(Paths.PASTA_RELATORIO);
 		arquivo.mkdirs();
-		header = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/logoJIFPR.png");
+		header = Image.getInstance(Paths.LOGO_JOGOS);
 	}
 
 	public void gerarRelatorio() {
-		File caminho = new File(CAMINHO_RELATORIO);
+		File caminho = new File(Paths.CAMINHO_RELATORIO);
 		if (caminho.exists()) {
 			caminho.delete();
 		}
@@ -238,8 +237,8 @@ public class RelatorioFinal {
 	public StreamedContent getArqStreamed() {
 		InputStream stream;
 		try {
-			stream = new FileInputStream(CAMINHO_RELATORIO);
-			arqStreamed = new DefaultStreamedContent(stream, null, "RelatorioFinalJIFPR.pdf");
+			stream = new FileInputStream(Paths.CAMINHO_RELATORIO);
+			arqStreamed = new DefaultStreamedContent(stream, null, Paths.RELATORIO);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

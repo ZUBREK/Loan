@@ -63,7 +63,7 @@
 			</h:form>
 		</p:panel>
 		<p:dialog id="lclDlg" widgetVar="lclDialog" header="Nova Local"
-			width="450" height="100" modal="true" closable="false">
+			width="300" height="200" modal="true" closable="false">
 
 			<h:form id="lcl_form">
 				<h:panelGrid columns="2">
@@ -97,7 +97,7 @@
 					<p:inputText id="numero" value="#{localMB.local.numero}"
 						required="true" requiredMessage="Número é obrigatório!" >
 						</p:inputText>
-
+					<p:spacer height="10px"/>
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":table_form :lcl_form :msg"

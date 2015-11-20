@@ -52,7 +52,7 @@
 
 			<h:form id="chav_form">
 				<p:tabView id="tabView" widgetVar="tabBagaca">
-					<p:tab title="Dados Em Geral">
+					<p:tab title="Todas as Partidas">
 						<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
 							converter="#{timeConverter}"
 							disabled="#{chaveMB.chave.tipo == chaveMB.tipoMataMata}">
@@ -67,8 +67,11 @@
 							rendered="#{not empty chaveMB.chave}" orientation="horizontal"
 							dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
 							id="treeNodeChave">
-							<p:treeNode>
-								<h:outputText value="#{node}" />
+							<p:treeNode id="treeNodePartidaTime">
+								<h:outputText id="valorNode" value="#{node}" />
+								<p:tooltip for="valorNode"
+									value="Clique para adicionar o placar do #{node}"
+									showEffect="fade" hideEffect="fade" />
 							</p:treeNode>
 							<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
 
@@ -112,7 +115,7 @@
 								<h:outputText value="#{time.pontosTime.derrotas}" />
 							</p:column>
 							<p:column headerText="Total de Pontos">
-								<h:outputText value="#{time.pontosTime.saldoPontos}" />
+								<h:outputText value="#{time.pontosTime.pontos}" />
 							</p:column>
 						</p:dataTable>
 					</p:tab>
@@ -126,10 +129,11 @@
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
 
-					<p:outputLabel id="resultadoLb" value="Pontos:" for="resultado" />
+					<p:outputLabel id="placarLb" value="Placar:" for="placar" />
 
-					<p:inputText id="resultado" value="#{chaveMB.partidaTime.pontos}"
-						required="true" requiredMessage="Preencha os pontos do time!" />
+					<p:inputText id="placar" value="#{chaveMB.partidaTime.placar}"
+						required="true"
+						requiredMessage="Preencha os pontos(gols) do time!" />
 
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
@@ -153,9 +157,8 @@
 					<p:spacer height="10px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarPartidaBt" value="Salvar"
-							icon="salvar16" actionListener="#{chaveMB.salvarPartidaTime}"
-							update="editarChavDialog"
-							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
+							icon="salvar16"
+							oncomplete="if(!args.validationFailed) PF('confirmPartidaDialog').show()">
 							<p:resetInput target=":part_form" />
 						</p:commandButton>
 
@@ -213,7 +216,9 @@
 							update=":table_form :chave_form :msg"
 							actionListener="#{chaveMB.salvarChave}"
 							oncomplete="if(!args.validationFailed) PF('chavDialog').hide()"
-							onclick="PrimeFaces.monitorDownload(start, stop)" />
+							onclick="PrimeFaces.monitorDownload(start, stop)">
+							<p:resetInput target=":chave_form" />
+						</p:commandButton>
 
 						<script type="text/javascript">
 						
@@ -250,7 +255,20 @@
 					oncomplete="PF('confirmDialog').hide()" icon="cancelar16" />
 			</h:form>
 		</p:confirmDialog>
+		
+		
+		<p:confirmDialog id="confirmPartidaDialog" widgetVar="confirmPartidaDialog" global="true"
+			header="Confirma placar para o time?" showEffect="fade" hideEffect="explode"
+			message="Você confirma o placar de #{chaveMB.partidaTime.placar} para o time #{chaveMB.partidaTime.time}? Obs: Não poderá ser alterado">
 
+			<h:form>
+				<p:commandButton value="Sim" actionListener="#{chaveMB.salvarPartidaTime}"
+					oncomplete="PF('editarChavDialog').show()" update="editarChavDialog"
+					icon="ok16" />
+				<p:commandButton value="Não" actionListener="#{chaveMB.cancelar()}" icon="cancelar16" />
+			</h:form>
+		</p:confirmDialog>
+		
 	</ui:define>
 
 </ui:composition>

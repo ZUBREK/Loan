@@ -202,7 +202,7 @@ public class ChaveMB {
 		Collections.sort(timesSemNullSemDuplicado, new Comparator<Time>() {
 			@Override
 			public int compare(Time time1, Time time2) {
-				return time1.getPontosTime().getPontos()- time2.getPontosTime().getPontos();
+				return time1.getPontosTime().getPontos() - time2.getPontosTime().getPontos();
 			}
 		});
 	}
@@ -239,7 +239,7 @@ public class ChaveMB {
 		try {
 			chaveDao.remover(chave);
 			pegarTimes();
-			for (Time time : times) {
+			for (Time time : timesSemNullSemDuplicado) {
 				PontosTime pt = time.getPontosTime();
 				pt.setDerrotas(0);
 				pt.setEmpates(0);
@@ -258,6 +258,7 @@ public class ChaveMB {
 	}
 
 	public void salvarChave() {
+		chave.setModalidade(modalidade);
 		chave.setTipo(tipo);
 		if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
 
@@ -374,18 +375,18 @@ public class ChaveMB {
 				}
 			}
 		} catch (Exception e) {
-			// node nao eh partida time, nada acontece
+			e.printStackTrace();
 		}
 	}
 
 	public void salvarPartidaTime() {
+		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
 		salvarPartida();
 		if (partidaTime.getPlacar() != -1) {
 			partidaTimeDao.update(partidaTime);
 			PontosTime pontosTimeAdversario = ptpAdversario.getTime().getPontosTime();
 			Time timeAdversario = ptpAdversario.getTime();
 			if (partidaTime.getPlacar() > ptpAdversario.getPlacar() && ptpAdversario.getPlacar() != -1) {
-
 
 				setarTimeVitoriosoPtp(partidaTime.getTime());
 				setarPlacarTime(pontosTimeAdversario, 0);
@@ -405,18 +406,16 @@ public class ChaveMB {
 			chave = chaveDao.findById(chave.getId());
 			iniciarTreeNode();
 		}
-		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
+		RequestContext.getCurrentInstance().execute("PF('confirmPartidaDialog').hide()");
 	}
 
 	private void setarPlacarTime(PontosTime pontosTime2, int pontosGanhos) {
 		pontosTime2.setPontos(pontosTime2.getPontos() + pontosGanhos);
-		if(pontosGanhos > 1){
+		if (pontosGanhos > 1) {
 			pontosTime2.setVitorias(pontosTime2.getVitorias() + 1);
-		}
-		else if (pontosGanhos == 1){
+		} else if (pontosGanhos == 1) {
 			pontosTime2.setEmpates(pontosTime2.getEmpates() + 1);
-		}
-		else{
+		} else {
 			pontosTime2.setDerrotas(pontosTime2.getDerrotas() + 1);
 		}
 		pontosTimeDao.update(pontosTime2);
@@ -616,9 +615,8 @@ public class ChaveMB {
 	}
 
 	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) {
-		chave.setModalidade(modalidade);
 		tipos = TipoCompeticao.values();
-		times = timeDao.pesquisarPorModalidade(chave.getModalidade());
+		times = timeDao.pesquisarPorModalidade(modalidade);
 		if (!verificarTamanhoTime()) {
 			ArrayList<TipoCompeticao> tiposOld = new ArrayList<TipoCompeticao>(Arrays.asList(tipos));
 			tiposOld.remove(TipoCompeticao.MATA_MATA);

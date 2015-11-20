@@ -2,6 +2,7 @@ package ifpr.model;
 
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
+import ifpr.utils.Paths;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -39,18 +40,18 @@ public class MenuUsuariosViewMB {
 	@PostConstruct
 	public void init() {
 		model = new DefaultMenuModel();
-		adicionarItem("Página Principal", "/index.ifpr", "home16", false);
-		adicionarItem("Meu Perfil", "/user/home.ifpr", "home16", false);
+		adicionarItem("Página Principal", Paths.INDEX, "home16", false);
+		adicionarItem("Meu Perfil", Paths.HOME, "home16", false);
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
-			adicionarItem("Gerenciar - Arquivos", "/adm/arquivo/arquivo.ifpr", "attach16", false);
+			adicionarItem("Gerenciar - Arquivos", Paths.ARQUIVOS, "attach16", false);
 
-			adicionarItem("Gerenciar - Campus", "/adm/campus.ifpr", "attach16", false);
+			adicionarItem("Gerenciar - Campus", Paths.CAMPUS, "attach16", false);
 
-			adicionarItem("Gerenciar - Notícias", "/adm/noticia.ifpr", "attach16", false);
+			adicionarItem("Gerenciar - Notícias", Paths.NOTICIAS, "attach16", false);
 
-			adicionarItem("Gerenciar - Projetos PEA", "/tec_adm/projeto.ifpr", "attach16", false);
+			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "attach16", false);
 
-			adicionarItem("Gerenciar - Horários de Assistências", "/adm/noticia.ifpr", "attach16", false);
+			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
@@ -67,28 +68,28 @@ public class MenuUsuariosViewMB {
 
 	private void adicionarItensAdm() {
 		submenu = new DefaultSubMenu("Gerenciar - Usuários");
-		adicionarItem("Tec. Administrativos", "/adm/tec_adm.ifpr", "user16", true);
+		adicionarItem("Tec. Administrativos", Paths.TECADM, "user16", true);
 
-		adicionarItem("Tec. Esportivos", "/tec_adm/tec_esp.ifpr", "user16", true);
+		adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
 
-		adicionarItem("Coordenadores", "/tec_adm/coordenadorPea.ifpr", "user16", true);
+		adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 
-		adicionarItem("Secretários", "/tec_adm/secretario.ifpr", "user16", true);
+		adicionarItem("Secretários", Paths.SECRETARIOS, "user16", true);
 
-		adicionarItem("Estudantes", "/tec_adm/estudante.ifpr", "user16", true);
+		adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", true);
 		model.addElement(submenu);
 		submenu = new DefaultSubMenu("Gerenciar - Competição");
 
-		adicionarItem("Modalidades", "/adm/modalidade.ifpr", "user16", true);
+		adicionarItem("Modalidades", Paths.MODALIDADES, "user16", true);
 
-		adicionarItem("Times", "/tec_adm/time.ifpr", "user16", true);
+		adicionarItem("Times", Paths.TIMES, "user16", true);
 
-		adicionarItem("Delegações", "/tec_adm/delegacao.ifpr", "attach16", true);
+		adicionarItem("Delegações", Paths.DELEGACOES, "attach16", true);
 
-		adicionarItem("Chaves", "/adm/chave.ifpr", "attach16", true);
+		adicionarItem("Chaves", Paths.CHAVES, "attach16", true);
 
-		adicionarItem("Locais", "/adm/local.ifpr", "attach16", true);
-		
+		adicionarItem("Locais", Paths.LOCAIS, "attach16", true);
+
 		model.addElement(submenu);
 	}
 
@@ -144,7 +145,7 @@ public class MenuUsuariosViewMB {
 	public void setItem(DefaultMenuItem item) {
 		this.item = item;
 	}
-	
+
 	public MenuModel getModel() {
 		return model;
 	}

@@ -29,8 +29,8 @@ public class PartidaTime {
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Partida partida;
 	
-	@Column(name="pontos_time")
-	private int pontos;
+	@Column(name="placar_partida_time")
+	private int placar;
 	
 	public Integer getId() {
 		return id;
@@ -65,11 +65,11 @@ public class PartidaTime {
 		}
 	}
 
-	public int getPontos() {
-		return pontos;
+	public int getPlacar() {
+		return placar;
 	}
 
-	public void setPontos(int pontos) {
-		this.pontos = pontos;
+	public void setPlacar(int placar) {
+		this.placar = placar;
 	}
 }

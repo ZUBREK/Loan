@@ -139,7 +139,7 @@ public class ChaveMB {
 		pegarTimes();
 		for (int i = 0; i < partidaTimes.size(); i++) {
 			if (i % 3 == 0) {
-				if (partidaTimes.get(i).getPontos() == -2) {
+				if (partidaTimes.get(i).getPlacar() == -2) {
 					Time time = new Time();
 					time.setNome("EMPATE");
 					partidaTimes.get(i).setTime(time);
@@ -243,7 +243,7 @@ public class ChaveMB {
 				PontosTime pt = time.getPontosTime();
 				pt.setDerrotas(0);
 				pt.setEmpates(0);
-				pt.setSaldoPontos(0);
+				pt.setPontos(0);
 				pt.setVitorias(0);
 				pontosTimeDao.update(pt);
 			}
@@ -345,7 +345,7 @@ public class ChaveMB {
 	private void setarPartidaTimePlacar() {
 		partidaTime = new PartidaTime();
 		partidaTime.setPartida(partida);
-		partidaTime.setPontos(-1);
+		partidaTime.setPlacar(-1);
 	}
 
 	public Chave getChave() {
@@ -360,7 +360,7 @@ public class ChaveMB {
 			List<TreeNode> nodesCompetidores = meuPai.getChildren();
 			if (partidaTime.getTime() != null) {
 				if (partidaTimeMeuPai.getTime() == null) {
-					if (partidaTime.getPontos() == -1) {
+					if (partidaTime.getPlacar() == -1) {
 						pontosTime = partidaTime.getTime().getPontosTime();
 						partida = partidaTime.getPartida();
 						for (int i = 0; i < nodesCompetidores.size(); i++) {
@@ -380,37 +380,35 @@ public class ChaveMB {
 
 	public void salvarPartidaTime() {
 		salvarPartida();
-		if (partidaTime.getPontos() != -1) {
+		if (partidaTime.getPlacar() != -1) {
 			partidaTimeDao.update(partidaTime);
 			PontosTime pontosTimeAdversario = ptpAdversario.getTime().getPontosTime();
 			Time timeAdversario = ptpAdversario.getTime();
-			if (partidaTime.getPontos() > ptpAdversario.getPontos() && ptpAdversario.getPontos() != -1) {
+			if (partidaTime.getPlacar() > ptpAdversario.getPlacar() && ptpAdversario.getPlacar() != -1) {
 
 				setarPontosTimeDerrotado(pontosTimeAdversario);
 				setarPontosTimeVitorioso(pontosTime);
 				setarTimeVitoriosoPtp(partidaTime.getTime());
 
-			} else if (partidaTime.getPontos() < ptpAdversario.getPontos()) {
+			} else if (partidaTime.getPlacar() < ptpAdversario.getPlacar()) {
 				setarPontosTimeDerrotado(pontosTime);
 				setarPontosTimeVitorioso(pontosTimeAdversario);
 				setarTimeVitoriosoPtp(timeAdversario);
-			} else if (partidaTime.getPontos() == ptpAdversario.getPontos()
+			} else if (partidaTime.getPlacar() == ptpAdversario.getPlacar()
 					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
 				setarEmpateTime(pontosTime);
 				setarEmpateTime(pontosTimeAdversario);
-				partidaTimeMeuPai.setPontos(-2);
+				partidaTimeMeuPai.setPlacar(-2);
 				partidaTimeDao.update(partidaTimeMeuPai);
 			}
-			
-			setarPontoTotalTime(pontosTime);
 			chave = chaveDao.findById(chave.getId());
 			iniciarTreeNode();
 		}
 		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
 	}
 
-	private void setarPontoTotalTime(PontosTime pontosTime2) {
-		pontosTime2.setSaldoPontos(pontosTime2.getSaldoPontos() + partidaTime.getPontos());
+	private void setarPlacarTime(PontosTime pontosTime2, int pontosGanhos) {
+		pontosTime2.setPontos(pontosTime2.getPontos() + pontosGanhos);
 		pontosTimeDao.update(pontosTime2);
 	}
 

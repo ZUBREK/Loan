@@ -55,7 +55,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":estudante_form"
+							style="margin-left: 3px;" update=":dados_form"
 							oncomplete="PF('estudanteDialog').show()"
 							styleClass="apenasIcone">
 
@@ -86,18 +86,26 @@
 		</p:panel>
 
 		<p:dialog id="estudanteDlg" widgetVar="estudanteDialog"
-			header="Dados do Estudante" width="700" height="300" modal="true"
+			header="Dados do Estudante" width="700" height="350" modal="true"
 			closable="false">
 
-			<h:form id="estudante_form">
+			<h:form id="dados_form">
 
 				<h:panelGrid columns="2">
+
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
+
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 					<p:inputText id="nome" value="#{estudanteMB.estudante.nome}"
 						maxlength="60" size="60" required="true"
 						requiredMessage="Nome é obrigatório!" />
+
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
+
 
 					<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
 						for="dataNasc" />
@@ -106,7 +114,15 @@
 						value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
 						maxdate="31/12/2005" yearRange="1980:2005" required="true"
-						requiredMessage="Data de nascimento é obrigatória!" />
+						requiredMessage="Data de nascimento é obrigatória!">
+
+						<p:watermark value="00/00/0000" for="dataNasc" />
+
+					</p:calendar>
+
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
+
 
 					<h:outputLabel id="rgLb" value="RG:" for="rg" />
 
@@ -114,13 +130,26 @@
 						maxlength="9" required="true" requiredMessage="RG é obrigatório!"
 						placeholder="Apenas números" />
 
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
+
+
 
 					<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
 
-					<p:inputText id="cpf" value="#{estudanteMB.estudante.cpf}"
-						maxlength="11" placeholder="Apenas números" size="60"
-						required="true" requiredMessage="CPF é obrigatório!" />
+					<p:inputMask mask="999.999.999-99" id="cpf" size="60"
+						required="true" requiredMessage="CPF é obrigatório!"
+						value="#{estudanteMB.estudante.cpf}">
 
+						<p:ajax listener="#{estudanteMB.validarCpf}" update=":msg"
+							event="blur" />
+
+						<p:watermark value="000.000.000-00" for="cpf" />
+
+					</p:inputMask>
+
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
 					<h:outputLabel id="matriculaLb" value="Matricula:" for="matricula" />
 
@@ -128,8 +157,10 @@
 						value="#{estudanteMB.estudante.matricula}" size="60"
 						required="true" requiredMessage="Matricula é obrigatório!" />
 
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
-					<h:outputLabel id="emailLb" value="E-mail/Login:" for="email" />
+					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
 					<p:inputText id="email" value="#{estudanteMB.estudante.login}"
 						maxlength="255" size="50" required="true"
@@ -140,6 +171,9 @@
 							update=":msg" event="blur" />
 
 					</p:inputText>
+
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
 					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 
@@ -155,27 +189,32 @@
 
 					</p:selectOneMenu>
 
+
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
+
 					<f:facet name="footer">
 
-						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
-							draggable="false" closable="false" resizable="false">
+						<p:dialog modal="true" widgetVar="statusDialog"
+							header="Carregando" draggable="false" closable="false"
+							resizable="false">
 
 							<p:graphicImage value="/img/64/ajax_loader.gif" />
 
 						</p:dialog>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :estudante_form :msg"
+							update=":tableForm :dados_form :msg"
 							actionListener="#{estudanteMB.salvar}"
 							onclick="PrimeFaces.monitorDownload(start, stop)"
 							oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
-							icon="cancelar16" oncomplete="PF('estudanteDialog').hide()"
-							update=":msg" immediate="true"
-							actionListener="#{estudanteMB.cancelar()}">
+							style="padding-left:1px;" icon="cancelar16"
+							oncomplete="PF('estudanteDialog').hide()" update=":msg"
+							immediate="true" actionListener="#{estudanteMB.cancelar()}">
 
-							<p:resetInput target=":estudante_form" />
+							<p:resetInput target=":dados_form" />
 
 						</p:commandButton>
 

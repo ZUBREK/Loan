@@ -48,15 +48,15 @@ public class TecnicoAdministrativoMB {
 	private List<Campus> listaCampus;
 
 	private Campus campus;
-	
-	private CadastroUsuarioValidator emailHelper;
+
+	@ManagedProperty(value = "#{cadastroValidator}")
+	private CadastroUsuarioValidator cadastroValidator;
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
 	public TecnicoAdministrativoMB() {
 		tecnicoAdmFiltered = new ArrayList<TecnicoAdministrativo>();
-		emailHelper = new CadastroUsuarioValidator(); 
 	}
 
 	public void criar() {
@@ -74,18 +74,20 @@ public class TecnicoAdministrativoMB {
 	}
 
 	public void salvar() {
-		if (tecnicoAdm.getId() != null) {
+		if (cadastroValidator.validarDados(tecnicoAdm.getSiape())) {
+			if (tecnicoAdm.getId() != null) {
 
-			tecnicoAdmDao.update(tecnicoAdm);
-		} else if (validarLoginExistente()) {
-			tecnicoAdm.setCampus(campus);
-			gerarSenha();
-			tecnicoAdm.setTipo(TipoPessoa.ROLE_TEC_ADM);
-			String md5 = criptografia.criptografar(tecnicoAdm.getSenha());
-			tecnicoAdm.setSenha(md5);
-			tecnicoAdmDao.salvar(tecnicoAdm);
-			homeMB.criarArqFotoPerfil(tecnicoAdm);
-			enviarEmail();
+				tecnicoAdmDao.update(tecnicoAdm);
+			} else if (validarLoginExistente()) {
+				tecnicoAdm.setCampus(campus);
+				gerarSenha();
+				tecnicoAdm.setTipo(TipoPessoa.ROLE_TEC_ADM);
+				String md5 = criptografia.criptografar(tecnicoAdm.getSenha());
+				tecnicoAdm.setSenha(md5);
+				tecnicoAdmDao.salvar(tecnicoAdm);
+				homeMB.criarArqFotoPerfil(tecnicoAdm);
+				enviarEmail();
+			}
 		}
 	}
 
@@ -96,17 +98,18 @@ public class TecnicoAdministrativoMB {
 	}
 
 	private void enviarEmail() {
-		emailHelper.setPessoa(tecnicoAdm);
-		emailHelper.run();
+		cadastroValidator.setPessoa(tecnicoAdm);
+		cadastroValidator.enviarEmail();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!emailHelper.validarEmail(tecnicoAdm)) {
+		if (!cadastroValidator.validarEmail(tecnicoAdm)) {
 			return false;
 		}
 		try {
 			pessoaDao.findByLogin(tecnicoAdm.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -138,7 +141,8 @@ public class TecnicoAdministrativoMB {
 		return tecnicoAdmFiltered;
 	}
 
-	public void setTecnicoAdmFiltered(List<TecnicoAdministrativo> tecnicoAdmFiltered) {
+	public void setTecnicoAdmFiltered(
+			List<TecnicoAdministrativo> tecnicoAdmFiltered) {
 		this.tecnicoAdmFiltered = tecnicoAdmFiltered;
 	}
 
@@ -179,7 +183,8 @@ public class TecnicoAdministrativoMB {
 		this.listaCampus = listaCampus;
 	}
 
-	public void setTecnicoAdmLazyDataModel(TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel) {
+	public void setTecnicoAdmLazyDataModel(
+			TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel) {
 		this.tecnicoAdmLazyDataModel = tecnicoAdmLazyDataModel;
 	}
 
@@ -200,13 +205,11 @@ public class TecnicoAdministrativoMB {
 	}
 
 	public CadastroUsuarioValidator getEmailHelper() {
-		return emailHelper;
+		return cadastroValidator;
 	}
 
 	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
-		this.emailHelper = emailHelper;
+		this.cadastroValidator = emailHelper;
 	}
-	
-	
-	
+
 }

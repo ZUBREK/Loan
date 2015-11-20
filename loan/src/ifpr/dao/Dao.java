@@ -1,11 +1,11 @@
 package ifpr.dao;
 
+import ifpr.campus.Campus;
+import ifpr.modalidade.Modalidade;
+
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
-
-import ifpr.campus.Campus;
-import ifpr.modalidade.Modalidade;
 
 public interface Dao<T> {
 	public void salvar(T obj);
@@ -36,5 +36,7 @@ public interface Dao<T> {
 
 	public int getRowCount();
 
-	public List<T> listarPorCampusModalidade(Campus campus, Modalidade modalidade);
+	public List<T> listarPorCampusModalidade(Campus campus,
+			Modalidade modalidade);
+
 }

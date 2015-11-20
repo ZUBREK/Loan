@@ -16,12 +16,9 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.persistence.NoResultException;
 
 @ManagedBean(name = "estudanteMB")
 @ViewScoped
@@ -48,18 +45,17 @@ public class EstudanteMB {
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
-	
+
+	@ManagedProperty(value = "#{cadastroValidator}")
 	private CadastroUsuarioValidator emailHelper;
 
 	private List<Campus> listaCampus;
 
 	private Campus campus;
 
-
 	public EstudanteMB() {
 
 		estudanteFiltered = new ArrayList<Estudante>();
-		emailHelper = new CadastroUsuarioValidator();
 	}
 
 	public void criar() {
@@ -80,19 +76,22 @@ public class EstudanteMB {
 	}
 
 	public void salvar() {
-		if (estudante.getId() != null) {
-			estudanteDao.update(estudante);
-		} else if (validarLoginExistente()) {
-			estudante.setCampus(campus);
-			gerarSenha();
-			estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
-			String md5 = criptografia.criptografar(estudante.getSenha());
-			estudante.setSenha(md5);
-			estudante.setBolsista(false);
-			estudanteDao.salvar(estudante);
-			homeMB.criarArqFotoPerfil(estudante);
-			enviarEmail();
+		if (emailHelper.validarDadosEstudante(estudante)) {
+			if (estudante.getId() != null) {
+				estudanteDao.update(estudante);
+			} else if (validarLoginExistente()) {
+				estudante.setCampus(campus);
+				gerarSenha();
+				estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
+				String md5 = criptografia.criptografar(estudante.getSenha());
+				estudante.setSenha(md5);
+				estudante.setBolsista(false);
+				estudanteDao.salvar(estudante);
+				homeMB.criarArqFotoPerfil(estudante);
+				enviarEmail();
+			}
 		}
+
 	}
 
 	private void gerarSenha() {
@@ -103,25 +102,22 @@ public class EstudanteMB {
 
 	private void enviarEmail() {
 		emailHelper.setPessoa(estudante);
-		emailHelper.run();
+		emailHelper.enviarEmail();
 	}
 
 	public boolean validarLoginExistente() {
 		if (!emailHelper.validarEmail(estudante)) {
 			return false;
 		}
-		try {
-			pessoaDao.findByLogin(estudante.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"E-mail já existe, escolha outro");
-			FacesContext.getCurrentInstance().addMessage("Atenção", message);
-			FacesContext.getCurrentInstance().validationFailed();
+		return true;
+	}
 
+	public boolean validarCpf() {
+		emailHelper.setPessoa(estudante);
+		if (!emailHelper.validarCpf(estudante.getCpf())) {
 			return false;
-		} catch (NoResultException nre) {
-			return true;
 		}
-
+		return true;
 	}
 
 	public Estudante getEstudante() {
@@ -160,7 +156,8 @@ public class EstudanteMB {
 		return estudanteLazyDataModel;
 	}
 
-	public void setEstudanteLazyDataModel(EstudanteLazyDataModel estudanteLazyDataModel) {
+	public void setEstudanteLazyDataModel(
+			EstudanteLazyDataModel estudanteLazyDataModel) {
 		this.estudanteLazyDataModel = estudanteLazyDataModel;
 	}
 
@@ -196,7 +193,6 @@ public class EstudanteMB {
 		this.campus = campus;
 	}
 
-
 	public HomeMB getHomeMB() {
 		return homeMB;
 	}
@@ -212,6 +208,7 @@ public class EstudanteMB {
 	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
 		this.emailHelper = emailHelper;
 	}
-
 	
+	
+
 }

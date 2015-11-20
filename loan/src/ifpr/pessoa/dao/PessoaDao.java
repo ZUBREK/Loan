@@ -13,4 +13,6 @@ public interface PessoaDao extends Dao<Pessoa> {
 	public Pessoa findByLogin(String login);
 	
 	public List<Pessoa> findByRole(TipoPessoa tipo);
+	
+	
 }

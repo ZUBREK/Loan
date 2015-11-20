@@ -49,17 +49,17 @@ public class TecnicoEsportivoMB {
 
 	private Campus campus;
 
-	private CadastroUsuarioValidator emailHelper;
+	@ManagedProperty(value = "#{cadastroValidator}")
+	private CadastroUsuarioValidator cadastroValidator;
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
 	public TecnicoEsportivoMB() {
-		emailHelper = new CadastroUsuarioValidator();
+
 		tecnicoEsportivoFiltered = new ArrayList<TecnicoEsportivo>();
 	}
-	
-	
+
 	public void criar() {
 		tecnicoEsp = new TecnicoEsportivo();
 
@@ -74,18 +74,21 @@ public class TecnicoEsportivoMB {
 	}
 
 	public void salvar() {
-		if (tecnicoEsp.getId() != null) {
 
-			tecEspDao.update(tecnicoEsp);
-		} else if (validarLoginExistente()) {
-			tecnicoEsp.setCampus(campus);
-			gerarSenha();
-			tecnicoEsp.setTipo(TipoPessoa.ROLE_TEC_ESP);
-			enviarEmail();
-			String md5 = criptografia.criptografar(tecnicoEsp.getSenha());
-			tecnicoEsp.setSenha(md5);
-			tecEspDao.salvar(tecnicoEsp);
-			homeMB.criarArqFotoPerfil(tecnicoEsp);
+		if (cadastroValidator.validarDados(tecnicoEsp.getSiape())) {
+			if (tecnicoEsp.getId() != null) {
+
+				tecEspDao.update(tecnicoEsp);
+			} else if (validarLoginExistente()) {
+				tecnicoEsp.setCampus(campus);
+				gerarSenha();
+				tecnicoEsp.setTipo(TipoPessoa.ROLE_TEC_ESP);
+				enviarEmail();
+				String md5 = criptografia.criptografar(tecnicoEsp.getSenha());
+				tecnicoEsp.setSenha(md5);
+				tecEspDao.salvar(tecnicoEsp);
+				homeMB.criarArqFotoPerfil(tecnicoEsp);
+			}
 		}
 	}
 
@@ -96,17 +99,18 @@ public class TecnicoEsportivoMB {
 	}
 
 	private void enviarEmail() {
-		emailHelper.setPessoa(tecnicoEsp);
-		emailHelper.run();
+		cadastroValidator.setPessoa(tecnicoEsp);
+		cadastroValidator.enviarEmail();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!emailHelper.validarEmail(tecnicoEsp)) {
+		if (!cadastroValidator.validarEmail(tecnicoEsp)) {
 			return false;
 		}
 		try {
 			pessoaDao.findByLogin(tecnicoEsp.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -146,7 +150,8 @@ public class TecnicoEsportivoMB {
 		return tecEspLazyDataModel;
 	}
 
-	public void setTecEspLazyDataModel(TecnicoEsportivoLazyDataModel tecEspLazyDataModel) {
+	public void setTecEspLazyDataModel(
+			TecnicoEsportivoLazyDataModel tecEspLazyDataModel) {
 		this.tecEspLazyDataModel = tecEspLazyDataModel;
 	}
 
@@ -154,7 +159,8 @@ public class TecnicoEsportivoMB {
 		return tecnicoEsportivoFiltered;
 	}
 
-	public void setTecnicoEsportivoFiltered(List<TecnicoEsportivo> tecnicoEsportivoFiltered) {
+	public void setTecnicoEsportivoFiltered(
+			List<TecnicoEsportivo> tecnicoEsportivoFiltered) {
 		this.tecnicoEsportivoFiltered = tecnicoEsportivoFiltered;
 	}
 
@@ -199,18 +205,12 @@ public class TecnicoEsportivoMB {
 		this.homeMB = homeMB;
 	}
 
-
-	public CadastroUsuarioValidator getEmailValidator() {
-		return emailHelper;
+	public CadastroUsuarioValidator getCadastroHelper() {
+		return cadastroValidator;
 	}
 
-
-
-	public void setEmailValidator(CadastroUsuarioValidator emailValidator) {
-		this.emailHelper = emailValidator;
+	public void setCadastroHelper(CadastroUsuarioValidator cadastroHelper) {
+		this.cadastroValidator = cadastroHelper;
 	}
-	
-	
-	
 
 }

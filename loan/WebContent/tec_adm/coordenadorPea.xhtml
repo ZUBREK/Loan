@@ -46,7 +46,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":coord_form"
+							style="margin-left: 3px;" update=":dados_fom"
 							oncomplete="PF('coordDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{coord}"
 								target="#{coordenadorMB.coordenador}" />
@@ -73,7 +73,7 @@
 			header="Dados do Coordenador" width="600" height="200" modal="true"
 			closable="false">
 
-			<h:form id="coord_form">
+			<h:form id="dados_fom">
 
 				<h:panelGrid columns="2">
 
@@ -101,9 +101,9 @@
 
 					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
 
-					<p:inputText id="codSiape"
+					<p:inputText id="siape"
 						value="#{coordenadorMB.coordenador.siape}" size="50"
-						maxlength="20" required="true"
+						maxlength="7" required="true"
 						requiredMessage="Siape é obrigatório!" />
 
 
@@ -133,7 +133,7 @@
 						</p:dialog>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :coord_form :msg"
+							update=":tableForm :dados_fom :msg"
 							onclick="PrimeFaces.monitorDownload(start, stop)"
 							actionListener="#{coordenadorMB.salvar}"
 							oncomplete="if(!args.validationFailed) PF('coordDialog').hide()" />
@@ -143,7 +143,7 @@
 							update=":msg" immediate="true"
 							actionListener="#{coordenadorMB.cancelar()}">
 
-							<p:resetInput target=":coord_form" />
+							<p:resetInput target=":dados_fom" />
 
 						</p:commandButton>
 

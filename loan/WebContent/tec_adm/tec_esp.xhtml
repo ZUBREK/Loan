@@ -49,7 +49,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":tecEsp_form"
+							style="margin-left: 3px;" update=":dados_fom"
 							oncomplete="PF('tecEspDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{tecEsp}"
 								target="#{tecEspMB.tecnicoEsp}" />
@@ -76,7 +76,7 @@
 			header="Dados do Técnico Esportivo" width="600" height="300"
 			modal="true" closable="false">
 
-			<h:form id="tecEsp_form">
+			<h:form id="dados_fom">
 				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
@@ -105,8 +105,8 @@
 
 					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
 
-					<p:inputText id="codSiape" value="#{tecEspMB.tecnicoEsp.siape}"
-						size="60" maxlength="20" required="true"
+					<p:inputText id="siape" value="#{tecEspMB.tecnicoEsp.siape}"
+						size="60" maxlength="7" required="true"
 						requiredMessage="Siape é obrigatório!" />
 
 					<p:spacer height="5px" />
@@ -135,7 +135,7 @@
 						</p:dialog>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :tecEsp_form :msg"
+							update=":tableForm :dados_fom :msg"
 							actionListener="#{tecEspMB.salvar}"
 							onclick="PrimeFaces.monitorDownload(start, stop)"
 							oncomplete="if(!args.validationFailed) PF('tecEspDialog').hide()">
@@ -156,7 +156,7 @@
 							icon="cancelar16" oncomplete="PF('tecEspDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{tecEspMB.cancelar()}">
-							<p:resetInput target=":tecEsp_form" />
+							<p:resetInput target=":dados_fom" />
 						</p:commandButton>
 
 					</f:facet>

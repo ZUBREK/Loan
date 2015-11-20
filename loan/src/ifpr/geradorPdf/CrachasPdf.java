@@ -1,5 +1,16 @@
 package ifpr.geradorPdf;
 
+import ifpr.arquivo.Arquivo;
+import ifpr.arquivo.dao.ArquivoDao;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.coordenadorPea.CoordenadorPea;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.secretario.Secretario;
+import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
+import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
+import ifpr.utils.Paths;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,21 +37,10 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.arquivo.dao.ArquivoDao;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.coordenadorPea.CoordenadorPea;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.secretario.Secretario;
-import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-
 @ManagedBean(name = "crachasPdf")
 @ViewScoped
 public class CrachasPdf {
-	private final String CAMINHO_PASTA_CRACHAS = "C:/home/loan_docs/cracha";
-	private final String CAMINHO_ARQ_DEFAULT = "C:/home/loan_docs";
+
 	private Document doc;
 	private File arquivo;
 	private PdfContentByte cb;
@@ -55,21 +55,22 @@ public class CrachasPdf {
 
 	public CrachasPdf() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
-		arquivo = new File(CAMINHO_PASTA_CRACHAS);
+		arquivo = new File(Paths.PASTA_CRACHAS);
 		arquivo.mkdirs();
-		moldura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/molduraCracha.png");
-		logo = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/logoJIFPR.png");
+		moldura = Image.getInstance(Paths.MOLDURA);
+		logo = Image.getInstance(Paths.LOGO_JOGOS);
 		qrCode = new QRCode();
 	}
 
 	public void gerarPdfDelegacao(List<Pessoa> listDesc) {
-		arquivo = new File(CAMINHO_PASTA_CRACHAS + "/CrachasJIFPR.pdf");
+		arquivo = new File(Paths.CRACHAS);
 		try {
 			doc = new Document();
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(arquivo));
 			doc.open();
-			doc.addAuthor("SISTEMA_LOAN");
+			doc.addAuthor("Sistema LOAN");
 			doc.addCreationDate();
+			
 
 			for (int i = 0; i < listDesc.size(); i += 2) {
 				addMoldura(1);
@@ -132,7 +133,7 @@ public class CrachasPdf {
 	}
 
 	public void gerarPdfSecretario(List<Secretario> listDesc) {
-		arquivo = new File(CAMINHO_PASTA_CRACHAS + "/CrachasGerados.pdf");
+		arquivo = new File(Paths.CRACHAS_SECRETARIOS);
 		try {
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(arquivo));
 			doc.open();
@@ -319,7 +320,7 @@ public class CrachasPdf {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
 			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasJIFPR.pdf");
 		} catch (FileNotFoundException e) {
-			System.out.println("Erro no download de imagem");
+			System.out.println("Erro no download do arquivo");
 		}
 
 		return arqStreamed;

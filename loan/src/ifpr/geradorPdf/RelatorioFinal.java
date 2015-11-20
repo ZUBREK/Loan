@@ -31,8 +31,14 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
+import ifpr.competicao.time.Time;
+import ifpr.competicao.time.dao.TimeDao;
+import ifpr.delegacao.Delegacao;
+import ifpr.delegacao.dao.DelegacaoDao;
 import ifpr.modalidade.Modalidade;
 import ifpr.modalidade.dao.ModalidadeDao;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.estudante.Estudante;
 
 @ManagedBean(name = "relatorioFinal")
 @ViewScoped
@@ -57,8 +63,18 @@ public class RelatorioFinal {
 	private ModalidadeDao modalidadeDao;
 	private List<Modalidade> listaModalidade;
 
+	@ManagedProperty(value = "#{timeDao}")
+	private TimeDao timeDao;
+	private List<Time> listaTime;
+
+	@ManagedProperty(value = "#{delegacaoDao}")
+	private DelegacaoDao delegacaoDao;
+	private List<Delegacao> listaDelegacao;
+
 	private Modalidade modalidade;
 	private Campus campus;
+	private Time time;
+	private Delegacao delegacao;
 
 	public RelatorioFinal() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
@@ -73,6 +89,7 @@ public class RelatorioFinal {
 			caminho.delete();
 		}
 		try {
+			table = new PdfPTable(TAMANHO_TABELA_PDF);
 			doc = new Document();
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(caminho));
 			doc.open();
@@ -80,12 +97,31 @@ public class RelatorioFinal {
 			doc.addCreationDate();
 			addHeader();
 			addCampus();
-			addModalidade();
+			addModalidades();
+			addTimes();
+			addDelegacoes();
 			doc.add(table);
 			doc.close();
 			writer.close();
 		} catch (FileNotFoundException | DocumentException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void addDelegacoes() {
+		listaDelegacao = delegacaoDao.listDesc();
+		String titulo = "DELEGAÇÕES";
+		addTitulo(titulo);
+		for (int i = 0; i < listaDelegacao.size(); i++) {
+			delegacao = listaDelegacao.get(i);
+			addLinha(delegacao.getNome() + "/" + delegacao.getCampus().getCidade(), true);
+			add2Titulo("NOME:","FUNÇÃO:");
+			List<Pessoa> listaPessoa = delegacaoDao.listarPessoas(delegacao);
+			Pessoa pessoa = new Pessoa();
+			for (int j = 0; j < listaPessoa.size(); j++) {
+				pessoa = listaPessoa.get(j);
+				add2Linha(pessoa.getNome(), pessoa.getTipo().getLabel());
+			}
 		}
 	}
 
@@ -95,23 +131,80 @@ public class RelatorioFinal {
 		addTitulo(titulo);
 		for (int i = 0; i < listaCampus.size(); i++) {
 			campus = listaCampus.get(i);
-			addLinha(campus.getCidade());
+			addLinha(campus.getCidade(), false);
 		}
 	}
 
-	private void addModalidade() {
+	private void addModalidades() {
 		listaModalidade = modalidadeDao.listarAlfabetica();
-		String titulo = "MODALIDADE";
-		table = new PdfPTable(TAMANHO_TABELA_PDF);
+		String titulo = "MODALIDADES";
 		addTitulo(titulo);
 		for (int i = 0; i < listaModalidade.size(); i++) {
 			modalidade = listaModalidade.get(i);
-			addLinha(modalidade.getNome());
+			addLinha(modalidade.getNome(), false);
 		}
 	}
 
-	private void addLinha(String texto) {
-		Paragraph textoP = new Paragraph(texto, heveltica10);
+	private void addTimes() {
+		listaTime = timeDao.listDesc();
+		String titulo = "TIMES/CÂMPUS";
+		addTitulo(titulo);
+		for (int i = 0; i < listaTime.size(); i++) {
+			time = listaTime.get(i);
+			addLinha(time.getNome()+"/"+time.getCampus().getCidade(),true);
+			add2Titulo("NOME:","FUNÇÃO:");
+			add2Linha(time.getTecnico().getNome(), time.getTecnico().getTipo().getLabel());
+			List<Estudante> listaEstudante = timeDao.listarEstudantes(time);
+			Estudante estudante = new Estudante();
+			for (int j = 0; j < listaEstudante.size(); j++) {
+				estudante = listaEstudante.get(j);
+				add2Linha(estudante.getNome(), estudante.getTipo().getLabel());
+			}
+		}
+	}
+
+	private void add2Linha(String texto1, String texto2) {
+		Paragraph textoP = new Paragraph(texto1, heveltica10);
+		textoP.setAlignment(Element.ALIGN_CENTER);
+		PdfPCell celula = new PdfPCell();
+		celula.setColspan(3);
+		celula.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		celula.addElement(textoP);
+		table.addCell(celula);
+		textoP = new Paragraph(texto2, heveltica10);
+		textoP.setAlignment(Element.ALIGN_CENTER);
+		celula = new PdfPCell();
+		celula.setColspan(2);
+		celula.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		celula.addElement(textoP);
+		table.addCell(celula);
+	}
+
+	private void add2Titulo(String titulo, String titulo2) {
+		Paragraph textoP = new Paragraph(titulo, heveltica12Bold);
+		textoP.setAlignment(Element.ALIGN_CENTER);
+		PdfPCell celula = new PdfPCell();
+		celula.setColspan(3);
+		celula.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		celula.addElement(textoP);
+		table.addCell(celula);
+		textoP = new Paragraph(titulo2, heveltica12Bold);
+		textoP.setAlignment(Element.ALIGN_CENTER);
+		celula = new PdfPCell();
+		celula.setColspan(2);
+		celula.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		celula.addElement(textoP);
+		table.addCell(celula);
+
+	}
+
+	private void addLinha(String texto, boolean bold) {
+		Paragraph textoP;
+		if (bold == true) {
+			textoP = new Paragraph(texto, heveltica12Bold);
+		} else {
+			textoP = new Paragraph(texto, heveltica10);
+		}
 		textoP.setAlignment(Element.ALIGN_CENTER);
 		PdfPCell celula = new PdfPCell();
 		celula.setColspan(TAMANHO_TABELA_PDF);
@@ -237,4 +330,53 @@ public class RelatorioFinal {
 	public void setModalidadeDao(ModalidadeDao modalidadeDao) {
 		this.modalidadeDao = modalidadeDao;
 	}
+
+	public TimeDao getTimeDao() {
+		return timeDao;
+	}
+
+	public void setTimeDao(TimeDao timeDao) {
+		this.timeDao = timeDao;
+	}
+
+	public List<Time> getListaTime() {
+		return listaTime;
+	}
+
+	public void setListaTime(List<Time> listaTime) {
+		this.listaTime = listaTime;
+	}
+
+	public Time getTime() {
+		return time;
+	}
+
+	public void setTime(Time time) {
+		this.time = time;
+	}
+
+	public DelegacaoDao getDelegacaoDao() {
+		return delegacaoDao;
+	}
+
+	public void setDelegacaoDao(DelegacaoDao delegacaoDao) {
+		this.delegacaoDao = delegacaoDao;
+	}
+
+	public List<Delegacao> getListaDelegacao() {
+		return listaDelegacao;
+	}
+
+	public void setListaDelegacao(List<Delegacao> listaDelegacao) {
+		this.listaDelegacao = listaDelegacao;
+	}
+
+	public Delegacao getDelegacao() {
+		return delegacao;
+	}
+
+	public void setDelegacao(Delegacao delegacao) {
+		this.delegacao = delegacao;
+	}
+	
 }

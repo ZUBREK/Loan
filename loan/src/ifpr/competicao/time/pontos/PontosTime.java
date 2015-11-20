@@ -23,15 +23,19 @@ public class PontosTime {
 
 	@Column(name = "empates_time")
 	private int empates;
-
-	@Column(name = "saldo_pontos_time")
-	private int saldoPontos;
-
+	
+	@Column(name = "classificacao_time")
+	private int classificacao;
+	
+	@Column(name="pontos_time")
+	private int pontos;
+	
 	public PontosTime() {
 		vitorias = 0;
 		derrotas = 0;
 		empates = 0;
-		saldoPontos = 0;
+		pontos = 0;
+		classificacao = 0;
 	}
 	
 	public Integer getId() {
@@ -66,12 +70,20 @@ public class PontosTime {
 		this.empates = empates;
 	}
 
-	public int getSaldoPontos() {
-		return saldoPontos;
+	public int getClassificacao() {
+		return classificacao;
 	}
 
-	public void setSaldoPontos(int saldoPontos) {
-		this.saldoPontos = saldoPontos;
+	public void setClassificacao(int classificacao) {
+		this.classificacao = classificacao;
+	}
+
+	public int getPontos() {
+		return pontos;
+	}
+
+	public void setPontos(int pontos) {
+		this.pontos = pontos;
 	}
 
 }

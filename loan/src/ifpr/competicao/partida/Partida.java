@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 
 import ifpr.arquivo.Arquivo;
 import ifpr.competicao.partida.local.Local;
-import ifpr.competicao.partidaTimePlacar.PartidaTimePlacar;
+import ifpr.competicao.partidaTime.PartidaTime;
 
 @Entity
 @Table(name = "tbPartida")
@@ -44,7 +44,7 @@ public class Partida {
 
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
 	@OneToMany(cascade = CascadeType.REMOVE)
-	private List<PartidaTimePlacar> partidasTimesPlacares;
+	private List<PartidaTime> partidasTimesPlacares;
 
 	public Partida() {
 		partidasTimesPlacares = new ArrayList<>();
@@ -82,11 +82,11 @@ public class Partida {
 		this.local = local;
 	}
 
-	public List<PartidaTimePlacar> getPartidasTimesPlacares() {
+	public List<PartidaTime> getPartidasTimesPlacares() {
 		return partidasTimesPlacares;
 	}
 
-	public void setPartidasTimesPlacares(List<PartidaTimePlacar> partidasTimesPlacares) {
+	public void setPartidasTimesPlacares(List<PartidaTime> partidasTimesPlacares) {
 		this.partidasTimesPlacares = partidasTimesPlacares;
 	}
 	

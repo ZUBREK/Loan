@@ -1,5 +1,8 @@
 package ifpr.geradorPdf;
 
+import ifpr.pessoa.Pessoa;
+import ifpr.utils.Paths;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,33 +30,30 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import ifpr.pessoa.Pessoa;
-
 @ManagedBean(name = "declaracoesPdf")
 @ViewScoped
 public class DeclaracoesPdf {
 	private Document doc;
-	private final String CAMINHO_PASTA_DECLARACOES = "C:/home/loan_docs/declaracoes";
-	private final String CAMINHO_ARQ_DEFAULT = "C:/home/loan_docs";
 	private File arquivo;
 	private Image moldura;
 	private Image logo;
 	private Image assinatura;
 	private PdfContentByte cb;
 	private StreamedContent arqStreamed;
+	
 
 	public DeclaracoesPdf() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
-		arquivo = new File(CAMINHO_PASTA_DECLARACOES);
+		arquivo = new File(Paths.PASTA_DECLARACOES);
 		arquivo.mkdirs();
-		moldura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/molduraDeclaracoes.png");
-		logo = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/logoJIFPR.png");
-		assinatura = Image.getInstance(CAMINHO_ARQ_DEFAULT + "/assinaturaDeclaracoes.png");
+		moldura = Image.getInstance(Paths.MOLDURA_DECLARACAO);
+		logo = Image.getInstance(Paths.LOGO_JOGOS);
+		assinatura = Image.getInstance(Paths.ASSINATURA_DECLARAO);
 		doc.setPageSize(PageSize.A4.rotate());
 	}
 
 	public void gerarDeclaracoes(List<Pessoa> lista) {
-		arquivo = new File(CAMINHO_PASTA_DECLARACOES + "/DeclaracoesJIFPR.pdf");
+		arquivo = new File(Paths.CAMINHO_ARQUIVO_DECLARACOES);
 		try {
 			doc = new Document();
 			doc.setPageSize(PageSize.A4.rotate());
@@ -144,9 +144,9 @@ public class DeclaracoesPdf {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
-			arqStreamed = new DefaultStreamedContent(stream, null, "DeclaraçõesJIFPR.pdf");
+			arqStreamed = new DefaultStreamedContent(stream, null, Paths.ARQUIVO_DECLARACOES);
 		} catch (FileNotFoundException e) {
-			System.out.println("Erro no download de imagem");
+			System.out.println("Erro no download do arquivo");
 		}
 
 		return arqStreamed;

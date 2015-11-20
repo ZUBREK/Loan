@@ -52,18 +52,19 @@ public class CrachasPdf {
 	private ArquivoDao arquivoDao;
 
 	private StreamedContent arqStreamed;
+	
 
 	public CrachasPdf() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
 		arquivo = new File(Paths.PASTA_CRACHAS);
 		arquivo.mkdirs();
-		moldura = Image.getInstance(Paths.MOLDURA);
+		moldura = Image.getInstance(Paths.MOLDURA_CRACHA);
 		logo = Image.getInstance(Paths.LOGO_JOGOS);
 		qrCode = new QRCode();
 	}
 
-	public void gerarPdfDelegacao(List<Pessoa> listDesc) {
-		arquivo = new File(Paths.CRACHAS);
+	public void gerarPdfDelegacao(List<Pessoa> listDesc) { 
+		arquivo = new File(Paths.CAMINHO_CRACHAS);
 		try {
 			doc = new Document();
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(arquivo));
@@ -318,7 +319,7 @@ public class CrachasPdf {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivo.getAbsolutePath());
-			arqStreamed = new DefaultStreamedContent(stream, null, "CrachasJIFPR.pdf");
+			arqStreamed = new DefaultStreamedContent(stream, null, Paths.CRACHAS);
 		} catch (FileNotFoundException e) {
 			System.out.println("Erro no download do arquivo");
 		}

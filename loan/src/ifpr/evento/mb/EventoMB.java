@@ -36,6 +36,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -254,9 +255,9 @@ public class EventoMB {
 			eventoPessoa.setPessoa(pessoaLogada);
 			eventoPessoa.setDataHora(new Date());
 			eventoPessoaDao.salvar(eventoPessoa);
-			
+
 		}
-		if(arquivoEvento == null){
+		if (arquivoEvento == null) {
 			arquivoEvento = new ArquivoEvento();
 		}
 		try {
@@ -291,11 +292,9 @@ public class EventoMB {
 		if (arquivoEvento != null) {
 			File file = new File(arquivoEvento.getCaminho());
 			file.delete();
-			
+
 			arquivoEventoDao.remover(arquivoEvento);
-			eventoPessoaDao.remover(arquivoEvento.getEventoPessoa());
 			arquivoEvento = null;
-			eventoPessoa = null;
 		}
 		return;
 	}
@@ -321,6 +320,25 @@ public class EventoMB {
 		}
 
 		return arqStreamed;
+	}
+
+	public void abrirDialog() {
+		if (evento != null) {
+			if (evento.getTipo().equals(TipoEvento.MAPAMODALIDADE)){
+				popularArquivos();
+				RequestContext.getCurrentInstance().execute(
+						"PF('visEventoMapaDialog').show()");
+			}
+			else
+				RequestContext.getCurrentInstance().execute(
+						"PF('visEventoDialog').show()");
+		}
+	}
+	
+	public void abrirEditDialog(){
+		
+		RequestContext.getCurrentInstance().execute(
+				"PF('eventoAdmDialog').show()");
 	}
 
 	public EventoPessoa getEventoPessoa() {

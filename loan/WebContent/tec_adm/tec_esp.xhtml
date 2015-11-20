@@ -9,7 +9,7 @@
 	<ui:define name="body">
 		<p:panel id="painelPrincipal"
 			header="Gerenciamento de Técnicos Esportivos">
-			<p:growl id="msg"  />
+			<p:growl id="msg" />
 			<h:form>
 				<p:commandButton id="novoTecEsp" value="Novo"
 					actionListener="#{tecEspMB.criar}"
@@ -81,15 +81,18 @@
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{tecEspMB.tecnicoEsp.nome}" maxlength="60"
-						size="60" required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{tecEspMB.tecnicoEsp.nome}"
+						maxlength="60" size="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
 
-					<p:spacer height="5px" /><p:spacer height="5px" />
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
-					<p:inputText id="email" value="#{tecEspMB.tecnicoEsp.login}" maxlength="255"
-						size="60" required="true" requiredMessage="E-mail é obrigatório!"
+					<p:inputText id="email" value="#{tecEspMB.tecnicoEsp.login}"
+						maxlength="255" size="60" required="true"
+						requiredMessage="E-mail é obrigatório!"
 						disabled="#{tecEspMB.tecnicoEsp.id != null}">
 
 						<p:ajax listener="#{tecEspMB.validarLoginExistente}" update=":msg"
@@ -97,18 +100,20 @@
 
 					</p:inputText>
 
-					<p:spacer height="5px" /><p:spacer height="5px" />
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
 
 					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
 
 					<p:inputText id="codSiape" value="#{tecEspMB.tecnicoEsp.siape}"
 						size="60" maxlength="20" required="true"
 						requiredMessage="Siape é obrigatório!" />
-					
-					<p:spacer height="5px" /><p:spacer height="5px" />
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
 
 					<p:outputLabel id="campusLb" value="Câmpus:" />
-					
+
 					<p:selectOneMenu id="campus" value="#{tecEspMB.campus}"
 						filter="true" filterMatchMode="startsWith" required="true"
 						requiredMessage="Câmpus é obrigatório!"
@@ -120,13 +125,32 @@
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 					</p:selectOneMenu>
 
-					<p:spacer height="15px" /><p:spacer height="15px" />
-					
+					<p:spacer height="15px" />
+					<p:spacer height="15px" />
+
 					<f:facet name="footer">
+						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
+							draggable="false" closable="false" resizable="false">
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+						</p:dialog>
+
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :tecEsp_form :msg"
 							actionListener="#{tecEspMB.salvar}"
-							oncomplete="if(!args.validationFailed) PF('tecEspDialog').hide()" />
+							onclick="PrimeFaces.monitorDownload(start, stop)"
+							oncomplete="if(!args.validationFailed) PF('tecEspDialog').hide()">
+						</p:commandButton>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('tecEspDialog').hide()"
@@ -157,5 +181,8 @@
 					oncomplete="PF('tecEspConfirmDialog').hide()" icon="cancelar16" />
 			</h:form>
 		</p:confirmDialog>
+
+
+
 	</ui:define>
 </ui:composition>

@@ -54,14 +54,14 @@
 				<p:contextMenu id="contextMenuAdm" for="eventoTable"
 					rendered="#{eventoMB.adm}">
 
-					<p:menuitem value="Visualizar" update=":visEventoDlg"
+					<p:menuitem value="Visualizar"
+						update=":visEventoDlg :visEventoMapaDlg"
 						action="#{eventoMB.popularArquivos()}" icon="ui-icon-search"
-						oncomplete="PF('visEventoDialog').show()" />
+						actionListener="#{eventoMB.abrirDialog()}" />
 
 					<p:menuitem value="Editar" update="eventoAdmDlg :confirm"
 						action="#{eventoMB.popularArquivos()}" icon="editar16"
-						oncomplete="PF('eventoAdmDialog').show()">
-
+						actionListener="#{eventoMB.abrirEditDialog()}">
 					</p:menuitem>
 
 					<p:menuitem value="Remover" update="eventoTable :confirm"
@@ -92,9 +92,7 @@
 
 						</p:outputPanel>
 					</f:facet>
-					<!-- <p:ajax event="rowSelect" update=":evento_form :eventoAdm_form" /> -->
 
-					<!--  <p:ajax event="rowUnselect" update="@this" /> -->
 
 					<p:column headerText="Nome" filterBy="#{evento.nome}"
 						filterMatchMode="contains">
@@ -236,7 +234,6 @@
 							update=":evento_form:estudantesList :confirmRmv" icon="remover16"
 							oncomplete="PF('eventoEstConfirmDialog').show()" />
 
-
 					</p:column>
 
 				</p:dataTable>
@@ -286,6 +283,7 @@
 
 					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
 						for="dataFim" />
+
 					<p:calendar id="dataFim" value="#{eventoMB.evento.dataHoraFinal}"
 						locale="pt" mask="true" navigator="true" pattern="dd/mm/yyyy"
 						mindate="01/01/2015" maxdate="31/12/2020" yearRange="2015:2020"
@@ -299,10 +297,13 @@
 					update=":eventoArq_form :msg :tableForm"
 					actionListener="#{eventoMB.salvarEvtArquivo}"
 					oncomplete="if(!args.validationFailed) PF('eventoArqDialog').hide();" />
+
 				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
 					oncomplete="PF('eventoArqDialog').hide()" update=":msg"
 					immediate="true" actionListener="#{eventoMB.cancelar()}">
+
 					<p:resetInput target=":eventoArq_form" />
+
 				</p:commandButton>
 
 			</h:form>
@@ -426,6 +427,88 @@
 
 				</p:dataTable>
 
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog id="visEventoMapaDlg" widgetVar="visEventoMapaDialog"
+			header="Dados do evento" width="750" height="300" modal="true">
+
+			<h:form id="visEventoMapa_form">
+
+				<p:panelGrid columns="2">
+
+					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:outputLabel id="nome" value="#{eventoMB.evento.nome}" />
+
+					<p:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:outputLabel id="descricao" value="#{eventoMB.evento.descricao}" />
+
+					<p:outputLabel value="Tipo:" />
+
+					<p:outputLabel value="#{eventoMB.evento.tipo.label}" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:outputLabel id="dataInicio"
+						value="#{eventoMB.evento.dataHoraInicio}" />
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+					<p:outputLabel id="dataFim"
+						value="#{eventoMB.evento.dataHoraFinal}" />
+
+				</p:panelGrid>
+
+				<p:dataTable id="pessoaList" var="arquivo"
+					value="#{eventoMB.arquivos}"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+
+					<p:column headerText="Nome">
+
+						<p:outputLabel value="#{arquivo.eventoPessoa.pessoa.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Arquivo">
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+							draggable="false" closable="false" resizable="false">
+							
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+						</p:dialog>
+
+						<p:commandLink id="arquivo" value="#{arquivo.nome}" ajax="false"
+							onclick="PrimeFaces.monitorDownload(start, stop)">
+							<f:setPropertyActionListener value="#{arquivo}"
+								target="#{eventoMB.arquivoEvento}" />>
+						<p:fileDownload value="#{eventoMB.arqStreamed}" />
+						</p:commandLink>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
+
+
+					</p:column>
+
+					<p:column headerText="Data">
+
+						<p:outputLabel value="#{arquivo.eventoPessoa.dataHora}" />
+
+					</p:column>
+
+				</p:dataTable>
 
 			</h:form>
 
@@ -483,7 +566,8 @@
 					</p:commandLink>
 
 					<p:commandButton id="excluirArquivo" value="Excluir"
-						icon="remover16" style="margin-left: 10px;" update=":visEventoTecAdm_form:arquivo"
+						icon="remover16" style="margin-left: 10px;"
+						update=":visEventoTecAdm_form:arquivo"
 						actionListener="#{eventoMB.apagarArquivo()}">
 					</p:commandButton>
 
@@ -505,7 +589,7 @@
 
 		</p:dialog>
 
-	
+
 
 		<p:confirmDialog id="confirm" widgetVar="eventoConfirmDialog"
 			global="true" header="Confirma exclusão do evento?" showEffect="fade"

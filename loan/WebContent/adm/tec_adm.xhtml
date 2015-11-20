@@ -79,10 +79,11 @@
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{tecnicoAdmMB.tecnicoAdm.nome}" maxlength="60"
-						size="50" required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{tecnicoAdmMB.tecnicoAdm.nome}"
+						maxlength="60" size="50" required="true"
+						requiredMessage="Nome é obrigatório!" />
 
-		
+
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
@@ -95,12 +96,12 @@
 
 					</p:inputText>
 
-					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape"  />
+					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
 
 					<p:inputText id="codSiape" value="#{tecnicoAdmMB.tecnicoAdm.siape}"
-						size="50" maxlength="20" required="true" 
+						size="50" maxlength="20" required="true"
 						requiredMessage="Siape é obrigatório!" />
-					
+
 
 					<p:outputLabel id="campusLb" value="Câmpus:" />
 
@@ -114,12 +115,21 @@
 						<f:selectItems value="#{tecnicoAdmMB.listaCampus}" var="camp"
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 					</p:selectOneMenu>
-					
+
 
 					<f:facet name="footer">
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
+							draggable="false" closable="false" resizable="false">
+
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+						</p:dialog>
+
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :tecadm_form :msg"
 							actionListener="#{tecnicoAdmMB.salvar}"
+							onclick="PrimeFaces.monitorDownload(start, stop)"
 							oncomplete="if(!args.validationFailed) PF('tecadmDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
@@ -128,6 +138,17 @@
 							actionListener="#{tecnicoAdmMB.cancelar()}">
 							<p:resetInput target=":tecadm_form" />
 						</p:commandButton>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
 
 					</f:facet>
 

@@ -8,11 +8,15 @@
 
 	<ui:define name="body">
 		<p:panel id="painelPrincipal" header="Gerenciamento de Estudantes">
+
 			<p:growl id="msg" showDetail="true" />
+
 			<h:form>
+
 				<p:commandButton id="novoEst" value="Novo"
 					actionListener="#{estudanteMB.criar}"
 					oncomplete="PF('estudanteDialog').show()" update=":estudanteDlg" />
+
 			</h:form>
 
 			<h:form id="tableForm">
@@ -24,21 +28,28 @@
 					filteredValue="#{estudanteMB.estudanteFiltered}">
 
 					<f:facet name="header">
+
 						<h:outputText value="Estudantes" />
+
 					</f:facet>
 
 					<p:column headerText="Nome" filterBy="#{estudante.nome}"
 						filterMatchMode="contains">
+
 						<h:outputText value="#{estudante.nome}" />
 
 					</p:column>
 
 					<p:column headerText="E-Mail">
+
 						<h:outputText value="#{estudante.login}" />
+
 					</p:column>
 
 					<p:column headerText="Câmpus">
+
 						<p:outputLabel value="#{estudante.campus.cidade}" />
+
 					</p:column>
 
 					<p:column headerText="Editar" width="35">
@@ -47,19 +58,25 @@
 							style="margin-left: 3px;" update=":estudante_form"
 							oncomplete="PF('estudanteDialog').show()"
 							styleClass="apenasIcone">
+
 							<f:setPropertyActionListener value="#{estudante}"
 								target="#{estudanteMB.estudante}" />
 
 						</p:commandButton>
+
 					</p:column>
+
 					<p:column headerText="Remover" width="47">
+
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
 							oncomplete="PF('estudanteConfirmDialog').show()"
 							update=":confirm" styleClass="apenasIcone">
+
 							<f:setPropertyActionListener value="#{estudante}"
 								target="#{estudanteMB.estudante}" />
 						</p:commandButton>
+
 					</p:column>
 
 				</p:dataTable>
@@ -73,15 +90,18 @@
 			closable="false">
 
 			<h:form id="estudante_form">
+
 				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{estudanteMB.estudante.nome}" maxlength="60"
-						size="60" required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{estudanteMB.estudante.nome}"
+						maxlength="60" size="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
 						for="dataNasc" />
+
 					<p:calendar id="dataNasc" size="60"
 						value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
@@ -89,18 +109,21 @@
 						requiredMessage="Data de nascimento é obrigatória!" />
 
 					<h:outputLabel id="rgLb" value="RG:" for="rg" />
+
 					<p:inputText id="rg" value="#{estudanteMB.estudante.rg}" size="60"
 						maxlength="9" required="true" requiredMessage="RG é obrigatório!"
 						placeholder="Apenas números" />
 
 
 					<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
+
 					<p:inputText id="cpf" value="#{estudanteMB.estudante.cpf}"
 						maxlength="11" placeholder="Apenas números" size="60"
 						required="true" requiredMessage="CPF é obrigatório!" />
 
 
 					<h:outputLabel id="matriculaLb" value="Matricula:" for="matricula" />
+
 					<p:inputText id="matricula" maxlength="11"
 						value="#{estudanteMB.estudante.matricula}" size="60"
 						required="true" requiredMessage="Matricula é obrigatório!" />
@@ -108,8 +131,9 @@
 
 					<h:outputLabel id="emailLb" value="E-mail/Login:" for="email" />
 
-					<p:inputText id="email" value="#{estudanteMB.estudante.login}" maxlength="255"
-						size="50" required="true" requiredMessage="E-mail é obrigatório!"
+					<p:inputText id="email" value="#{estudanteMB.estudante.login}"
+						maxlength="255" size="50" required="true"
+						requiredMessage="E-mail é obrigatório!"
 						disabled="#{estudanteMB.estudante.id != null}">
 
 						<p:ajax listener="#{estudanteMB.validarLoginExistente}"
@@ -118,6 +142,7 @@
 					</p:inputText>
 
 					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+
 					<p:selectOneMenu id="campus" value="#{estudanteMB.campus}"
 						filter="true" filterMatchMode="startsWith" required="true"
 						requiredMessage="Câmpus é obrigatório!"
@@ -127,20 +152,43 @@
 
 						<f:selectItems value="#{estudanteMB.listaCampus}" var="camp"
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
 					</p:selectOneMenu>
 
 					<f:facet name="footer">
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
+							draggable="false" closable="false" resizable="false">
+
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+						</p:dialog>
+
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :estudante_form :msg"
 							actionListener="#{estudanteMB.salvar}"
+							onclick="PrimeFaces.monitorDownload(start, stop)"
 							oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('estudanteDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{estudanteMB.cancelar()}">
+
 							<p:resetInput target=":estudante_form" />
+
 						</p:commandButton>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
 
 					</f:facet>
 
@@ -157,14 +205,20 @@
 				estudante: #{estudanteMB.estudante.nome}">
 
 			<h:form>
+
 				<p:commandButton value="Sim"
 					actionListener="#{estudanteMB.remover()}"
 					oncomplete="PF('estudanteConfirmDialog').hide()"
 					update=":tableForm" icon="ok16" />
+
 				<p:commandButton value="Não"
 					actionListener="#{estudanteMB.cancelar()}"
 					oncomplete="PF('estudanteConfirmDialog').hide()" icon="cancelar16" />
+
 			</h:form>
+
 		</p:confirmDialog>
+
 	</ui:define>
+
 </ui:composition>

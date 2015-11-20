@@ -8,16 +8,28 @@
 	template="/layout/templates/templateIndex.xhtml">
 
 	<ui:define name="body">
+	
 		<h:form>
-			<tr>
-				<td align="center" height="50%"><h:outputText
-						value="Você não tem permissão para acessar essa página!" /></td>
-			</tr>
-			<tr>
-				<td align="center" height="50%">
-				<p:commandButton action="home" value="Voltar!" />
-				</td>
-			</tr>
+		
+		
+
+				<p:panelGrid columns="1">
+				
+					<p:outputLabel
+						value="Você não tem permissão para acessar essa página!" />
+
+
+					<p:commandButton action="home" value="Voltar!"
+						style=" display: block;
+    margin-left: auto;
+    margin-right: auto;" />
+    
+				</p:panelGrid>
+				
+			
+			
 		</h:form>
+		
 	</ui:define>
+	
 </ui:composition>

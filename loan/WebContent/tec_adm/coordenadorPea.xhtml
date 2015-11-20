@@ -74,19 +74,22 @@
 			closable="false">
 
 			<h:form id="coord_form">
-				<h:panelGrid columns="3">
+
+				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{coordenadorMB.coordenador.nome}" maxlength="60"
-						size="50" required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{coordenadorMB.coordenador.nome}"
+						maxlength="60" size="50" required="true"
+						requiredMessage="Nome é obrigatório!" />
 
-					<p:message for="nome" />
+
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
-					<p:inputText id="email" value="#{coordenadorMB.coordenador.login}" maxlength="255"
-						size="50" required="true" requiredMessage="E-mail é obrigatório!"
+					<p:inputText id="email" value="#{coordenadorMB.coordenador.login}"
+						maxlength="255" size="50" required="true"
+						requiredMessage="E-mail é obrigatório!"
 						disabled="#{coordenadorMB.coordenador.id != null}">
 
 						<p:ajax listener="#{coordenadorMB.validarLoginExistente}"
@@ -94,7 +97,7 @@
 
 					</p:inputText>
 
-					<p:message for="email" />
+
 
 					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
 
@@ -102,9 +105,10 @@
 						value="#{coordenadorMB.coordenador.siape}" size="50"
 						maxlength="20" required="true"
 						requiredMessage="Siape é obrigatório!" />
-					<p:message for="codSiape" />
+
 
 					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+
 					<p:selectOneMenu id="campus" value="#{coordenadorMB.campus}"
 						filter="true" filterMatchMode="startsWith" required="true"
 						requiredMessage="Câmpus é obrigatório!"
@@ -114,22 +118,45 @@
 
 						<f:selectItems value="#{coordenadorMB.listaCampus}" var="camp"
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
 					</p:selectOneMenu>
 
-					<p:message for="campus" />
+
 
 					<f:facet name="footer">
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
+							draggable="false" closable="false" resizable="false">
+
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+						</p:dialog>
+
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :coord_form :msg"
+							onclick="PrimeFaces.monitorDownload(start, stop)"
 							actionListener="#{coordenadorMB.salvar}"
-							onclick="if(!args.validationFailed) PF('coordDialog').hide()" />
+							oncomplete="if(!args.validationFailed) PF('coordDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('coordDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{coordenadorMB.cancelar()}">
+
 							<p:resetInput target=":coord_form" />
+
 						</p:commandButton>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
 
 					</f:facet>
 

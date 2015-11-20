@@ -34,8 +34,8 @@ public class BreadCrumbController {
 
 	public String navigateHome() {
 		menuModel.getElements().clear();
-		adicionarItem("Home", "/index.loan", "");
-		adicionarItem("Meu Perfil", "/user/home.loan", "#{breadCrumbController.navigateHome}");
+		adicionarItem("Home", "/index.ifpr", "");
+		adicionarItem("Meu Perfil", "/user/home.ifpr", "#{breadCrumbController.navigateHome}");
 
 		return "home";
 	}

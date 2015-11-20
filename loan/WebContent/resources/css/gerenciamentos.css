@@ -9,7 +9,7 @@ div#sidemenu {
 
 	float: left;
 	width: 160.5px;
-	height: 600px;
+	height: 100%;
 	position: relative;
 	text-align: center;
 }
@@ -47,7 +47,8 @@ div#painelPrincipal {
 }
 
 .menuItemAtual{
-	background: #3ea615 !important;
+	background: #68727B url("/loan/javax.faces.resource/images/default.png.ifpr?ln=primefaces-home") repeat-x scroll 50% 50% !important;
+	color: #FFF !important;
 }
 
 #formSide {

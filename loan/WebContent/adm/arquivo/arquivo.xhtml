@@ -32,9 +32,9 @@
 						<h:outputText value="Arquivos cadastradas" />
 					</f:facet>
 					<p:column headerText="Nome">
-						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
 							draggable="false" closable="false" resizable="false">
-							<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
 						</p:dialog>
 
 						<p:commandLink id="nomeArq" value="#{arqv.nome}" ajax="false"

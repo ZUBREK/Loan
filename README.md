@@ -1,4 +1,3 @@
 # Loan
-Nosso projeto de tcc
-Bora fazer
-ashdfiuasd
+
+Bora terminar galera!

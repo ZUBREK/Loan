@@ -39,23 +39,18 @@ public class MenuUsuariosViewMB {
 	@PostConstruct
 	public void init() {
 		model = new DefaultMenuModel();
-		adicionarItem("Página Principal", "/index.ifpr", "", "home16", false, 0);
-		adicionarItem("Meu Perfil", "/user/home.ifpr", "#{breadCrumbController.navigateHome}", "home16", false, 0);
+		adicionarItem("Página Principal", "/index.ifpr", "home16", false);
+		adicionarItem("Meu Perfil", "/user/home.ifpr", "home16", false);
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
-			adicionarItem("Gerenciar - Arquivos", "/adm/arquivo/arquivo.ifpr", "#{breadCrumbController.navigate(1)}",
-					"attach16", false, 1);
+			adicionarItem("Gerenciar - Arquivos", "/adm/arquivo/arquivo.ifpr", "attach16", false);
 
-			adicionarItem("Gerenciar - Campus", "/adm/campus.ifpr", "#{breadCrumbController.navigate(6)}", "attach16",
-					false, 6);
+			adicionarItem("Gerenciar - Campus", "/adm/campus.ifpr", "attach16", false);
 
-			adicionarItem("Gerenciar - Notícias", "/adm/noticia.ifpr", "#{breadCrumbController.navigate(7)}",
-					"attach16", false, 7);
+			adicionarItem("Gerenciar - Notícias", "/adm/noticia.ifpr", "attach16", false);
 
-			adicionarItem("Gerenciar - Projetos PEA", "/tec_adm/projeto.ifpr", "#{breadCrumbController.navigate(11)}",
-					"attach16", false, 11);
+			adicionarItem("Gerenciar - Projetos PEA", "/tec_adm/projeto.ifpr", "attach16", false);
 
-			adicionarItem("Gerenciar - Horários de Assistências", "/adm/noticia.ifpr",
-					"#{breadCrumbController.navigate(13)}", "attach16", false, 13);
+			adicionarItem("Gerenciar - Horários de Assistências", "/adm/noticia.ifpr", "attach16", false);
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
@@ -72,51 +67,35 @@ public class MenuUsuariosViewMB {
 
 	private void adicionarItensAdm() {
 		submenu = new DefaultSubMenu("Gerenciar - Usuários");
-		adicionarItem("Tec. Administrativos", "/adm/tec_adm.ifpr", "#{breadCrumbController.navigate(2)}", "user16",
-				true, 2);
+		adicionarItem("Tec. Administrativos", "/adm/tec_adm.ifpr", "user16", true);
 
-		adicionarItem("Tec. Esportivos", "/tec_adm/tec_esp.ifpr", "#{breadCrumbController.navigate(3)}", "user16", true,
-				3);
+		adicionarItem("Tec. Esportivos", "/tec_adm/tec_esp.ifpr", "user16", true);
 
-		adicionarItem("Coordenadores", "/tec_adm/coordenadorPea.ifpr", "#{breadCrumbController.navigate(4)}", "user16",
-				true, 4);
+		adicionarItem("Coordenadores", "/tec_adm/coordenadorPea.ifpr", "user16", true);
 
-		adicionarItem("Secretários", "/tec_adm/secretario.ifpr", "#{breadCrumbController.navigate(5)}", "user16", true,
-				5);
+		adicionarItem("Secretários", "/tec_adm/secretario.ifpr", "user16", true);
 
-		adicionarItem("Estudantes", "/tec_adm/estudante.ifpr", "#{breadCrumbController.navigate(10)}", "user16", true,
-				10);
+		adicionarItem("Estudantes", "/tec_adm/estudante.ifpr", "user16", true);
 		model.addElement(submenu);
 		submenu = new DefaultSubMenu("Gerenciar - Competição");
 
-		adicionarItem("Modalidades", "/adm/modalidade.ifpr", "#{breadCrumbController.navigate(8)}", "user16", true, 8);
+		adicionarItem("Modalidades", "/adm/modalidade.ifpr", "user16", true);
 
-		adicionarItem("Times", "/tec_adm/time.ifpr", "#{breadCrumbController.navigate(9)}", "user16", true, 9);
+		adicionarItem("Times", "/tec_adm/time.ifpr", "user16", true);
 
-		adicionarItem("Delegações", "/tec_adm/delegacao.ifpr", "#{breadCrumbController.navigate(12)}", "attach16", true,
-				12);
+		adicionarItem("Delegações", "/tec_adm/delegacao.ifpr", "attach16", true);
 
-		adicionarItem("Chaves", "/adm/chave.ifpr", "#{breadCrumbController.navigate(13)}", "attach16", true, 14);
+		adicionarItem("Chaves", "/adm/chave.ifpr", "attach16", true);
 
-		adicionarItem("Locais", "/adm/local.ifpr",
-				"", "attach16", false, 15);
+		adicionarItem("Locais", "/adm/local.ifpr", "attach16", true);
+		
 		model.addElement(submenu);
 	}
 
-	public MenuModel getModel() {
-		return model;
-	}
-
-	public void setModel(MenuModel model) {
-		this.model = model;
-	}
-
-	public void adicionarItem(String value, String url, String command, String icon, boolean inSubmenu,
-			int numeroItem) {
+	public void adicionarItem(String value, String url, String icon, boolean colocarNoSubmenu) {
 		item = new DefaultMenuItem();
 		item.setValue(value);
 		item.setUrl(url);
-		// item.setCommand(command);
 		item.setIcon(icon);
 		String caminhoView = context.getViewRoot().getViewId();
 
@@ -125,20 +104,13 @@ public class MenuUsuariosViewMB {
 
 		if (caminhoView.equals(caminhoViewItem)) {
 			item.setStyleClass("menuItemAtual");
-			if (numeroItem != 0) {
-				breadCrumbController.navigate(numeroItem);
-			} else {
-				breadCrumbController.navigateHome();
-			}
-
 		}
 
-		if (inSubmenu) {
+		if (colocarNoSubmenu) {
 			submenu.addElement(item);
 		} else {
 			model.addElement(item);
 		}
-		item.setUpdate(":breadCrumb");
 	}
 
 	public BreadCrumbController getBreadCrumbController() {
@@ -171,6 +143,14 @@ public class MenuUsuariosViewMB {
 
 	public void setItem(DefaultMenuItem item) {
 		this.item = item;
+	}
+	
+	public MenuModel getModel() {
+		return model;
+	}
+
+	public void setModel(MenuModel model) {
+		this.model = model;
 	}
 
 }

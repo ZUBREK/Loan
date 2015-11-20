@@ -202,7 +202,7 @@ public class ChaveMB {
 		Collections.sort(timesSemNullSemDuplicado, new Comparator<Time>() {
 			@Override
 			public int compare(Time time1, Time time2) {
-				return time1.getPontosTime().getVitorias() - time2.getPontosTime().getVitorias();
+				return time1.getPontosTime().getPontos()- time2.getPontosTime().getPontos();
 			}
 		});
 	}
@@ -374,7 +374,7 @@ public class ChaveMB {
 				}
 			}
 		} catch (Exception e) {
-
+			// node nao eh partida time, nada acontece
 		}
 	}
 
@@ -386,18 +386,19 @@ public class ChaveMB {
 			Time timeAdversario = ptpAdversario.getTime();
 			if (partidaTime.getPlacar() > ptpAdversario.getPlacar() && ptpAdversario.getPlacar() != -1) {
 
-				setarPontosTimeDerrotado(pontosTimeAdversario);
-				setarPontosTimeVitorioso(pontosTime);
-				setarTimeVitoriosoPtp(partidaTime.getTime());
 
+				setarTimeVitoriosoPtp(partidaTime.getTime());
+				setarPlacarTime(pontosTimeAdversario, 0);
+				setarPlacarTime(pontosTime, 3);
 			} else if (partidaTime.getPlacar() < ptpAdversario.getPlacar()) {
-				setarPontosTimeDerrotado(pontosTime);
-				setarPontosTimeVitorioso(pontosTimeAdversario);
+
 				setarTimeVitoriosoPtp(timeAdversario);
+				setarPlacarTime(pontosTime, 0);
+				setarPlacarTime(pontosTimeAdversario, 3);
 			} else if (partidaTime.getPlacar() == ptpAdversario.getPlacar()
 					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-				setarEmpateTime(pontosTime);
-				setarEmpateTime(pontosTimeAdversario);
+				setarPlacarTime(pontosTime, 0);
+				setarPlacarTime(pontosTimeAdversario, 0);
 				partidaTimeMeuPai.setPlacar(-2);
 				partidaTimeDao.update(partidaTimeMeuPai);
 			}
@@ -409,22 +410,15 @@ public class ChaveMB {
 
 	private void setarPlacarTime(PontosTime pontosTime2, int pontosGanhos) {
 		pontosTime2.setPontos(pontosTime2.getPontos() + pontosGanhos);
-		pontosTimeDao.update(pontosTime2);
-	}
-
-	private void setarEmpateTime(PontosTime pontosTime2) {
-		pontosTime2.setVitorias(pontosTime2.getEmpates() + 1);
-		pontosTimeDao.update(pontosTime2);
-	}
-
-	private void setarPontosTimeVitorioso(PontosTime pontosTime2) {
-		pontosTime2.setVitorias(pontosTime2.getVitorias() + 1);
-		pontosTimeDao.update(pontosTime2);
-
-	}
-
-	private void setarPontosTimeDerrotado(PontosTime pontosTime2) {
-		pontosTime2.setDerrotas(pontosTime2.getDerrotas() + 1);
+		if(pontosGanhos > 1){
+			pontosTime2.setVitorias(pontosTime2.getVitorias() + 1);
+		}
+		else if (pontosGanhos == 1){
+			pontosTime2.setEmpates(pontosTime2.getEmpates() + 1);
+		}
+		else{
+			pontosTime2.setDerrotas(pontosTime2.getDerrotas() + 1);
+		}
 		pontosTimeDao.update(pontosTime2);
 	}
 

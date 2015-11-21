@@ -182,12 +182,12 @@ public class SecretarioMB {
 		this.crachasPdf = crachasPdf;
 	}
 
-	public CadastroUsuarioValidator getEmailHelper() {
+	public CadastroUsuarioValidator getCadastroValidator() {
 		return cadastroValidator;
 	}
 
-	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
-		this.cadastroValidator = emailHelper;
+	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
+		this.cadastroValidator = cadastroValidator;
 	}
 
 }

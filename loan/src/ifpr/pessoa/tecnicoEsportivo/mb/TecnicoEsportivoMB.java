@@ -205,12 +205,12 @@ public class TecnicoEsportivoMB {
 		this.homeMB = homeMB;
 	}
 
-	public CadastroUsuarioValidator getCadastroHelper() {
+	public CadastroUsuarioValidator getCadastroValidator() {
 		return cadastroValidator;
 	}
 
-	public void setCadastroHelper(CadastroUsuarioValidator cadastroHelper) {
-		this.cadastroValidator = cadastroHelper;
+	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
+		this.cadastroValidator = cadastroValidator;
 	}
 
 }

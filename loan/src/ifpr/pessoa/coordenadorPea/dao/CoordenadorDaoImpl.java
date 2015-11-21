@@ -22,7 +22,7 @@ public class CoordenadorDaoImpl  extends GenericDao<CoordenadorPea> implements C
 	@Override
 	public CoordenadorPea pesquisarPorSiape(String siape) {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from" + classe.getSimpleName()
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
 				+ " a where a.siape = :siape");
 		query.setParameter("siape", siape);
 
@@ -32,7 +32,7 @@ public class CoordenadorDaoImpl  extends GenericDao<CoordenadorPea> implements C
 	@Override
 	public CoordenadorPea pesquisarPorSiape(String siape, int id) {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from" + classe.getSimpleName()
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
 				+ " a where a.siape = :siape and a.id != :id");
 		query.setParameter("siape", siape);
 		query.setParameter("id", id);

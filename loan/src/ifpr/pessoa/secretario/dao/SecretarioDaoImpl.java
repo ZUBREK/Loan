@@ -29,7 +29,7 @@ public class SecretarioDaoImpl extends GenericDao<Secretario> implements
 
 	public Secretario pesquisarPorCpf(String cpf, int id) {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from" + classe.getSimpleName()
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
 				+ " a where a.cpf = :cpf and a.id != :id");
 		query.setParameter("cpf", cpf);
 		query.setParameter("id", id);

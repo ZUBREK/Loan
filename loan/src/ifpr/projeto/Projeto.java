@@ -28,11 +28,8 @@ public class Projeto {
 	@Column(name = "id_projeto")
 	private Integer id;
 
-	@Column(name = "nome_projeto", length = 50)
+	@Column(name = "nome_projeto")
 	private String nome;
-
-	@Column(name = "descricao_projeto", length = 100)
-	private String descricao;
 
 	@OneToOne
 	private CoordenadorPea coordenador;
@@ -67,14 +64,6 @@ public class Projeto {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
 	}
 
 	public CoordenadorPea getCoordenador() {

@@ -463,7 +463,7 @@
 				</p:panelGrid>
 
 				<p:dataTable id="pessoaList" var="arquivo"
-					value="#{eventoMB.arquivos}"
+					value="#{eventoMB.arquivos}" paginator="true" rows="5"
 					emptyMessage="Nenhum registro encontrado!" first="0">
 
 					<p:column headerText="Nome">

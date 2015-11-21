@@ -73,7 +73,7 @@ public class CoordenadorMB {
 	}
 
 	public void salvar() {
-
+		cadastroValidator.setPessoa(coordenador);
 		if (cadastroValidator.validarDados(coordenador.getSiape())) {
 			if (coordenador.getId() != null) {
 
@@ -203,12 +203,14 @@ public class CoordenadorMB {
 		this.homeMB = homeMB;
 	}
 
-	public CadastroUsuarioValidator getEmailValidator() {
+	public CadastroUsuarioValidator getCadastroValidator() {
 		return cadastroValidator;
 	}
 
-	public void setEmailValidator(CadastroUsuarioValidator emailValidator) {
-		this.cadastroValidator = emailValidator;
+	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
+		this.cadastroValidator = cadastroValidator;
 	}
+
+	
 
 }

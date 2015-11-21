@@ -13,7 +13,12 @@ import ifpr.projeto.dao.ProjetoDao;
 import ifpr.projeto.model.ProjetoLazyDataModel;
 import ifpr.projeto.projetoEstudante.ProjetoEstudante;
 import ifpr.projeto.projetoEstudante.dao.ProjetoEstudanteDao;
+import ifpr.projeto.relatorio.RelatorioProjeto;
+import ifpr.projeto.relatorio.dao.RelatorioProjetoDao;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +28,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @ManagedBean(name = "projetoMB")
 @ViewScoped
@@ -70,6 +77,16 @@ public class ProjetoMB {
 	private ProjetoEstudanteDao projetoEstudanteDao;
 
 	private ProjetoEstudante projetoEstudante;
+
+	private List<RelatorioProjeto> relatorios;
+
+	private RelatorioProjeto relatorio;
+
+	
+	@ManagedProperty(value="#{relatorioProjetoDao}")
+	private RelatorioProjetoDao relatorioProjetoDao;
+
+	private StreamedContent arqStreamed;
 
 	private boolean isUpdate;
 
@@ -134,10 +151,27 @@ public class ProjetoMB {
 				.pesquisarEstudanteNomeCampus(nome, campus);
 		return listaEstudante;
 	}
+	
+	public void procurarRelatorios(){
+		relatorios = relatorioProjetoDao.pesquisarPorProjeto(projeto);
+	}
 
 	public void onItemSelect(SelectEvent event) {
 		Object item = event.getObject();
 		estudante = (Estudante) item;
+	}
+
+	public StreamedContent getArqStreamed() {
+		InputStream stream;
+		try {
+			stream = new FileInputStream(relatorio.getCaminho());
+			arqStreamed = new DefaultStreamedContent(stream, null,
+					relatorio.getNome());
+		} catch (FileNotFoundException e) {
+			System.out.println("Erro no download do arquivo");
+		}
+
+		return arqStreamed;
 	}
 
 	public ProjetoEstudanteDao getProjetoEstudanteDao() {
@@ -295,4 +329,30 @@ public class ProjetoMB {
 		this.isUpdate = isUpdate;
 	}
 
+	public RelatorioProjetoDao getRelatorioProjetoDao() {
+		return relatorioProjetoDao;
+	}
+
+	public void setRelatorioProjetoDao(RelatorioProjetoDao relatorioProjetoDao) {
+		this.relatorioProjetoDao = relatorioProjetoDao;
+	}
+
+	public List<RelatorioProjeto> getRelatorios() {
+		return relatorios;
+	}
+
+	public void setRelatorios(List<RelatorioProjeto> relatorios) {
+		this.relatorios = relatorios;
+	}
+
+	public RelatorioProjeto getRelatorio() {
+		return relatorio;
+	}
+
+	public void setRelatorio(RelatorioProjeto relatorio) {
+		this.relatorio = relatorio;
+	}
+
+	 
+	
 }

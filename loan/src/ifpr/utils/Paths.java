@@ -50,5 +50,8 @@ public abstract class Paths {
 	
 	public static final String CAMINHO_FOTO_PERFIL =  LOAN_DOCS + "/foto";
 	public static final String FOTO_DEFAULT = CAMINHO_FOTO_PERFIL + "/default.png";
+	
+	
+	public static final String PASTA_ASSISTENCIA = LOAN_DOCS + "/assinaturas";
 
 }

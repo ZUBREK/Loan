@@ -1,4 +1,4 @@
-package ifpr.pessoa.coordenadorPea.horarioReposicao.dao;
+package ifpr.pessoa.coordenadorPea.horarioAssistencia.dao;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import ifpr.dao.GenericDao;
-import ifpr.pessoa.coordenadorPea.horarioReposicao.HorarioAssistencia;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.HorarioAssistencia;
 
 @ManagedBean(name = "horarioAssistenciaDao")
 @ApplicationScoped

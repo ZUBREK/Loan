@@ -1,4 +1,4 @@
-package ifpr.pessoa.coordenadorPea.horarioReposicao.model;
+package ifpr.pessoa.coordenadorPea.horarioAssistencia.model;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +11,8 @@ import javax.faces.bean.ViewScoped;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import ifpr.pessoa.coordenadorPea.horarioReposicao.HorarioAssistencia;
-import ifpr.pessoa.coordenadorPea.horarioReposicao.dao.HorarioAssistenciaDao;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.HorarioAssistencia;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.dao.HorarioAssistenciaDao;
 
 @ManagedBean(name = "horarioAssistenciaLazyDataModel")
 @ViewScoped

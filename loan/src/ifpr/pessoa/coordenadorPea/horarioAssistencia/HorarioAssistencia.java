@@ -1,4 +1,4 @@
-package ifpr.pessoa.coordenadorPea.horarioReposicao;
+package ifpr.pessoa.coordenadorPea.horarioAssistencia;
 
 import ifpr.arquivo.Arquivo;
 import ifpr.pessoa.estudante.Estudante;

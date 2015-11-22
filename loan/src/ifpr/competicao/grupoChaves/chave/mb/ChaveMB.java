@@ -110,6 +110,8 @@ public class ChaveMB {
 	private List<Integer> qtdGruposPossiveis;
 	private Integer qtdGruposEscolhida;
 
+	private Chave chaveSelected;
+
 	public ChaveMB() {
 	}
 
@@ -132,23 +134,22 @@ public class ChaveMB {
 	public void iniciarTreeNode() {
 		nodes = new ArrayList<>();
 		if (grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
-			// TODO
-
 		} else {
 			chave = grupoChaves.getChaves().get(0);
+		}
+		if (chave != null) {
 			rootNode = new DefaultTreeNode(chave.getNome(), null);
 			rootNode.setExpanded(true);
 			nodes.add(rootNode);
 			pegarTimes(chave);
-			if (grupoChaves.getTipo().equals(TipoChaveamento.CLASSIFICATORIO)) {
+			if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
 				chave.getPartidas().get(0);
-			} else if (grupoChaves.getTipo().equals(TipoChaveamento.PONTOS_CORRIDOS)) {
+			} else if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
 				gerarNodeTipoPtosCorridos();
-			} else if (grupoChaves.getTipo().equals(TipoChaveamento.MATA_MATA)) {
+			} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
 				gerarNodeTipoMataMata();
 			}
 		}
-
 	}
 
 	private void gerarNodeTipoPtosCorridos() {
@@ -209,7 +210,7 @@ public class ChaveMB {
 	private void setarListaTimes(Chave chave) {
 		for (int i = 0; i < partidaTimes.size(); i++) {
 			Time time = partidaTimes.get(i).getTime();
-			if (time != null && !timesSemNullSemDuplicado.contains(time)) {
+			if (time != null && !timesSemNullSemDuplicado.contains(time) && !time.getNome().equals("EMPATE")) {
 				timesSemNullSemDuplicado.add(time);
 			}
 		}
@@ -372,7 +373,7 @@ public class ChaveMB {
 		for (int i = 0; i < qtdGruposEscolhida; i++) {
 			chave = new Chave();
 			chave.setTipo(TipoCompeticao.PONTOS_CORRIDOS);
-			chave.setNome("Grupo " + i + 1);
+			chave.setNome("Grupo " + (i + 1));
 			List<Time> listaTimesGrupo = new ArrayList<>();
 			for (int j = 0; j < qtdTimes / qtdGruposEscolhida; j++) {
 				listaTimesGrupo.add(timesModalidade.get(i2));
@@ -402,7 +403,7 @@ public class ChaveMB {
 	}
 
 	private void gerarPartidasTipoPtosCorridos(List<Time> listaTimes) {
-		qtdTimes = listaTimes.size();
+		int qtdTimes = listaTimes.size();
 		for (int i = 0; i < qtdTimes; i++) {
 			for (int i2 = qtdTimes - 1; i2 > i; i2--) {
 				partida = new Partida();
@@ -519,30 +520,76 @@ public class ChaveMB {
 	public void salvarPartidaTime() {
 		salvarPartida();
 		if (partidaTime.getPlacar() != -1) {
-			partidaTimeDao.update(partidaTime);
+
 			PontosTime pontosTimeAdversario = ptpAdversario.getTime().getPontosTime();
 			Time timeAdversario = ptpAdversario.getTime();
+			pontosTime = partidaTime.getTime().getPontosTime();
 			if (partidaTime.getPlacar() > ptpAdversario.getPlacar() && ptpAdversario.getPlacar() != -1) {
-
+				partidaTimeDao.update(partidaTime);	
 				setarTimeVitoriosoPtp(partidaTime.getTime());
 				setarPlacarTime(pontosTimeAdversario, 0);
 				setarPlacarTime(pontosTime, 3);
+				terminarPartida();
 			} else if (partidaTime.getPlacar() < ptpAdversario.getPlacar()) {
-
+				partidaTimeDao.update(partidaTime);
 				setarTimeVitoriosoPtp(timeAdversario);
 				setarPlacarTime(pontosTime, 0);
 				setarPlacarTime(pontosTimeAdversario, 3);
+				terminarPartida();
 			} else if (partidaTime.getPlacar() == ptpAdversario.getPlacar()
 					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
+				partidaTimeDao.update(partidaTime);	
 				setarPlacarTime(pontosTime, 0);
 				setarPlacarTime(pontosTimeAdversario, 0);
 				partidaTimeMeuPai.setPlacar(-2);
 				partidaTimeDao.update(partidaTimeMeuPai);
+				terminarPartida();
+			}
+			else if(chave.getTipo().equals(TipoCompeticao.MATA_MATA)){
+				mensagemFaces("PLACAR INVÁLIDO!", "Não pode haver empate no tipo MATA-MATA!");
 			}
 			chave = chaveDao.findById(chave.getId());
 			iniciarTreeNode();
+			if (grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
+				if (checkTodasAcabadas()) {
+					terminarChave();
+				}
+			}
 		}
 		RequestContext.getCurrentInstance().execute("PF('confirmPartidaDialog').hide()");
+	}
+
+	private void terminarChave() {
+		chave.setAcabado(true);
+		chaveDao.update(chave);
+		Time timeVencedor = timesSemNullSemDuplicado.get(0);
+		for (Chave chave : grupoChaves.getChaves()) {
+			if(chave.getTipo().equals(TipoCompeticao.MATA_MATA)){
+				for (Partida partida : chave.getPartidas()) {
+					for (PartidaTime partidaTime : partida.getPartidasTimesPlacares()) {
+						if(partidaTime.getTime() == null){
+							partidaTime.setTime(timeVencedor);
+							partidaTimeDao.update(partidaTime);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private boolean checkTodasAcabadas() {
+		for (Partida partida : chave.getPartidas()) {
+			if (!partida.isAcabado()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void terminarPartida() {
+		partida.setAcabado(true);
+		salvarPartida();
 	}
 
 	private void setarPlacarTime(PontosTime pontosTime2, int pontosGanhos) {
@@ -737,7 +784,7 @@ public class ChaveMB {
 		iniciarTreeNode();
 	}
 
-	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) throws ValidationException{
+	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) throws ValidationException {
 		tipos = TipoChaveamento.values();
 		if (!grupoChavesDao.hasChave(modalidade)) {
 			timesModalidade = timeDao.pesquisarPorModalidade(modalidade);
@@ -792,6 +839,11 @@ public class ChaveMB {
 			isTipoGrupos = false;
 		}
 
+	}
+
+	public void chaveSelectionChanged(final AjaxBehaviorEvent event) {
+		chave = chaveSelected;
+		iniciarTreeNode();
 	}
 
 	public PontosTimeDao getPontosTimeDao() {
@@ -946,6 +998,25 @@ public class ChaveMB {
 
 	public void setTipo(TipoChaveamento tipo) {
 		this.tipo = tipo;
+	}
+
+	public boolean getIsGrupos() {
+		try {
+			if (!grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
+				return true;
+			}
+		} catch (Exception e) {
+
+		}
+		return false;
+	}
+
+	public Chave getChaveSelected() {
+		return chaveSelected;
+	}
+
+	public void setChaveSelected(Chave chaveSelected) {
+		this.chaveSelected = chaveSelected;
 	}
 
 }

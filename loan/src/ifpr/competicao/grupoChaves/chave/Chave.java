@@ -90,6 +90,16 @@ public class Chave {
 
 	@Override
 	public String toString() {
-		return this.nome;
+		return nome;
+	}
+
+	public boolean equals(Object other) {
+		return other instanceof Chave && (id != null) ? id
+				.equals(((Chave) other).getId()) : (other == this);
+	}
+
+	public int hashCode() {
+		return id != null ? this.getClass().hashCode() + id.hashCode() : super
+				.hashCode();
 	}
 }

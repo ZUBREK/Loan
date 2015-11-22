@@ -45,6 +45,8 @@ public class Partida {
 	@JoinColumn(name = "id_partida", referencedColumnName = "id_partida")
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<PartidaTime> partidasTimesPlacares;
+	
+	private boolean isAcabado;
 
 	public Partida() {
 		partidasTimesPlacares = new ArrayList<>();
@@ -94,4 +96,13 @@ public class Partida {
 	public String toString() {
 		return ""+id;
 	}
+
+	public boolean isAcabado() {
+		return isAcabado;
+	}
+
+	public void setAcabado(boolean isAcabado) {
+		this.isAcabado = isAcabado;
+	}
+
 }

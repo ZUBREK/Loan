@@ -1,11 +1,10 @@
-package ifpr.competicao.chave;
+package ifpr.competicao.grupoChaves.chave;
 
 public enum TipoCompeticao {
 
 	MATA_MATA("Mata-Mata"),
 	PONTOS_CORRIDOS("Pontos Corridos"),
-	CLASSIFICATORIO("Classificatório"),
-	GRUPOS("Grupos");
+	CLASSIFICATORIO("Classificatório");
 
 	private String label;
 

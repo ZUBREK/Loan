@@ -1,7 +1,7 @@
-package ifpr.competicao.chave.model;
+package ifpr.competicao.grupoChaves.chave.model;
 
-import ifpr.competicao.chave.Chave;
-import ifpr.competicao.chave.dao.ChaveDao;
+import ifpr.competicao.grupoChaves.chave.Chave;
+import ifpr.competicao.grupoChaves.chave.dao.ChaveDao;
 
 import java.util.Collections;
 import java.util.List;

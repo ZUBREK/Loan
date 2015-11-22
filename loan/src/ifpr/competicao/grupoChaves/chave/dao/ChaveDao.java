@@ -1,9 +1,9 @@
-package ifpr.competicao.chave.dao;
-
-import ifpr.competicao.chave.Chave;
-import ifpr.dao.Dao;
+package ifpr.competicao.grupoChaves.chave.dao;
 
 import java.util.List;
+
+import ifpr.competicao.grupoChaves.chave.Chave;
+import ifpr.dao.Dao;
 
 public interface ChaveDao extends Dao<Chave> {
 

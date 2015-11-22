@@ -1,4 +1,4 @@
-package ifpr.competicao.chave.mb;
+package ifpr.competicao.grupoChaves.chave.mb;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,21 +8,27 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
-import ifpr.competicao.chave.Chave;
-import ifpr.competicao.chave.TipoCompeticao;
-import ifpr.competicao.chave.dao.ChaveDao;
-import ifpr.competicao.chave.model.ChaveLazyDataModel;
+import ifpr.competicao.grupoChaves.GrupoChaves;
+import ifpr.competicao.grupoChaves.TipoChaveamento;
+import ifpr.competicao.grupoChaves.chave.Chave;
+import ifpr.competicao.grupoChaves.chave.TipoCompeticao;
+import ifpr.competicao.grupoChaves.chave.dao.ChaveDao;
+import ifpr.competicao.grupoChaves.dao.GrupoChavesDao;
+import ifpr.competicao.grupoChaves.model.GrupoChavesLazyDataModel;
 import ifpr.competicao.partida.Partida;
 import ifpr.competicao.partida.dao.PartidaDao;
 import ifpr.competicao.partida.local.Local;
@@ -41,7 +47,12 @@ public class ChaveMB {
 
 	private Chave chave;
 
+	private GrupoChaves grupoChaves;
+
 	private List<Chave> chaveList;
+
+	@ManagedProperty(value = "#{grupoChavesDao}")
+	private GrupoChavesDao grupoChavesDao;
 
 	@ManagedProperty(value = "#{chaveDao}")
 	private ChaveDao chaveDao;
@@ -58,13 +69,13 @@ public class ChaveMB {
 	@ManagedProperty(value = "#{partidaTimeDao}")
 	private PartidaTimeDao partidaTimeDao;
 
-	@ManagedProperty(value = "#{chaveLazyDataModel}")
-	private ChaveLazyDataModel chaveLazyDataModel;
+	@ManagedProperty(value = "#{grupoChavesLazyDataModel}")
+	private GrupoChavesLazyDataModel grupoChavesLazyDataModel;
 
 	@ManagedProperty(value = "#{localDao}")
 	private LocalDao localDao;
 
-	private TipoCompeticao tipo;
+	private TipoChaveamento tipo;
 
 	private TreeNode rootNode;
 	private List<TreeNode> nodes;
@@ -92,13 +103,14 @@ public class ChaveMB {
 	private TreeNode meuPai;
 	private TreeNode node;
 	private PontosTime pontosTime;
-	private List<Time> times;
+	private List<Time> timesModalidade;
 
-	TipoCompeticao[] tipos;
+	TipoChaveamento[] tipos;
+	private boolean isTipoGrupos;
+	private List<Integer> qtdGruposPossiveis;
+	private Integer qtdGruposEscolhida;
 
 	public ChaveMB() {
-		chave = new Chave();
-		chave.setPrimeiraFase(true);
 	}
 
 	@PostConstruct
@@ -119,24 +131,27 @@ public class ChaveMB {
 
 	public void iniciarTreeNode() {
 		nodes = new ArrayList<>();
-		rootNode = new DefaultTreeNode(chave.getNome(), null);
-		rootNode.setExpanded(true);
-		nodes.add(rootNode);
+		if (grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
+			// TODO
 
-		if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
-
-		} else if (chave.getTipo().equals(TipoCompeticao.GRUPOS)) {
-
-		} else if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
-			gerarNodeTipoPtosCorridos();
-		} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-			gerarNodeTipoMataMata();
+		} else {
+			chave = grupoChaves.getChaves().get(0);
+			rootNode = new DefaultTreeNode(chave.getNome(), null);
+			rootNode.setExpanded(true);
+			nodes.add(rootNode);
+			pegarTimes(chave);
+			if (grupoChaves.getTipo().equals(TipoChaveamento.CLASSIFICATORIO)) {
+				chave.getPartidas().get(0);
+			} else if (grupoChaves.getTipo().equals(TipoChaveamento.PONTOS_CORRIDOS)) {
+				gerarNodeTipoPtosCorridos();
+			} else if (grupoChaves.getTipo().equals(TipoChaveamento.MATA_MATA)) {
+				gerarNodeTipoMataMata();
+			}
 		}
 
 	}
 
 	private void gerarNodeTipoPtosCorridos() {
-		pegarTimes();
 		for (int i = 0; i < partidaTimes.size(); i++) {
 			if (i % 3 == 0) {
 				if (partidaTimes.get(i).getPlacar() == -2) {
@@ -152,7 +167,6 @@ public class ChaveMB {
 	}
 
 	private void gerarNodeTipoMataMata() {
-		pegarTimes();
 		Collections.reverse(partidaTimes);
 		int i2 = 0;
 		for (int i = 0; i < partidaTimes.size(); i++) {
@@ -163,7 +177,7 @@ public class ChaveMB {
 		}
 	}
 
-	public void pegarTimes() {
+	public void pegarTimes(Chave chave) {
 		partidaTimes = new ArrayList<>();
 		List<Partida> partidas = chave.getPartidas();
 		Collections.sort(partidas, new Comparator<Partida>() {
@@ -189,10 +203,10 @@ public class ChaveMB {
 		}
 		qtdTimes = partidaTimes.size();
 		resetarListaSelectOne();
-		setarListaSelectOneMenu();
+		setarListaTimes(chave);
 	}
 
-	private void setarListaSelectOneMenu() {
+	private void setarListaTimes(Chave chave) {
 		for (int i = 0; i < partidaTimes.size(); i++) {
 			Time time = partidaTimes.get(i).getTime();
 			if (time != null && !timesSemNullSemDuplicado.contains(time)) {
@@ -205,6 +219,36 @@ public class ChaveMB {
 				return time1.getPontosTime().getPontos() - time2.getPontosTime().getPontos();
 			}
 		});
+		Collections.reverse(timesSemNullSemDuplicado);
+		if (!chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
+			for (int i = 0; i < timesSemNullSemDuplicado.size(); i++) {
+				Time time = timesSemNullSemDuplicado.get(i);
+				time.getPontosTime().setClassificacao(i + 1);
+				try {
+					Time timeAnterior = timesSemNullSemDuplicado.get(i - 1);
+					if (time.getPontosTime().getPontos() == timeAnterior.getPontosTime().getPontos()) {
+						time.getPontosTime().setClassificacao(i);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				timeDao.update(time);
+			}
+		}
+		Collections.sort(timesSemNullSemDuplicado, new Comparator<Time>() {
+			@Override
+			public int compare(Time time1, Time time2) {
+				return time1.getPontosTime().getClassificacao() - time2.getPontosTime().getClassificacao();
+			}
+		});
+
+	}
+
+	public void visualizarPartidasTime() {
+		timeSelectOne = timeDataTable;
+		iniciarTreeNode();
+
+		RequestContext.getCurrentInstance().execute("PF('tabChave').select(1)");
 	}
 
 	public void resetarListaSelectOne() {
@@ -232,64 +276,149 @@ public class ChaveMB {
 	}
 
 	public void criar() {
-		chave = new Chave();
+		grupoChaves = new GrupoChaves();
 	}
 
 	public void remover() {
 		try {
-			chaveDao.remover(chave);
-			pegarTimes();
-			for (Time time : timesSemNullSemDuplicado) {
-				PontosTime pt = time.getPontosTime();
-				pt.setDerrotas(0);
-				pt.setEmpates(0);
-				pt.setPontos(0);
-				pt.setVitorias(0);
-				pontosTimeDao.update(pt);
+			if (grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
+				for (Chave chave : grupoChaves.getChaves()) {
+					pegarTimes(chave);
+					for (Time time : timesSemNullSemDuplicado) {
+						PontosTime pt = time.getPontosTime();
+						pt.setDerrotas(0);
+						pt.setEmpates(0);
+						pt.setPontos(0);
+						pt.setVitorias(0);
+						pt.setClassificacao(0);
+						pontosTimeDao.update(pt);
+					}
+				}
+			} else {
+				chave = grupoChaves.getChaves().get(0);
+				pegarTimes(chave);
+				for (Time time : timesSemNullSemDuplicado) {
+					PontosTime pt = time.getPontosTime();
+					pt.setDerrotas(0);
+					pt.setEmpates(0);
+					pt.setPontos(0);
+					pt.setVitorias(0);
+					pt.setClassificacao(0);
+					pontosTimeDao.update(pt);
+				}
 			}
+			grupoChavesDao.remover(grupoChaves);
 		} catch (ConstraintViolationException e) {
 			// facesmessage bagaça
 		}
 
 	}
 
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+	}
+
 	public void cancelar() {
-
+		timeDataTable = null;
 	}
 
-	public void salvarChave() {
-		chave.setModalidade(modalidade);
-		chave.setTipo(tipo);
-		if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
+	public void cancelarSalvarPartidaTime() {
+		partidaTime = null;
+		timeSelectOne = null;
+		RequestContext.getCurrentInstance().execute("PF('confirmPartidaDialog').hide()");
+		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
+		iniciarTreeNode();
+	}
 
-		} else if (chave.getTipo().equals(TipoCompeticao.GRUPOS)) {
+	public void salvarGrupoChave() {
+		grupoChaves.setModalidade(modalidade);
+		grupoChaves.setTipo(tipo);
 
-		} else if (chave.getTipo().equals(TipoCompeticao.PONTOS_CORRIDOS)) {
-			gerarPartidasTipoPtosCorridos();
-		} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-			gerarPartidasTipoMataMata();
+		if (grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
+			gerarPartidasTipoGrupos();
+
+		} else {
+			chave = new Chave();
+			if (grupoChaves.getTipo().equals(TipoChaveamento.CLASSIFICATORIO)) {
+				chave.setTipo(TipoCompeticao.CLASSIFICATORIO);
+				gerarPartidaTipoClassificatorio();
+			} else if (grupoChaves.getTipo().equals(TipoChaveamento.PONTOS_CORRIDOS)) {
+				chave.setTipo(TipoCompeticao.PONTOS_CORRIDOS);
+				gerarPartidasTipoPtosCorridos(timesModalidade);
+			} else if (grupoChaves.getTipo().equals(TipoChaveamento.MATA_MATA)) {
+				chave.setTipo(TipoCompeticao.MATA_MATA);
+				gerarPartidasTipoMataMata();
+			}
+			chave.setNome(grupoChaves.getNome());
+			chaveDao.salvar(chave);
+			adicionarEmGrupoChaves();
+			grupoChavesDao.salvar(grupoChaves);
 		}
-		chaveDao.salvar(chave);
+		timesModalidade = null;
+		modalidade = null;
+		tipo = null;
 	}
 
-	private void gerarPartidasTipoPtosCorridos() {
-		qtdTimes = times.size();
+	private void adicionarEmGrupoChaves() {
+		grupoChaves.getChaves().add(chave);
+
+	}
+
+	private void gerarPartidasTipoGrupos() {
+		randomizarTimes();
+		qtdTimes = timesModalidade.size();
+		int i2 = 0;
+		for (int i = 0; i < qtdGruposEscolhida; i++) {
+			chave = new Chave();
+			chave.setTipo(TipoCompeticao.PONTOS_CORRIDOS);
+			chave.setNome("Grupo " + i + 1);
+			List<Time> listaTimesGrupo = new ArrayList<>();
+			for (int j = 0; j < qtdTimes / qtdGruposEscolhida; j++) {
+				listaTimesGrupo.add(timesModalidade.get(i2));
+				i2++;
+			}
+			gerarPartidasTipoPtosCorridos(listaTimesGrupo);
+			adicionarEmGrupoChaves();
+			chaveDao.salvar(chave);
+		}
+		chave = new Chave();
+		chave.setTipo(TipoCompeticao.MATA_MATA);
+		chave.setNome("Fase de Mata-Mata");
+		criarPartidasRestantes(qtdGruposEscolhida);
+		adicionarEmGrupoChaves();
+		chaveDao.salvar(chave);
+		grupoChavesDao.salvar(grupoChaves);
+	}
+
+	private void gerarPartidaTipoClassificatorio() {
+		qtdTimes = timesModalidade.size();
+		partida = new Partida();
+		chave.getPartidas().add(partida);
+		salvarPartida();
+		for (int i = 0; i < qtdTimes; i++) {
+			criarSalvarPlacarPartida(i, timesModalidade);
+		}
+	}
+
+	private void gerarPartidasTipoPtosCorridos(List<Time> listaTimes) {
+		qtdTimes = listaTimes.size();
 		for (int i = 0; i < qtdTimes; i++) {
 			for (int i2 = qtdTimes - 1; i2 > i; i2--) {
 				partida = new Partida();
 				chave.getPartidas().add(partida);
 				salvarPartida();
-				criarSalvarPlacarPartida(-1);
-				criarSalvarPlacarPartida(i);
-				criarSalvarPlacarPartida(i2);
+				criarSalvarPlacarPartida(-1, listaTimes);
+				criarSalvarPlacarPartida(i, listaTimes);
+				criarSalvarPlacarPartida(i2, listaTimes);
 			}
 		}
 	}
 
-	private void criarSalvarPlacarPartida(int i) {
+	private void criarSalvarPlacarPartida(int i, List<Time> listaTimes) {
 		setarPartidaTimePlacar();
 		if (i != -1) {
-			partidaTime.setTime(times.get(i));
+			partidaTime.setTime(listaTimes.get(i));
 		}
 		partidaTimeDao.salvar(partidaTime);
 		partida.getPartidasTimesPlacares().add(partidaTime);
@@ -299,39 +428,40 @@ public class ChaveMB {
 	public void gerarPartidasTipoMataMata() {
 		randomizarTimes();
 		gerarPartidasPrimeiraFaseMataMata();
-		criarPartidasRestantes();
+		criarPartidasRestantes(qtdTimes);
 
 	}
 
-	private void criarPartidasRestantes() {
+	private void criarPartidasRestantes(int qtdTimes) {
 		while (qtdTimes >= 1) {
-			qtdTimes /= 2;
 			for (int i = 0; i < qtdTimes; i++) {
 				if (i % 2 == 0) {
 					partida = new Partida();
 					chave.getPartidas().add(partida);
 					salvarPartida();
 				}
-				criarSalvarPlacarPartida(-1);
+				criarSalvarPlacarPartida(-1, timesModalidade);
 			}
+			qtdTimes /= 2;
 		}
 	}
 
 	private void gerarPartidasPrimeiraFaseMataMata() {
-		qtdTimes = times.size();
+		qtdTimes = timesModalidade.size();
 		for (int i = 0; i < qtdTimes; i++) {
 			if (i % 2 == 0) {
 				partida = new Partida();
 				chave.getPartidas().add(partida);
 				salvarPartida();
 			}
-			criarSalvarPlacarPartida(i);
+			criarSalvarPlacarPartida(i, timesModalidade);
 		}
+		qtdTimes = timesModalidade.size() / 2;
 	}
 
 	public void randomizarTimes() {
 		long seed = System.nanoTime();
-		Collections.shuffle(times, new Random(seed));
+		Collections.shuffle(timesModalidade, new Random(seed));
 	}
 
 	public void salvarPartida() {
@@ -341,6 +471,13 @@ public class ChaveMB {
 			partida.setLocal(local);
 			partidaDao.update(partida);
 		}
+	}
+
+	public void salvarPartidaTipoClassificatorio() {
+		salvarPartida();
+		pontosTimeDao.update(timeDataTable.getPontosTime());
+		pegarTimes(chave);
+		RequestContext.getCurrentInstance().execute("PF('classificatorioDialog').hide()");
 	}
 
 	private void setarPartidaTimePlacar() {
@@ -380,7 +517,6 @@ public class ChaveMB {
 	}
 
 	public void salvarPartidaTime() {
-		RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').hide()");
 		salvarPartida();
 		if (partidaTime.getPlacar() != -1) {
 			partidaTimeDao.update(partidaTime);
@@ -428,10 +564,13 @@ public class ChaveMB {
 
 	public void cancelarChave() {
 		timeSelectOne = null;
+		timesModalidade = null;
+		modalidade = null;
+		tipo = null;
 	}
 
-	public boolean verificarTamanhoTime() {
-		float qtdTimes = times.size();
+	public boolean isPossivelMataMata() {
+		float qtdTimes = timesModalidade.size();
 		while (qtdTimes > 1 && qtdTimes % 2 == 0) {
 			qtdTimes = qtdTimes / (float) 2;
 			if (qtdTimes == 1) {
@@ -477,14 +616,6 @@ public class ChaveMB {
 		this.chaveDao = chaveDao;
 	}
 
-	public ChaveLazyDataModel getChaveLazyDataModel() {
-		return chaveLazyDataModel;
-	}
-
-	public void setChaveLazyDataModel(ChaveLazyDataModel chaveLazyDataModel) {
-		this.chaveLazyDataModel = chaveLazyDataModel;
-	}
-
 	public PartidaDao getPartidaDao() {
 		return partidaDao;
 	}
@@ -493,7 +624,7 @@ public class ChaveMB {
 		this.partidaDao = partidaDao;
 	}
 
-	public TipoCompeticao[] getTipos() {
+	public TipoChaveamento[] getTipos() {
 		return tipos;
 	}
 
@@ -503,14 +634,6 @@ public class ChaveMB {
 
 	public void setTimeDao(TimeDao timeDao) {
 		this.timeDao = timeDao;
-	}
-
-	public TipoCompeticao getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(TipoCompeticao tipo) {
-		this.tipo = tipo;
 	}
 
 	public Modalidade getModalidade() {
@@ -614,15 +737,61 @@ public class ChaveMB {
 		iniciarTreeNode();
 	}
 
-	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) {
-		tipos = TipoCompeticao.values();
-		times = timeDao.pesquisarPorModalidade(modalidade);
-		if (!verificarTamanhoTime()) {
-			ArrayList<TipoCompeticao> tiposOld = new ArrayList<TipoCompeticao>(Arrays.asList(tipos));
-			tiposOld.remove(TipoCompeticao.MATA_MATA);
-			TipoCompeticao[] tiposNew = tiposOld.toArray(new TipoCompeticao[tiposOld.size()]);
+	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) throws ValidationException{
+		tipos = TipoChaveamento.values();
+		if (!grupoChavesDao.hasChave(modalidade)) {
+			timesModalidade = timeDao.pesquisarPorModalidade(modalidade);
+			if (timesModalidade.size() < 2) {
+				mensagemFaces("Erro na Quantidade de Times!", "Quantidade de times insuficiente!");
+				ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
+				tiposOld.clear();
+				TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
+				tipos = tiposNew;
+			} else {
+
+				if (!isPossivelMataMata()) {
+					ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
+					tiposOld.remove(TipoChaveamento.MATA_MATA);
+					TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
+					tipos = tiposNew;
+				}
+				if (!isPossivelGrupos()) {
+					ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
+					tiposOld.remove(TipoChaveamento.GRUPOS);
+					TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
+					tipos = tiposNew;
+				}
+			}
+		} else {
+			mensagemFaces("Erro!", "Já existe uma chave para a modalidade selecionada!");
+			ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
+			tiposOld.clear();
+			TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
 			tipos = tiposNew;
 		}
+	}
+
+	public boolean isPossivelGrupos() {
+		qtdGruposPossiveis = new ArrayList<>();
+		boolean isPossivel = false;
+		for (int i = 0; i < timesModalidade.size(); i++) {
+			if (i % 2 == 0 && i != 0) {
+				if (timesModalidade.size() % i == 0 && timesModalidade.size() / i > 2) {
+					qtdGruposPossiveis.add(i);
+					isPossivel = true;
+				}
+			}
+		}
+		return isPossivel;
+	}
+
+	public void tipoSelectionChanged(final AjaxBehaviorEvent event) {
+		if (tipo.equals(TipoChaveamento.GRUPOS)) {
+			isTipoGrupos = true;
+		} else {
+			isTipoGrupos = false;
+		}
+
 	}
 
 	public PontosTimeDao getPontosTimeDao() {
@@ -641,12 +810,12 @@ public class ChaveMB {
 		this.pontosTime = pontosTime;
 	}
 
-	public List<Time> getTimes() {
-		return times;
+	public List<Time> getTimesModalidade() {
+		return timesModalidade;
 	}
 
-	public void setTimes(List<Time> times) {
-		this.times = times;
+	public void setTimesModalidade(List<Time> timesModalidade) {
+		this.timesModalidade = timesModalidade;
 	}
 
 	public PartidaTime getPartidaTime() {
@@ -693,8 +862,90 @@ public class ChaveMB {
 		this.partidaTimes = partidaTimes;
 	}
 
-	public void setTipos(TipoCompeticao[] tipos) {
+	public void setTipos(TipoChaveamento[] tipos) {
 		this.tipos = tipos;
+	}
+
+	public TipoCompeticao getTipoClassificatorio() {
+		return TipoCompeticao.CLASSIFICATORIO;
+	}
+
+	public boolean getIsNotMataMata() {
+		if (chave != null) {
+			if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean getIsClassificatorio() {
+		if (chave != null) {
+			if (chave.getTipo().equals(TipoCompeticao.CLASSIFICATORIO)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public boolean getIsTipoGrupos() {
+		return isTipoGrupos;
+	}
+
+	public void setTipoGrupos(boolean isTipoGrupos) {
+		this.isTipoGrupos = isTipoGrupos;
+	}
+
+	public List<Integer> getQtdGruposPossiveis() {
+		return qtdGruposPossiveis;
+	}
+
+	public void setQtdGruposPossiveis(List<Integer> qtdGruposPossiveis) {
+		this.qtdGruposPossiveis = qtdGruposPossiveis;
+	}
+
+	public Integer getQtdGruposEscolhida() {
+		return qtdGruposEscolhida;
+	}
+
+	public void setQtdGruposEscolhida(Integer qtdGruposEscolhida) {
+		this.qtdGruposEscolhida = qtdGruposEscolhida;
+	}
+
+	public GrupoChaves getGrupoChaves() {
+		return grupoChaves;
+	}
+
+	public void setGrupoChaves(GrupoChaves grupoChaves) {
+		this.grupoChaves = grupoChaves;
+	}
+
+	public GrupoChavesDao getGrupoChavesDao() {
+		return grupoChavesDao;
+	}
+
+	public void setGrupoChavesDao(GrupoChavesDao grupoChavesDao) {
+		this.grupoChavesDao = grupoChavesDao;
+	}
+
+	public GrupoChavesLazyDataModel getGrupoChavesLazyDataModel() {
+		return grupoChavesLazyDataModel;
+	}
+
+	public void setGrupoChavesLazyDataModel(GrupoChavesLazyDataModel grupoChavesLazyDataModel) {
+		this.grupoChavesLazyDataModel = grupoChavesLazyDataModel;
+	}
+
+	public TipoChaveamento getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoChaveamento tipo) {
+		this.tipo = tipo;
 	}
 
 }

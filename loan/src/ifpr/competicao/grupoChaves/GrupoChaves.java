@@ -1,4 +1,4 @@
-package ifpr.competicao.chave;
+package ifpr.competicao.grupoChaves;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,56 +16,36 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import ifpr.competicao.partida.Partida;
+import ifpr.competicao.grupoChaves.chave.Chave;
 import ifpr.modalidade.Modalidade;
 
 @Entity
-@Table(name = "tbChave")
-public class Chave {
-
+@Table(name = "tbGrupoChaves")
+public class GrupoChaves {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_chave")
+	@Column(name = "id_grupo_chaves")
 	private Integer id;
 
-	@Column(name = "nome_chave", length = 20)
+	@Column(name = "nome_chave")
 	private String nome;
 
 	@JoinColumn(name = "id_modalidade", referencedColumnName = "id_modalidade")
 	@ManyToOne()
 	private Modalidade modalidade;
 
-	@Column(name = "tipo_chave", length = 20)
-	@Enumerated(EnumType.STRING)
-	private TipoCompeticao tipo;
-
-	@JoinColumn(name = "id_chave", referencedColumnName = "id_chave")
+	@JoinColumn(name = "id_grupo_chaves", referencedColumnName = "id_grupo_chaves")
 	@OneToMany(cascade = CascadeType.REMOVE)
-	private List<Partida> partidas;
+	private List<Chave> chaves;
+	
+	@Column(name = "tipo_grupo_chave")
+	@Enumerated(EnumType.STRING)
+	private TipoChaveamento tipo;
 
-	private boolean isPrimeiraFase;
-
-	public Chave() {
-		partidas = new ArrayList<>();
-		isPrimeiraFase = true;
+	public GrupoChaves() {
+		chaves = new ArrayList<Chave>();
 	}
-
-	public boolean isPrimeiraFase() {
-		return isPrimeiraFase;
-	}
-
-	public void setPrimeiraFase(boolean isPrimeiraFase) {
-		this.isPrimeiraFase = isPrimeiraFase;
-	}
-
-	public List<Partida> getPartidas() {
-		return partidas;
-	}
-
-	public void setPartidas(List<Partida> partidas) {
-		this.partidas = partidas;
-	}
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -90,17 +70,20 @@ public class Chave {
 		this.modalidade = modalidade;
 	}
 
-	public TipoCompeticao getTipo() {
+	public List<Chave> getChaves() {
+		return chaves;
+	}
+
+	public void setChaves(List<Chave> chaves) {
+		this.chaves = chaves;
+	}
+
+	public TipoChaveamento getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(TipoCompeticao tipo) {
+	public void setTipo(TipoChaveamento tipo) {
 		this.tipo = tipo;
-	}
-
-	@Override
-	public String toString() {
-		return this.nome;
 	}
 
 }

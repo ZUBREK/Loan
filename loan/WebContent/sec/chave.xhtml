@@ -11,7 +11,7 @@
 			<p:growl id="msg" showDetail="true" />
 			<h:form>
 				<p:commandButton id="novoChave" value="Nova"
-					actionListener="#{chaveMB.criar}"
+					actionListener="#{chaveMB.criar}" rendered="#{chaveMB.isAdm}" 
 					oncomplete="PF('chavDialog').show()" update=":chavDlg" />
 			</h:form>
 			<h:form id="table_form">
@@ -21,7 +21,7 @@
 						oncomplete="PF('editarChavDialog').show()" />
 
 					<p:menuitem value="Remover" update=":confirm" icon="remover16"
-						oncomplete="PF('confirmDialog').show()" />
+						oncomplete="PF('confirmDialog').show()" rendered="#{chaveMB.isAdm}"  />
 
 				</p:contextMenu>
 

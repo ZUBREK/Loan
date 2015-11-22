@@ -67,7 +67,7 @@ public class SecretarioMB {
 	}
 
 	public void salvar() {
-
+		cadastroValidator.setPessoa(secretario);
 		if (cadastroValidator.validarDadosSec(secretario)) {
 			if (secretario.getId() != null) {
 				secretarioDao.update(secretario);

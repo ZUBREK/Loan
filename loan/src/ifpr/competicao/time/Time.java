@@ -1,5 +1,11 @@
 package ifpr.competicao.time;
 
+import ifpr.campus.Campus;
+import ifpr.competicao.time.estudante.TimeEstudante;
+import ifpr.competicao.time.pontos.PontosTime;
+import ifpr.modalidade.Modalidade;
+import ifpr.pessoa.Pessoa;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import ifpr.campus.Campus;
-import ifpr.competicao.time.estudante.TimeEstudante;
-import ifpr.competicao.time.pontos.PontosTime;
-import ifpr.modalidade.Modalidade;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
 
 @Entity
 @Table(name = "tbTime")
@@ -39,7 +39,7 @@ public class Time {
 
 	@JoinColumn(name = "id_tec_esp", referencedColumnName = "id_pessoa")
 	@ManyToOne()
-	private TecnicoEsportivo tecnico;
+	private Pessoa tecnico;
 
 	@JoinColumn(name = "id_campus", referencedColumnName = "id_campus")
 	@ManyToOne()
@@ -82,11 +82,11 @@ public class Time {
 		this.modalidade = modalidade;
 	}
 
-	public TecnicoEsportivo getTecnico() {
+	public Pessoa getTecnico() {
 		return tecnico;
 	}
 
-	public void setTecnico(TecnicoEsportivo tecnico) {
+	public void setTecnico(Pessoa tecnico) {
 		this.tecnico = tecnico;
 	}
 

@@ -1,6 +1,9 @@
 package ifpr.pessoa.coordenadorPea.dao;
 
+import java.util.List;
+
 import ifpr.dao.GenericDao;
+import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.coordenadorPea.CoordenadorPea;
 
 import javax.faces.bean.ApplicationScoped;
@@ -37,6 +40,19 @@ public class CoordenadorDaoImpl  extends GenericDao<CoordenadorPea> implements C
 		query.setParameter("siape", siape);
 		query.setParameter("id", id);
 		return (CoordenadorPea) query.getSingleResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CoordenadorPea> findByNomeRole(String nome) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em
+				.createQuery("select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') and authority = :role1 or authority = :role2");
+		q.setParameter("nome", nome);
+		q.setParameter("role1", TipoPessoa.ROLE_COORDENADOR);
+		q.setParameter("role2", TipoPessoa.ROLE_TEC_COORD);
+		q.setMaxResults(10);
+
+		return q.getResultList();
 	}
 	
 	

@@ -2,7 +2,7 @@ package ifpr.projeto;
 
 import ifpr.campus.Campus;
 import ifpr.modalidade.Modalidade;
-import ifpr.pessoa.coordenadorPea.CoordenadorPea;
+import ifpr.pessoa.Pessoa;
 import ifpr.projeto.projetoEstudante.ProjetoEstudante;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class Projeto {
 	private String nome;
 
 	@OneToOne
-	private CoordenadorPea coordenador;
+	private Pessoa coordenador;
 
 	@JoinColumn(name = "id_modalidade", referencedColumnName = "id_modalidade")
 	@ManyToOne()
@@ -66,11 +66,11 @@ public class Projeto {
 		this.nome = nome;
 	}
 
-	public CoordenadorPea getCoordenador() {
+	public Pessoa getCoordenador() {
 		return coordenador;
 	}
 
-	public void setCoordenador(CoordenadorPea coordenador) {
+	public void setCoordenador(Pessoa coordenador) {
 		this.coordenador = coordenador;
 	}
 

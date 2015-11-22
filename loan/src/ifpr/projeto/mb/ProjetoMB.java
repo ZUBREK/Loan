@@ -4,6 +4,8 @@ import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.modalidade.Modalidade;
 import ifpr.modalidade.dao.ModalidadeDao;
+import ifpr.model.LoginControllerMB;
+import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.coordenadorPea.CoordenadorPea;
 import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
 import ifpr.pessoa.estudante.Estudante;
@@ -15,18 +17,25 @@ import ifpr.projeto.projetoEstudante.ProjetoEstudante;
 import ifpr.projeto.projetoEstudante.dao.ProjetoEstudanteDao;
 import ifpr.projeto.relatorio.RelatorioProjeto;
 import ifpr.projeto.relatorio.dao.RelatorioProjetoDao;
+import ifpr.utils.Paths;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -70,6 +79,10 @@ public class ProjetoMB {
 
 	private Estudante estudante;
 
+	private LoginControllerMB loginController;
+
+	private Pessoa pessoaLogada;
+
 	@ManagedProperty(value = "#{estudanteDao}")
 	private EstudanteDao estudanteDao;
 
@@ -82,8 +95,7 @@ public class ProjetoMB {
 
 	private RelatorioProjeto relatorio;
 
-	
-	@ManagedProperty(value="#{relatorioProjetoDao}")
+	@ManagedProperty(value = "#{relatorioProjetoDao}")
 	private RelatorioProjetoDao relatorioProjetoDao;
 
 	private StreamedContent arqStreamed;
@@ -105,6 +117,10 @@ public class ProjetoMB {
 	public void poust() {
 		listaCampus = campusDao.listarAlfabetica();
 		listaModalidade = modalidadeDao.listarAlfabetica();
+		FacesContext context = FacesContext.getCurrentInstance();
+		loginController = context.getApplication().evaluateExpressionGet(
+				context, "#{loginControllerMB}", LoginControllerMB.class);
+		pessoaLogada = loginController.getPessoaLogada();
 	}
 
 	public void remover() {
@@ -126,7 +142,8 @@ public class ProjetoMB {
 		} else {
 			projeto.setCampus(campus);
 			projeto.setModalidade(modalidade);
-			projeto.setCoordenador(coordenador);
+			Pessoa pessoa = (Pessoa) coordenador;
+			projeto.setCoordenador(pessoa);
 			projetoDao.salvar(projeto);
 		}
 	}
@@ -151,8 +168,8 @@ public class ProjetoMB {
 				.pesquisarEstudanteNomeCampus(nome, campus);
 		return listaEstudante;
 	}
-	
-	public void procurarRelatorios(){
+
+	public void procurarRelatorios() {
 		relatorios = relatorioProjetoDao.pesquisarPorProjeto(projeto);
 	}
 
@@ -172,6 +189,54 @@ public class ProjetoMB {
 		}
 
 		return arqStreamed;
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+		relatorio = new RelatorioProjeto();
+		try {
+			String nomeArquivoStreamed = event.getFile().getFileName();
+			byte[] arquivoByte = event.getFile().getContents();
+			String caminho = Paths.PASTA_ARQUIVO_RELATORIO
+					+ "/"
+					+ pessoaLogada.getId()
+					+ nomeArquivoStreamed.substring(
+							nomeArquivoStreamed.lastIndexOf('.'),
+							nomeArquivoStreamed.length());
+			criarArquivoDisco(arquivoByte, caminho);
+			relatorio.setUploader(pessoaLogada);
+			relatorio.setCaminho(caminho);
+			relatorio.setNome(nomeArquivoStreamed);
+			relatorio.setDataUpload(new Date());
+			relatorio.setProjeto(projeto);
+			
+			relatorioProjetoDao.salvar(relatorio);
+			procurarRelatorios();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return;
+	}
+
+	public void apagarArquivo() {
+		if (relatorio != null) {
+			File file = new File(relatorio.getCaminho());
+			file.delete();
+
+			relatorioProjetoDao.remover(relatorio);
+			relatorio = null;
+			procurarRelatorios();
+		}
+		return;
+	}
+
+	private void criarArquivoDisco(byte[] bytes, String arquivoPath)
+			throws IOException {
+		File file = new File(Paths.PASTA_ARQUIVO_RELATORIO);
+		file.mkdirs();
+		FileOutputStream fos;
+		fos = new FileOutputStream(arquivoPath);
+		fos.write(bytes);
+		fos.close();
 	}
 
 	public ProjetoEstudanteDao getProjetoEstudanteDao() {
@@ -353,6 +418,20 @@ public class ProjetoMB {
 		this.relatorio = relatorio;
 	}
 
-	 
-	
+	public LoginControllerMB getLoginController() {
+		return loginController;
+	}
+
+	public void setLoginController(LoginControllerMB loginController) {
+		this.loginController = loginController;
+	}
+
+	public Pessoa getPessoaLogada() {
+		return pessoaLogada;
+	}
+
+	public void setPessoaLogada(Pessoa pessoaLogada) {
+		this.pessoaLogada = pessoaLogada;
+	}
+
 }

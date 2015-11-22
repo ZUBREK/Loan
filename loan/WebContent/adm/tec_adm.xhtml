@@ -47,7 +47,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":dados_fom"
+							style="margin-left: 3px;" update=":dados_form"
 							oncomplete="PF('tecadmDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{tecadm}"
 								target="#{tecnicoAdmMB.tecnicoAdm}" />
@@ -74,7 +74,7 @@
 			header="Dados do Técnico Administrativo" width="600" height="200"
 			modal="true" closable="false">
 
-			<h:form id="dados_fom">
+			<h:form id="dados_form">
 				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
@@ -96,7 +96,7 @@
 
 					</p:inputText>
 
-					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
+					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="siape" />
 
 					<p:inputText id="siape" value="#{tecnicoAdmMB.tecnicoAdm.siape}"
 						size="50" maxlength="7" required="true"
@@ -127,7 +127,7 @@
 						</p:dialog>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :dados_fom :msg"
+							update=":tableForm :dados_form :msg"
 							actionListener="#{tecnicoAdmMB.salvar}"
 							onclick="PrimeFaces.monitorDownload(start, stop)"
 							oncomplete="if(!args.validationFailed) PF('tecadmDialog').hide()" />
@@ -136,7 +136,7 @@
 							icon="cancelar16" oncomplete="PF('tecadmDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{tecnicoAdmMB.cancelar()}">
-							<p:resetInput target=":dados_fom" />
+							<p:resetInput target=":dados_form" />
 						</p:commandButton>
 
 						<script type="text/javascript">

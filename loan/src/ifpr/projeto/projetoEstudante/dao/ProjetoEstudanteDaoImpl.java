@@ -26,7 +26,7 @@ public class ProjetoEstudanteDaoImpl  extends GenericDao<ProjetoEstudante> imple
 	public List<ProjetoEstudante> pesquisarPorNome(String nome)
 	{
 		EntityManager em = emf.createEntityManager();
-		Query q = em.createQuery("select u from ProjetoEstudante u where lower(u.nome) like concat('%', :nome, '%')");
+		Query q = em.createQuery("select u from " + classe.getSimpleName() + " u where lower(u.nome) like concat('%', :nome, '%')");
 		q.setParameter("nome", nome);
 		q.setMaxResults(50);
 		

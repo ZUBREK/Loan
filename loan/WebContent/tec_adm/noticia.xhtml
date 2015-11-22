@@ -9,6 +9,7 @@
 	<ui:define name="body">
 
 		<p:growl id="msg" showDetail="true" />
+
 		<p:panel id="painelPrincipal" header="Gerenciamento de Notícias">
 
 			<h:form>
@@ -19,10 +20,21 @@
 
 			<h:form id="tableForm">
 
+				<p:contextMenu>
+
+					<p:menuitem id="editarTR" value="Editar" icon="editar16"
+						update=":noticia_form" oncomplete="PF('noticiaDialog').show()" />
+
+					<p:menuitem id="removerTR" value="Remover" icon="remover16"
+						oncomplete="PF('noticiaConfirmDialog').show()" update=":confirm" />
+
+				</p:contextMenu>
+
 				<p:dataTable id="noticiaTable"
 					value="#{noticiaMB.noticiaLazyDataModel}" var="notic"
 					emptyMessage="Nenhum registro encontrado!" rows="15"
-					rowKey="#{notic.id}" paginator="true" lazy="true"
+					selectionMode="single" rowKey="#{notic.id}" paginator="true"
+					lazy="true" selection="#{noticiaMB.noticia}"
 					filteredValue="#{noticiaMB.noticiaFiltered}">
 
 					<f:facet name="header">
@@ -35,32 +47,12 @@
 
 					</p:column>
 
-					<p:column headerText="Data da Notícia">
+					<p:column headerText="Data de publicação">
 						<h:outputText value="#{notic.data}" id="data">
 							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
 								pattern="dd/MM/yyyy HH:mm" />
 						</h:outputText>
 
-					</p:column>
-
-					<p:column headerText="Editar" width="35">
-
-						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":noticia_form"
-							oncomplete="PF('noticiaDialog').show()" styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{notic}"
-								target="#{noticiaMB.noticia}" />
-
-						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
-						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;"
-							oncomplete="PF('noticiaConfirmDialog').show()" update=":confirm"
-							styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{notic}"
-								target="#{noticiaMB.noticia}" />
-						</p:commandButton>
 					</p:column>
 
 				</p:dataTable>
@@ -70,27 +62,33 @@
 		</p:panel>
 
 		<p:dialog id="noticiaDlg" widgetVar="noticiaDialog"
-			header="Dados da Notícia" width="600" height="200" modal="true"
-			closable="false">
+			header="Dados da Notícia" width="600" height="400" modal="true"
+			closable="false" resizable="false">
 
 			<h:form id="noticia_form">
-				<h:panelGrid columns="3">
-
+				<h:panelGrid columns="2">
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 					<h:outputLabel id="tituloLb" value="Título:" for="titulo" />
 
 					<p:inputText id="titulo" value="#{noticiaMB.noticia.titulo}"
 						size="50" required="true" requiredMessage="Título é obrigatório!" />
 
-					<p:message for="titulo" />
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
 					<h:outputLabel id="textoLb" value="Texto da notícia:" for="texto" />
+
+
+
 					<h:form>
 						<p:editor id="texto" widgetVar="editorWidget"
 							value="#{noticiaMB.noticia.texto}" width="300" />
 						<p:commandButton value="Limpar" type="button"
 							onclick="PF('editorWidget').clear();" icon="ui-icon-close" />
 					</h:form>
-
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :noticia_form :msg"

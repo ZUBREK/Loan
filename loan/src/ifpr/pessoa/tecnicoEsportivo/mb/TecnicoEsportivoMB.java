@@ -74,12 +74,13 @@ public class TecnicoEsportivoMB {
 	}
 
 	public void salvar() {
-
+		cadastroValidator.setPessoa(tecnicoEsp);
 		if (cadastroValidator.validarDados(tecnicoEsp.getSiape())) {
 			if (tecnicoEsp.getId() != null) {
 
 				tecEspDao.update(tecnicoEsp);
 			} else if (validarLoginExistente()) {
+
 				tecnicoEsp.setCampus(campus);
 				gerarSenha();
 				tecnicoEsp.setTipo(TipoPessoa.ROLE_TEC_ESP);
@@ -88,6 +89,7 @@ public class TecnicoEsportivoMB {
 				tecnicoEsp.setSenha(md5);
 				tecEspDao.salvar(tecnicoEsp);
 				homeMB.criarArqFotoPerfil(tecnicoEsp);
+
 			}
 		}
 	}
@@ -95,10 +97,11 @@ public class TecnicoEsportivoMB {
 	private void gerarSenha() {
 		UUID uuid = UUID.randomUUID();
 		String myRandom = uuid.toString();
-		tecnicoEsp.setSenha(myRandom.substring(0, 6));
+		tecnicoEsp.setSenha(myRandom.substring(0, 7));
 	}
 
 	private void enviarEmail() {
+
 		cadastroValidator.setPessoa(tecnicoEsp);
 		cadastroValidator.enviarEmail();
 	}

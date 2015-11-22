@@ -39,9 +39,8 @@
 				</p:column>
 				<p:column headerText="Remover" width="47">
 					<p:commandButton id="removerTR" value="" icon="remover16"
-						style="margin-left: 10px;"
-						oncomplete="PF('confirmDialog').show()" update=":confirm"
-						styleClass="apenasIcone">
+						style="margin-left: 10px;" oncomplete="PF('confirmDialog').show()"
+						update=":confirm" styleClass="apenasIcone">
 						<f:setPropertyActionListener value="#{camp}"
 							target="#{campusMB.campus}" />
 					</p:commandButton>
@@ -56,13 +55,13 @@
 			<h:form id="camp_form">
 				<h:panelGrid columns="3">
 
-					<h:outputLabel id="cidadeLb" value="Cidade:" for="cidade" />
+					<p:outputLabel id="cidadeLb" value="Cidade:" for="cidade" />
+
+					<p:spacer width="2px" />
 
 					<p:inputText id="cidade" value="#{campusMB.campus.cidade}"
 						size="20" required="true" requiredMessage="Cidade é obrigatório!" />
 
-					<p:message for="cidade" />
-					<p:spacer height="10px" />
 
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"

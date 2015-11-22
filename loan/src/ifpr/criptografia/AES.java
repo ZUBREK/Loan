@@ -11,7 +11,7 @@ import org.apache.commons.codec.binary.Base64;
 @ApplicationScoped
 public class AES {
 
-	private final String chave = "lucaslamogliavie";
+	private final String chave = "test$asd[]54Olá";
 	
 	public String encrypt(String strToEncrypt)
     {

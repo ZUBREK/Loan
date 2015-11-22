@@ -41,7 +41,7 @@ public class EstudanteDaoImpl extends GenericDao<Estudante> implements
 	@Override
 	public List<Estudante> pesquisarPorNome(String nome) {
 		EntityManager em = emf.createEntityManager();
-		Query q = em.createQuery("select u from" + classe.getSimpleName()
+		Query q = em.createQuery("select u from " + classe.getSimpleName()
 				+ " u where lower(u.nome) like concat('%', :nome, '%')");
 		q.setParameter("nome", nome);
 		q.setMaxResults(50);

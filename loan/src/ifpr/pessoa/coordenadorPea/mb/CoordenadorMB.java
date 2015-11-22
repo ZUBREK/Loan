@@ -49,19 +49,22 @@ public class CoordenadorMB {
 
 	private Campus campus;
 
-	@ManagedProperty(value="#{cadastroValidator}")
+	@ManagedProperty(value = "#{cadastroValidator}")
 	private CadastroUsuarioValidator cadastroValidator;
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
+	private boolean isTecCoord;
+
 	public CoordenadorMB() {
 		coordenadorFiltered = new ArrayList<CoordenadorPea>();
+
 	}
 
 	public void criar() {
 		coordenador = new CoordenadorPea();
-
+		isTecCoord = false;
 	}
 
 	public void remover() {
@@ -81,12 +84,17 @@ public class CoordenadorMB {
 			} else if (validarLoginExistente()) {
 				coordenador.setCampus(campus);
 				gerarSenha();
-				coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
+				if (isTecCoord) {
+					coordenador.setTipo(TipoPessoa.ROLE_TEC_COORD);
+				} else {
+					coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
+				}
+				enviarEmail();
 				String md5 = criptografia.criptografar(coordenador.getSenha());
 				coordenador.setSenha(md5);
 				coordenadorDao.salvar(coordenador);
 				homeMB.criarArqFotoPerfil(coordenador);
-				enviarEmail();
+
 			}
 		}
 	}
@@ -211,6 +219,12 @@ public class CoordenadorMB {
 		this.cadastroValidator = cadastroValidator;
 	}
 
-	
+	public boolean isTecCoord() {
+		return isTecCoord;
+	}
+
+	public void setTecCoord(boolean isTecCoord) {
+		this.isTecCoord = isTecCoord;
+	}
 
 }

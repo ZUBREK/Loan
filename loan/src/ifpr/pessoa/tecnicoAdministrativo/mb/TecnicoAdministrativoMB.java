@@ -74,6 +74,7 @@ public class TecnicoAdministrativoMB {
 	}
 
 	public void salvar() {
+		cadastroValidator.setPessoa(tecnicoAdm);
 		if (cadastroValidator.validarDados(tecnicoAdm.getSiape())) {
 			if (tecnicoAdm.getId() != null) {
 
@@ -94,7 +95,7 @@ public class TecnicoAdministrativoMB {
 	private void gerarSenha() {
 		UUID uuid = UUID.randomUUID();
 		String myRandom = uuid.toString();
-		tecnicoAdm.setSenha(myRandom.substring(0, 6));
+		tecnicoAdm.setSenha(myRandom.substring(0, 7));
 	}
 
 	private void enviarEmail() {

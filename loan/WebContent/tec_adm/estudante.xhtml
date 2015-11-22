@@ -55,7 +55,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":dados_form"
+							style="margin-left: 3px;" update="tabGrande:dados_form"
 							oncomplete="PF('estudanteDialog').show()"
 							styleClass="apenasIcone">
 
@@ -86,139 +86,140 @@
 		</p:panel>
 
 		<p:dialog id="estudanteDlg" widgetVar="estudanteDialog"
-			header="Dados do Estudante" width="700" height="350" modal="true"
+			header="Dados do Estudante" width="700" height="400" modal="true"
 			closable="false">
+			<p:tabView id="tabGrande" widgetVar="grandeTab">
+				<p:tab id="tabPequena1" title="Dados do estudante">
+					<h:form id="dados_form">
 
-			<h:form id="dados_form">
+						<h:panelGrid columns="2">
 
-				<h:panelGrid columns="2">
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
-
-
-					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
-
-					<p:inputText id="nome" value="#{estudanteMB.estudante.nome}"
-						maxlength="60" size="60" required="true"
-						requiredMessage="Nome é obrigatório!" />
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
 
 
-					<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
-						for="dataNasc" />
+							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:calendar id="dataNasc" size="60"
-						value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
-						navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
-						maxdate="31/12/2005" yearRange="1980:2005" required="true"
-						requiredMessage="Data de nascimento é obrigatória!">
+							<p:inputText id="nome" value="#{estudanteMB.estudante.nome}"
+								maxlength="60" size="60" required="true"
+								requiredMessage="Nome é obrigatório!" />
 
-						<p:watermark value="00/00/0000" for="dataNasc" />
-
-					</p:calendar>
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
 
 
-					<h:outputLabel id="rgLb" value="RG:" for="rg" />
+							<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
+								for="dataNasc" />
 
-					<p:inputText id="rg" value="#{estudanteMB.estudante.rg}" size="60"
-						maxlength="9" required="true" requiredMessage="RG é obrigatório!"
-						placeholder="Apenas números" />
+							<p:calendar id="dataNasc" size="60"
+								value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
+								navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
+								maxdate="31/12/2005" yearRange="1980:2005" required="true"
+								requiredMessage="Data de nascimento é obrigatória!">
 
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
+								<p:watermark value="00/00/0000" for="dataNasc" />
 
+							</p:calendar>
 
-
-					<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
-
-					<p:inputMask mask="999.999.999-99" id="cpf" size="60"
-						required="true" requiredMessage="CPF é obrigatório!"
-						value="#{estudanteMB.estudante.cpf}">
-
-						<p:ajax listener="#{estudanteMB.validarCpf}" update=":msg"
-							event="blur" />
-
-						<p:watermark value="000.000.000-00" for="cpf" />
-
-					</p:inputMask>
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
-
-					<h:outputLabel id="matriculaLb" value="Matricula:" for="matricula" />
-
-					<p:inputText id="matricula" maxlength="11"
-						value="#{estudanteMB.estudante.matricula}" size="60"
-						required="true" requiredMessage="Matricula é obrigatório!" />
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
-
-					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
-
-					<p:inputText id="email" value="#{estudanteMB.estudante.login}"
-						maxlength="255" size="50" required="true"
-						requiredMessage="E-mail é obrigatório!"
-						disabled="#{estudanteMB.estudante.id != null}">
-
-						<p:ajax listener="#{estudanteMB.validarLoginExistente}"
-							update=":msg" event="blur" />
-
-					</p:inputText>
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
-
-					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
-
-					<p:selectOneMenu id="campus" value="#{estudanteMB.campus}"
-						filter="true" filterMatchMode="startsWith" required="true"
-						requiredMessage="Câmpus é obrigatório!"
-						converter="#{campusConverter}">
-
-						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
-
-						<f:selectItems value="#{estudanteMB.listaCampus}" var="camp"
-							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
-
-					</p:selectOneMenu>
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
 
 
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
+							<h:outputLabel id="rgLb" value="RG:" for="rg" />
 
-					<f:facet name="footer">
+							<p:inputText id="rg" value="#{estudanteMB.estudante.rg}"
+								size="60" maxlength="9" required="true"
+								requiredMessage="RG é obrigatório!" placeholder="Apenas números" />
 
-						<p:dialog modal="true" widgetVar="statusDialog"
-							header="Carregando" draggable="false" closable="false"
-							resizable="false">
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
 
-							<p:graphicImage value="/img/64/ajax_loader.gif" />
 
-						</p:dialog>
 
-						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :dados_form :msg"
-							actionListener="#{estudanteMB.salvar}"
-							onclick="PrimeFaces.monitorDownload(start, stop)"
-							oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />
+							<h:outputLabel id="cpfLb" value="CPF:" for="cpf" />
 
-						<p:commandButton id="cancelarBt" value="Cancelar"
-							style="padding-left:1px;" icon="cancelar16"
-							oncomplete="PF('estudanteDialog').hide()" update=":msg"
-							immediate="true" actionListener="#{estudanteMB.cancelar()}">
+							<p:inputMask mask="999.999.999-99" id="cpf" size="60"
+								required="true" requiredMessage="CPF é obrigatório!"
+								value="#{estudanteMB.estudante.cpf}">
 
-							<p:resetInput target=":dados_form" />
+								<p:ajax listener="#{estudanteMB.validarCpf}" update=":msg"
+									event="blur" />
 
-						</p:commandButton>
+								<p:watermark value="000.000.000-00" for="cpf" />
 
-						<script type="text/javascript">
+							</p:inputMask>
+
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
+
+							<h:outputLabel id="matriculaLb" value="Matricula:"
+								for="matricula" />
+
+							<p:inputText id="matricula" maxlength="11"
+								value="#{estudanteMB.estudante.matricula}" size="60"
+								required="true" requiredMessage="Matricula é obrigatório!" />
+
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
+
+							<h:outputLabel id="emailLb" value="E-mail:" for="email" />
+
+							<p:inputText id="email" value="#{estudanteMB.estudante.login}"
+								maxlength="255" size="50" required="true"
+								requiredMessage="E-mail é obrigatório!"
+								disabled="#{estudanteMB.estudante.id != null}">
+
+								<p:ajax listener="#{estudanteMB.validarLoginExistente}"
+									update=":msg" event="blur" />
+
+							</p:inputText>
+
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
+
+							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+
+							<p:selectOneMenu id="campus" value="#{estudanteMB.campus}"
+								filter="true" filterMatchMode="startsWith" required="true"
+								requiredMessage="Câmpus é obrigatório!"
+								converter="#{campusConverter}">
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{estudanteMB.listaCampus}" var="camp"
+									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
+							</p:selectOneMenu>
+
+
+							<p:spacer height="2px" />
+							<p:spacer height="2px" />
+
+							<f:facet name="footer">
+
+								<p:dialog modal="true" widgetVar="statusDialog"
+									header="Carregando" draggable="false" closable="false"
+									resizable="false">
+
+									<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+								</p:dialog>
+
+								<p:commandButton id="continuarBt" value="Continuar"
+									icon="salvar16" update=":msg"
+									actionListener="#{estudanteMB.salvar}"
+									oncomplete="if(!args.validationFailed) PF('grandeTab').select(1);" />
+
+								<p:commandButton id="cancelarBt1" value="Cancelar"
+									style="padding-left:1px;" icon="cancelar16"
+									oncomplete="PF('estudanteDialog').hide()" update=":msg"
+									immediate="true" actionListener="#{estudanteMB.cancelar()}">
+
+									<p:resetInput target="tabGrande:dados_form" />
+
+								</p:commandButton>
+
+								<script type="text/javascript">
 						
 						function start() {
    							 PF('statusDialog').show();
@@ -229,12 +230,51 @@
 							}
 						</script>
 
-					</f:facet>
+							</f:facet>
 
-				</h:panelGrid>
+						</h:panelGrid>
 
-			</h:form>
+					</h:form>
+				</p:tab>
 
+				<p:tab title="Foto">
+					<h:form id="foto_form">
+
+						<h:panelGrid columns="2">
+							<p:outputLabel id="fotoPerfilLb"
+								title="Selecionar foto do estudante"
+								value="Selecionar foto do estudante:" />
+
+							<p:fileUpload id="fotoUpload" styleClass="fileupload-boleidous"
+								fileUploadListener="#{estudanteMB.handleFileUpload}"
+								label="#{estudanteMB.fotoPerfil == null ? 'Selecionar' : estudanteMB.fotoPerfil.nome}"
+								auto="true" update=":tabGrande:foto_form:nomeFoto"
+								multiple="false" mode="advanced" cache="false" />
+
+
+							<p:outputLabel value="Arquivo:" for="nomeFoto" />
+							<p:outputLabel id="nomeFoto"
+								value="#{estudanteMB.fotoPerfil.nome}" />
+
+							<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+								update=":tableForm tabGrande:dados_form :msg"
+								actionListener="#{estudanteMB.salvar}"
+								onclick="PrimeFaces.monitorDownload(start, stop)"
+								oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />
+
+							<p:commandButton id="cancelarBt" value="Cancelar"
+								style="padding-left:1px;" icon="cancelar16"
+								oncomplete="PF('estudanteDialog').hide()" update=":msg"
+								immediate="true" actionListener="#{estudanteMB.cancelar()}">
+
+								<p:resetInput target="tabGrande:dados_form" />
+
+							</p:commandButton>
+
+						</h:panelGrid>
+					</h:form>
+				</p:tab>
+			</p:tabView>
 		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="estudanteConfirmDialog"

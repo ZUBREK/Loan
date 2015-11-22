@@ -18,7 +18,8 @@
 			<h:form id="tableForm">
 				<p:contextMenu for="projetoTable">
 					<p:menuitem value="Relatórios" update=":visRelatoriosProjetoDlg"
-						icon="ui-icon-search" action="#{projetoMB.procurarRelatorios()}"
+						icon="ui-icon-search"
+						actionListener="#{projetoMB.procurarRelatorios()}"
 						oncomplete="PF('visRelatoriosProjetoDialog').show()" />
 
 					<p:menuitem id="editarTR" value="Editar" icon="editar16"
@@ -203,7 +204,7 @@
 
 		<p:dialog id="visRelatoriosProjetoDlg"
 			widgetVar="visRelatoriosProjetoDialog" header="Dados do Projeto"
-			width="800" height="400" modal="true" closable="false">
+			width="800" height="400" modal="true" resizable="false">
 
 			<h:form id="visProjeto_form">
 
@@ -223,13 +224,32 @@
 						value="#{projetoMB.projeto.modalidade}" />
 
 					<p:outputLabel id="campusLb" value="Campus:" for="campus" />
+
 					<p:outputLabel id="campus" value="#{projetoMB.projeto.campus}" />
+					
+					<p:outputLabel id="enviarRelatorioLb" value="Enviar Relatório:"/>
+
+					<p:fileUpload id="relatorioUpload"
+						styleClass="fileupload-boleidous"
+						fileUploadListener="#{projetoMB.handleFileUpload}"
+						label="selecionar" auto="true"
+						 multiple="false" update=":visProjeto_form:arquivosList"
+						mode="advanced" cache="false" />
+				
 
 				</p:panelGrid>
+				<p:contextMenu for="arquivosList">
+				
+					<p:menuitem value="Remover" update=":visProjeto_form:arquivosList"
+						icon="remover16" actionListener="#{projetoMB.apagarArquivo()}" />
+				
+				</p:contextMenu>
+			
 
-				<p:dataTable id="arquivosList" var="relatorio"
+				<p:dataTable id="arquivosList" var="relatorio" selection="#{projetoMB.relatorio}"
+				selectionMode="single" rowKey="#{relatorio.id}"
 					value="#{projetoMB.relatorios}" paginator="true" rows="5"
-					emptyMessage="Nenhum registro encontrado!" first="0">
+					emptyMessage="Nenhum relatório encontrado!" first="0">
 
 					<p:column headerText="Arquivo">
 

@@ -120,11 +120,11 @@ public class CadastroUsuarioValidator {
 			isValid = false;
 		}
 
-		if (!validarCpf(secretario.getCpf())) {
+		if (!validarCpf1(secretario.getCpf())) {
 			isValid = false;
 		}
 
-		if (!validarRg(secretario.getRg())) {
+		if (!validarRg1(secretario.getRg())) {
 			isValid = false;
 		}
 
@@ -138,21 +138,21 @@ public class CadastroUsuarioValidator {
 			isValid = false;
 		}
 
-		if (!validarCpf(estudante.getCpf())) {
+		if (!validarCpf2(estudante.getCpf())) {
 			isValid = false;
 		}
 
 		if (!validarMatricula(estudante)) {
 			isValid = false;
 		}
-		if (!validarRg(estudante.getRg())) {
+		if (!validarRg2(estudante.getRg())) {
 			isValid = false;
 		}
 
 		return isValid;
 	}
 
-	private boolean validarRg(String rg) {
+	private boolean validarRg1(String rg) {
 		String regex = "\\d+";
 		if (!rg.matches(regex)) {
 
@@ -163,9 +163,28 @@ public class CadastroUsuarioValidator {
 
 			context.addMessage("Atenção", message);
 			context.validationFailed();
-
 			UIInput input = (UIInput) context.getViewRoot().findComponent(
 					":dados_form:rg");
+			input.setValid(false);
+
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validarRg2(String rg) {
+		String regex = "\\d+";
+		if (!rg.matches(regex)) {
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
+					"Digite apenas os números do RG!");
+
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+			UIInput input = (UIInput) context.getViewRoot().findComponent(
+					"tabGrande:dados_form:rg");
 			input.setValid(false);
 
 			return false;
@@ -177,11 +196,26 @@ public class CadastroUsuarioValidator {
 		boolean isSiapeValido = true;
 		if (!isNovoSiape(siape))
 			isSiapeValido = false;
-		if (siape.length() != 6) {
+		if (siape.length() != 7) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Erro!",
-					"Siape com tamanho indevido, use 7 caracteres!");
+					"Siape com tamanho indevido, use 7 números!");
+
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+
+			UIInput input = (UIInput) context.getViewRoot().findComponent(
+					":dados_form:siape");
+			input.setValid(false);
+			isSiapeValido = false;
+		}
+		String regex = "\\d+";
+		if (!siape.matches(regex)) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
+					"Siape deve conter apenas números!");
 
 			context.addMessage("Atenção", message);
 			context.validationFailed();
@@ -287,7 +321,7 @@ public class CadastroUsuarioValidator {
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent(
-					":dados_form:matricula");
+					"tabGrande:dados_form:matricula");
 			input.setValid(false);
 
 			return false;
@@ -297,7 +331,7 @@ public class CadastroUsuarioValidator {
 
 	}
 
-	public boolean validarCpf(String CPFOrig) {
+	public boolean validarCpf1(String CPFOrig) {
 		String cpf = onlyNumbers(CPFOrig);
 		if (!isCpf(onlyNumbers(cpf))) {
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -308,7 +342,25 @@ public class CadastroUsuarioValidator {
 			context.validationFailed();
 			return false;
 		}
-		if (!isNovoCpf(CPFOrig)) {
+		if (!isNovoCpf1(CPFOrig)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean validarCpf2(String CPFOrig) {
+		String cpf = onlyNumbers(CPFOrig);
+		if (!isCpf(onlyNumbers(cpf))) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
+					"Digite um CPF válido!");
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+			return false;
+		}
+		if (!isNovoCpf2(CPFOrig)) {
 			return false;
 		}
 
@@ -323,7 +375,7 @@ public class CadastroUsuarioValidator {
 		}
 	}
 
-	private boolean isNovoCpf(String cpf) {
+	private boolean isNovoCpf1(String cpf) {
 		try {
 			if (pessoa.getId() == null) {
 				estudanteDao.pesquisarPorCpf(cpf);
@@ -341,6 +393,57 @@ public class CadastroUsuarioValidator {
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent(
 					":dados_form:cpf");
+			input.setValid(false);
+
+			return false;
+		} catch (NoResultException e) {
+			try {
+
+				if (pessoa.getId() == null) {
+					secretarioDao.pesquisarPorCpf(cpf);
+				} else {
+					secretarioDao.pesquisarPorCpf(cpf, pessoa.getId());
+				}
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				FacesMessage message = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "Erro!",
+						"CPF já cadastrado!");
+
+				context.addMessage("Atenção", message);
+				context.validationFailed();
+
+				UIInput input = (UIInput) context.getViewRoot().findComponent(
+						":dados_form:cpf");
+				input.setValid(false);
+
+				return false;
+			} catch (Exception ex) {
+				return true;
+			}
+
+		}
+
+	}
+
+	private boolean isNovoCpf2(String cpf) {
+		try {
+			if (pessoa.getId() == null) {
+				estudanteDao.pesquisarPorCpf(cpf);
+
+			} else {
+				estudanteDao.pesquisarPorCpf(cpf, pessoa.getId());
+			}
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!", "CPF já cadastrado!");
+
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+
+			UIInput input = (UIInput) context.getViewRoot().findComponent(
+					"tabGrande:dados_form:cpf");
 			input.setValid(false);
 
 			return false;
@@ -454,6 +557,31 @@ public class CadastroUsuarioValidator {
 		}
 		try {
 			pessoaDao.findByLogin(pessoa.getLogin());
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
+					"E-mail já existe, cadastre outro!");
+			FacesContext.getCurrentInstance().addMessage("Atenção", message);
+			FacesContext.getCurrentInstance().validationFailed();
+
+			return false;
+		} catch (NoResultException nre) {
+			return true;
+		}
+
+	}
+
+	public boolean validarEmail(String email) {
+		if (!isEmailValid(email)) {
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
+					"Digite um e-mail válido!");
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+			return false;
+		}
+		try {
+			pessoaDao.findByLogin(email);
 			FacesMessage message = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, cadastre outro!");

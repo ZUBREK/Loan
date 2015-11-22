@@ -86,7 +86,7 @@ public class SecretarioMB {
 	private void gerarSenha() {
 		UUID uuid = UUID.randomUUID();
 		String myRandom = uuid.toString();
-		secretario.setSenha(myRandom.substring(0, 6));
+		secretario.setSenha(myRandom.substring(0, 7));
 	}
 
 	private void enviarEmail() {

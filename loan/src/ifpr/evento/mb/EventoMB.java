@@ -19,6 +19,7 @@ import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.estudante.dao.EstudanteDao;
 import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
+import ifpr.utils.Paths;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -113,7 +114,6 @@ public class EventoMB {
 
 	private boolean isTecEsp;
 
-	private final String CAMINHO_ARQUIVO_EVENTO = "C:/home/loan_docs/evento";
 
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
@@ -265,7 +265,7 @@ public class EventoMB {
 			String nomeArquivoStreamed = tecAdm.getCampus().toString() + "-"
 					+ event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = CAMINHO_ARQUIVO_EVENTO
+			String caminho = Paths.PASTA_ARQUIVO_EVENTO
 					+ "/"
 					+ pessoaLogada.getId()
 					+ nomeArquivoStreamed.substring(
@@ -301,7 +301,7 @@ public class EventoMB {
 
 	private void criarArquivoDisco(byte[] bytes, String arquivoPath)
 			throws IOException {
-		File file = new File(CAMINHO_ARQUIVO_EVENTO);
+		File file = new File(Paths.PASTA_ARQUIVO_EVENTO);
 		file.mkdirs();
 		FileOutputStream fos;
 		fos = new FileOutputStream(arquivoPath);

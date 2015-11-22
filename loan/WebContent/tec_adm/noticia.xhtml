@@ -32,7 +32,7 @@
 
 				<p:dataTable id="noticiaTable"
 					value="#{noticiaMB.noticiaLazyDataModel}" var="notic"
-					emptyMessage="Nenhum registro encontrado!" rows="15"
+					emptyMessage="Nenhum registro encontrado!" rows="10"
 					selectionMode="single" rowKey="#{notic.id}" paginator="true"
 					lazy="true" selection="#{noticiaMB.noticia}"
 					filteredValue="#{noticiaMB.noticiaFiltered}">
@@ -62,7 +62,7 @@
 		</p:panel>
 
 		<p:dialog id="noticiaDlg" widgetVar="noticiaDialog"
-			header="Dados da Notícia" width="600" height="400" modal="true"
+			header="Dados da Notícia" width="700" height="600" modal="true"
 			closable="false" resizable="false">
 
 			<h:form id="noticia_form">
@@ -76,14 +76,20 @@
 
 					<p:spacer height="2px" />
 					<p:spacer height="2px" />
+				
+					<p:outputLabel id="enviarImagemNoticiaLb" title="Enviar Imagem para notícia"
+						value="Enviar Imagem para notícia:" />
 
+					<p:fileUpload id="imagemNoticiaUpload" styleClass="fileupload-boleidous"
+						fileUploadListener="#{noticiaMB.handleFileUpload}"
+						label="selecionar" auto="true" multiple="false"
+						mode="advanced" cache="false" />
+				
 					<h:outputLabel id="textoLb" value="Texto da notícia:" for="texto" />
-
-
 
 					<h:form>
 						<p:editor id="texto" widgetVar="editorWidget"
-							value="#{noticiaMB.noticia.texto}" width="300" />
+							value="#{noticiaMB.noticia.texto}" width="600" height="400" />
 						<p:commandButton value="Limpar" type="button"
 							onclick="PF('editorWidget').clear();" icon="ui-icon-close" />
 					</h:form>

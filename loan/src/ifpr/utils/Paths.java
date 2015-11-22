@@ -11,7 +11,7 @@ public abstract class Paths {
 	public static final String COORDENADORES = "/tec_adm/coordenadorPea.ifpr";
 	public static final String SECRETARIOS = "/tec_adm/secretario.ifpr";
 	public static final String CAMPUS = "/adm/campus.ifpr";
-	public static final String NOTICIAS = "/adm/noticia.ifpr";
+	public static final String NOTICIAS = "/tec_adm/noticia.ifpr";
 	public static final String MODALIDADES = "/adm/modalidade.ifpr";
 	public static final String TIMES = "/tec_adm/time.ifpr";
 	public static final String ESTUDANTES = "/tec_adm/estudante.ifpr";
@@ -51,7 +51,7 @@ public abstract class Paths {
 	public static final String CAMINHO_FOTO_PERFIL =  LOAN_DOCS + "/foto";
 	public static final String FOTO_DEFAULT = CAMINHO_FOTO_PERFIL + "/default.png";
 	
-	
-	public static final String PASTA_ASSISTENCIA = LOAN_DOCS + "/assinaturas";
+	public static final String PASTA_IMAGEM_NOTICIA =  LOAN_DOCS + "/noticia";
 
+	public static final String PASTA_ASSISTENCIA = LOAN_DOCS + "/assinaturas";
 }

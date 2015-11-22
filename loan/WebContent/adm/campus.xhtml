@@ -15,7 +15,7 @@
 		</h:form>
 		<h:form id="table_form">
 			<p:dataTable id="campusTable" value="#{campusMB.campusLazyDataModel}"
-				var="camp" emptyMessage="Nenhum registro encontrado!" rows="15"
+				var="camp" emptyMessage="Nenhum registro encontrado!" rows="10"
 				rowKey="#{camp.id}" paginator="true" lazy="true">
 
 				<f:facet name="header">

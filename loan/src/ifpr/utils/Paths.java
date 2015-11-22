@@ -20,6 +20,7 @@ public abstract class Paths {
 	public static final String HORARIOASSISTENCIA = "/tec_adm/tec_coord/coord/horarioAssistencia.ifpr";
 	public static final String CHAVES = "/sec/chave.ifpr";
 	public static final String LOCAIS = "/adm/local.ifpr";
+	public static final String EVENTOS = "/tec_esp/evento.ifpr";
 	
 	public static final String INDEX = "/index.ifpr";
 	public static final String HOME = "/user/home.ifpr";

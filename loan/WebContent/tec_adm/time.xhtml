@@ -18,7 +18,7 @@
 			<h:form id="tableForm">
 
 				<p:dataTable id="timeTable" value="#{timeMB.timeLazyDataModel}"
-					var="time" emptyMessage="Nenhum registro encontrado!" rows="15"
+					var="time" emptyMessage="Nenhum registro encontrado!" rows="10"
 					rowKey="#{time.id}" paginator="true" lazy="true"
 					filteredValue="#{timeMB.timeFiltered}">
 

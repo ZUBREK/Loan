@@ -68,10 +68,10 @@ public class EstudanteMB {
 	private Campus campus;
 
 	private Pessoa pessoaLogada;
-	
+
 	private Arquivo fotoPerfil;
-	
-	@ManagedProperty(value="#{arquivoDao}")
+
+	@ManagedProperty(value = "#{arquivoDao}")
 	private ArquivoDao arquivoDao;
 
 	public EstudanteMB() {
@@ -107,13 +107,12 @@ public class EstudanteMB {
 			} else if (validarLoginExistente()) {
 				estudante.setCampus(campus);
 				gerarSenha();
+				enviarEmail();
 				estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
 				String md5 = criptografia.criptografar(estudante.getSenha());
 				estudante.setSenha(md5);
-				estudante.setBolsista(false);
 				estudanteDao.salvar(estudante);
-				homeMB.criarArqFotoPerfil(estudante);
-				enviarEmail();
+
 			}
 		}
 
@@ -132,10 +131,10 @@ public class EstudanteMB {
 							nomeArquivoStreamed.lastIndexOf('.'),
 							nomeArquivoStreamed.length());
 			criarArquivoDisco(arquivoByte, caminho);
-			
+
 			fotoPerfil.setUploader(estudante);
 			fotoPerfil.setCaminho(caminho);
-			fotoPerfil.setNome("foto_perfil"+estudante.getId());
+			fotoPerfil.setNome("foto_perfil" + estudante.getId());
 			fotoPerfil.setDataUpload(new Date());
 			fotoPerfil.setFotoPerfil(true);
 			if (fotoPerfil.getId() != null) {
@@ -306,7 +305,5 @@ public class EstudanteMB {
 	public void setArquivoDao(ArquivoDao arquivoDao) {
 		this.arquivoDao = arquivoDao;
 	}
-	
-	
 
 }

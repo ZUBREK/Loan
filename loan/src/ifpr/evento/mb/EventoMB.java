@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -114,7 +115,6 @@ public class EventoMB {
 
 	private boolean isTecEsp;
 
-
 	public EventoMB() {
 		eventoFiltered = new ArrayList<Evento>();
 		isAdm = false;
@@ -132,6 +132,10 @@ public class EventoMB {
 		isUpdate = false;
 		evento.setEventoPessoas(new ArrayList<EventoPessoa>());
 
+	}
+
+	public void mudouPresenca() {
+		eventoPessoaDao.update(eventoPessoa);
 	}
 
 	@PostConstruct
@@ -175,7 +179,19 @@ public class EventoMB {
 	}
 
 	public void salvarTreino() {
+		if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Datas inválidas!",
+					"A data final deve ser posterior a inicial!");
+
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+
+			return;
+
+		}
 		if (evento.getId() != null) {
 			eventoDao.update(evento);
 		} else {
@@ -205,6 +221,20 @@ public class EventoMB {
 
 	public void salvarEventoRef() {
 
+		if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Datas inválidas!",
+					"A data final deve ser posterior a inicial!");
+
+			context.addMessage("Atenção", message);
+			context.validationFailed();
+
+			return;
+
+		}
+
 		if (evento.getId() != null) {
 			eventoDao.update(evento);
 		} else {
@@ -216,6 +246,20 @@ public class EventoMB {
 
 	public void salvarEvtArquivo() {
 		if (evento.getId() != null) {
+
+			if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				FacesMessage message = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "Datas inválidas!",
+						"A data final deve ser posterior a inicial!");
+
+				context.addMessage("Atenção", message);
+				context.validationFailed();
+
+				return;
+
+			}
 			eventoDao.update(evento);
 		} else {
 			evento.setTipo(TipoEvento.MAPAMODALIDADE);
@@ -324,19 +368,18 @@ public class EventoMB {
 
 	public void abrirDialog() {
 		if (evento != null) {
-			if (evento.getTipo().equals(TipoEvento.MAPAMODALIDADE)){
+			if (evento.getTipo().equals(TipoEvento.MAPAMODALIDADE)) {
 				popularArquivos();
 				RequestContext.getCurrentInstance().execute(
 						"PF('visEventoMapaDialog').show()");
-			}
-			else
+			} else
 				RequestContext.getCurrentInstance().execute(
 						"PF('visEventoDialog').show()");
 		}
 	}
-	
-	public void abrirEditDialog(){
-		
+
+	public void abrirEditDialog() {
+
 		RequestContext.getCurrentInstance().execute(
 				"PF('eventoAdmDialog').show()");
 	}

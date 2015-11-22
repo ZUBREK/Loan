@@ -150,7 +150,6 @@ public class ProjetoMB {
 
 	public void adicionarEstudante() {
 		ProjetoEstudante projetoEstd = new ProjetoEstudante();
-		estudante.setBolsista(true);
 		projetoEstd.setEstudante(estudante);
 		projetoEstd.setProjeto(projeto);
 		projetoEstudanteDao.salvar(projetoEstd);

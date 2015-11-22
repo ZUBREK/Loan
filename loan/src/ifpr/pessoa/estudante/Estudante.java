@@ -21,7 +21,6 @@ import ifpr.projeto.projetoEstudante.ProjetoEstudante;
 @Table(name = "tbEstudante")
 public class Estudante extends Pessoa {
 
-	private boolean isBolsista;
 
 	@Column(name = "matricula_estudante", length = 20)
 	private String matricula;
@@ -47,14 +46,6 @@ public class Estudante extends Pessoa {
 	@JoinColumn(name = "id_estudante", referencedColumnName = "id_pessoa")
 	@OneToMany()
 	private List<TimeEstudante> timeEstudante;
-
-	public boolean isBolsista() {
-		return isBolsista;
-	}
-
-	public void setBolsista(boolean isBolsista) {
-		this.isBolsista = isBolsista;
-	}
 
 	public String getMatricula() {
 		return matricula;

@@ -207,6 +207,7 @@
 
 								<p:commandButton id="continuarBt" value="Continuar"
 									icon="salvar16" update=":msg"
+									onclick="PrimeFaces.monitorDownload(start, stop)"
 									actionListener="#{estudanteMB.salvar}"
 									oncomplete="if(!args.validationFailed) PF('grandeTab').select(1);" />
 
@@ -261,15 +262,6 @@
 								actionListener="#{estudanteMB.salvar}"
 								onclick="PrimeFaces.monitorDownload(start, stop)"
 								oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />
-
-							<p:commandButton id="cancelarBt" value="Cancelar"
-								style="padding-left:1px;" icon="cancelar16"
-								oncomplete="PF('estudanteDialog').hide()" update=":msg"
-								immediate="true" actionListener="#{estudanteMB.cancelar()}">
-
-								<p:resetInput target="tabGrande:dados_form" />
-
-							</p:commandButton>
 
 						</h:panelGrid>
 					</h:form>

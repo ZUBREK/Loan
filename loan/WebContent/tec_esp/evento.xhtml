@@ -407,7 +407,7 @@
 
 					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
 						for="dataFim" />
-						
+
 					<p:outputLabel id="dataFim"
 						value="#{eventoMB.evento.dataHoraFinal}">
 
@@ -420,7 +420,8 @@
 				</p:panelGrid>
 
 				<p:dataTable id="estudantesList" var="eventoPessoa"
-					value="#{eventoMB.evento.eventoPessoas}"
+					value="#{eventoMB.evento.eventoPessoas}" paginator="true" rows="5"
+					rowKey="#{eventoPessoa.id}"
 					emptyMessage="Nenhum registro encontrado!" first="0">
 
 					<p:column headerText="Nome">
@@ -431,8 +432,21 @@
 
 					<p:column headerText="Presente">
 
-						<h:outputText
+						<p:outputLabel
 							value="#{eventoPessoa.wasPresente  ? 'Compareceu' : 'Presença não registrada'}" />
+
+					</p:column>
+
+
+					<p:column headerText="Marcar Presença">
+
+						<p:commandButton value="Marcar presença"
+							actionListener="#{eventoMB.mudouPresenca}"
+							disabled="#{eventoPessoa.wasPresente}" update="evento_form:estudantesList">
+							
+							<f:setPropertyActionListener value="#{eventoPessoa}" target="#{eventoMB.eventoPessoa}" />
+							
+							</p:commandButton>
 
 					</p:column>
 
@@ -496,7 +510,7 @@
 							onclick="PrimeFaces.monitorDownload(start, stop)">
 							<f:setPropertyActionListener value="#{arquivo}"
 								target="#{eventoMB.arquivoEvento}" />
-						<p:fileDownload value="#{eventoMB.arqStreamed}" />
+							<p:fileDownload value="#{eventoMB.arqStreamed}" />
 						</p:commandLink>
 
 						<script type="text/javascript">

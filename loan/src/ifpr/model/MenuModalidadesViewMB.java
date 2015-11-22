@@ -41,7 +41,7 @@ public class MenuModalidadesViewMB {
             item.setUrl("#");
             submenu.addElement(item);
         }
-        DefaultMenuItem item = new DefaultMenuItem("Regulamento dos Jogos 2014!");
+        DefaultMenuItem item = new DefaultMenuItem("Regulamento dos Jogos 2014");
         item.setUrl(" http://reitoria.ifpr.edu.br/wp-content/uploads/2014/10/REGULAMENTO_JIFPR_2014.pdf");
         submenu.addElement(item);
        

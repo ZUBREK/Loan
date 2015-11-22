@@ -49,7 +49,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":tecEsp_form"
+							style="margin-left: 3px;" update=":dados_form"
 							oncomplete="PF('tecEspDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{tecEsp}"
 								target="#{tecEspMB.tecnicoEsp}" />
@@ -76,7 +76,7 @@
 			header="Dados do Técnico Esportivo" width="600" height="300"
 			modal="true" closable="false">
 
-			<h:form id="tecEsp_form">
+			<h:form id="dados_form">
 				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
@@ -85,8 +85,8 @@
 						maxlength="60" size="60" required="true"
 						requiredMessage="Nome é obrigatório!" />
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
 					<h:outputLabel id="emailLb" value="E-mail:" for="email" />
 
@@ -100,17 +100,17 @@
 
 					</p:inputText>
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
-					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
+					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="siape" />
 
-					<p:inputText id="codSiape" value="#{tecEspMB.tecnicoEsp.siape}"
-						size="60" maxlength="20" required="true"
+					<p:inputText id="siape" value="#{tecEspMB.tecnicoEsp.siape}"
+						size="60" maxlength="7" required="true"
 						requiredMessage="Siape é obrigatório!" />
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
+					<p:spacer height="2px" />
+					<p:spacer height="2px" />
 
 					<p:outputLabel id="campusLb" value="Câmpus:" />
 
@@ -125,17 +125,18 @@
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 					</p:selectOneMenu>
 
-					<p:spacer height="15px" />
-					<p:spacer height="15px" />
+					<p:spacer height="10px" />
+					<p:spacer height="10px" />
 
 					<f:facet name="footer">
-						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
-							draggable="false" closable="false" resizable="false">
+						<p:dialog modal="true" widgetVar="statusDialog"
+							header="Carregando" draggable="false" closable="false"
+							resizable="false">
 							<p:graphicImage value="/img/64/ajax_loader.gif" />
 						</p:dialog>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :tecEsp_form :msg"
+							update=":tableForm :dados_form :msg"
 							actionListener="#{tecEspMB.salvar}"
 							onclick="PrimeFaces.monitorDownload(start, stop)"
 							oncomplete="if(!args.validationFailed) PF('tecEspDialog').hide()">
@@ -156,7 +157,7 @@
 							icon="cancelar16" oncomplete="PF('tecEspDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{tecEspMB.cancelar()}">
-							<p:resetInput target=":tecEsp_form" />
+							<p:resetInput target=":dados_form" />
 						</p:commandButton>
 
 					</f:facet>

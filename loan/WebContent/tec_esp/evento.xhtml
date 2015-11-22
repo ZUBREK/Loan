@@ -398,12 +398,23 @@
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
 					<p:outputLabel id="dataInicio"
-						value="#{eventoMB.evento.dataHoraInicio}" />
+						value="#{eventoMB.evento.dataHoraInicio}">
+
+						<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+							pattern="dd/MM/yyyy - HH:mm" />
+
+					</p:outputLabel>
 
 					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
 						for="dataFim" />
+						
 					<p:outputLabel id="dataFim"
-						value="#{eventoMB.evento.dataHoraFinal}" />
+						value="#{eventoMB.evento.dataHoraFinal}">
+
+						<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+							pattern="dd/MM/yyyy - HH:mm" />
+
+					</p:outputLabel>
 
 
 				</p:panelGrid>
@@ -463,7 +474,7 @@
 				</p:panelGrid>
 
 				<p:dataTable id="pessoaList" var="arquivo"
-					value="#{eventoMB.arquivos}"
+					value="#{eventoMB.arquivos}" paginator="true" rows="5"
 					emptyMessage="Nenhum registro encontrado!" first="0">
 
 					<p:column headerText="Nome">
@@ -476,7 +487,7 @@
 
 						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
 							draggable="false" closable="false" resizable="false">
-							
+
 							<p:graphicImage value="/img/64/ajax_loader.gif" />
 
 						</p:dialog>
@@ -484,7 +495,7 @@
 						<p:commandLink id="arquivo" value="#{arquivo.nome}" ajax="false"
 							onclick="PrimeFaces.monitorDownload(start, stop)">
 							<f:setPropertyActionListener value="#{arquivo}"
-								target="#{eventoMB.arquivoEvento}" />>
+								target="#{eventoMB.arquivoEvento}" />
 						<p:fileDownload value="#{eventoMB.arqStreamed}" />
 						</p:commandLink>
 
@@ -544,8 +555,8 @@
 					<p:outputLabel id="dataFim"
 						value="#{eventoMB.evento.dataHoraFinal}" />
 
-					<p:outputLabel id="enviarMapaLb"
-						title="Enviar Mapa de Modalidades:" />
+					<p:outputLabel id="enviarMapaLb" title="Enviar Mapa de Modalidades"
+						value="Enviar Mapa de Modalidades:" />
 
 					<p:fileUpload id="mapaModUpload" styleClass="fileupload-boleidous"
 						fileUploadListener="#{eventoMB.handleFileUpload}"

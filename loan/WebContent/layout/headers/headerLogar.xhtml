@@ -3,35 +3,65 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
 
 	<h:form id="formLogo">
 		<h:commandLink action="index">
 			<h:graphicImage value="/img/logo.png" />
 		</h:commandLink>
 	</h:form>
-	<form action="j_spring_security_check" method="post">
-		<table id="loginTable">
 
-			<tr>
-				<td><h:outputText value="Email:" styleClass="label" /></td>
-				<td><h:outputText value="Senha:" styleClass="label" /></td>
-			</tr>
-			<tr>
-				<td><input type="text" name="j_username" autofocus='true'
-					style="width: 100px" /></td>
-				<td><input type="password" name="j_password"
-					style="width: 100px" /></td>
-			</tr>
-			<tr>
-				<td><input
-					class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-					type="submit" value="Efetuar Login" /></td>
-				<td class="label"><a href="#">Esqueceu sua senha?</a></td>
-			</tr>
 
-		</table>
-	</form>
+	<div>
+		<form action="j_spring_security_check" method="post">
+			<table id="loginTable">
 
+				<tr>
+					<td><h:outputText value="Email:" styleClass="label" /></td>
+					<td><h:outputText value="Senha:" styleClass="label" /></td>
+				</tr>
+				<tr>
+					<td><input type="text" name="j_username" autofocus='true'
+						style="width: 100px" /></td>
+					<td><input type="password" name="j_password"
+						style="width: 100px" /></td>
+				</tr>
+				<tr>
+					<td><input
+						class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+						type="submit" value="Efetuar Login" /></td>
+				</tr>
+
+			</table>
+		</form>
+
+
+		<p:commandLink value="Esqueceu sua senha?" update="senha_form"
+			oncomplete="PF('esqueceuSenhaDialog').show()"/>
+
+		<p:dialog widgetVar="esqueceuSenhaDialog" closable="false"
+			resizable=" false" height="50" width="350">
+			<h:form id="senha_form">
+				<p:outputPanel>
+
+					<p:outputLabel value="Digite seu e-mail:" />
+					<p:inputText placeholder="e-mail" value="#{indexMB.email}" />
+
+				</p:outputPanel>
+
+				<p:spacer height="2" width="10" />
+				<p:commandButton value="Enviar"
+					actionListener="#{indexMB.mudarSenha()}"
+					onclick="PF('esqueceuSenhaDialog').hide()">
+
+
+				</p:commandButton>
+
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('esqueceuSenhaDialog').hide()" />
+
+			</h:form>
+		</p:dialog>
+
+	</div>
 </ui:composition>

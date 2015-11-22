@@ -43,17 +43,15 @@ public class SecretarioMB {
 
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
-	
+
 	@ManagedProperty(value = "#{crachasPdf}")
 	public CrachasPdf crachasPdf;
-	
 
-	private CadastroUsuarioValidator emailHelper;
+	@ManagedProperty(value = "#{cadastroValidator}")
+	private CadastroUsuarioValidator cadastroValidator;
 
 	public SecretarioMB() {
-
 		secretarioFiltered = new ArrayList<Secretario>();
-		emailHelper = new CadastroUsuarioValidator();
 	}
 
 	public void criar() {
@@ -69,37 +67,41 @@ public class SecretarioMB {
 	}
 
 	public void salvar() {
-		if (secretario.getId() != null) {
-			secretarioDao.update(secretario);
-		} else if (validarLoginExistente()) {
-			gerarSenha();
-			secretario.setTipo(TipoPessoa.ROLE_SECRETARIO);
-			String md5 = criptografia.criptografar(secretario.getSenha());
-			secretario.setSenha(md5);
-			secretarioDao.salvar(secretario);
-			homeMB.criarArqFotoPerfil(secretario);
-			enviarEmail();
+
+		if (cadastroValidator.validarDadosSec(secretario)) {
+			if (secretario.getId() != null) {
+				secretarioDao.update(secretario);
+			} else if (validarLoginExistente()) {
+				gerarSenha();
+				secretario.setTipo(TipoPessoa.ROLE_SECRETARIO);
+				String md5 = criptografia.criptografar(secretario.getSenha());
+				secretario.setSenha(md5);
+				secretarioDao.salvar(secretario);
+				homeMB.criarArqFotoPerfil(secretario);
+				enviarEmail();
+			}
 		}
 	}
 
 	private void gerarSenha() {
 		UUID uuid = UUID.randomUUID();
 		String myRandom = uuid.toString();
-		secretario.setSenha(myRandom.substring(0, 6));
+		secretario.setSenha(myRandom.substring(0, 7));
 	}
 
 	private void enviarEmail() {
-		emailHelper.setPessoa(secretario);
-		emailHelper.run();
+		cadastroValidator.setPessoa(secretario);
+		cadastroValidator.enviarEmail();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!emailHelper.validarEmail(secretario)) {
+		if (!cadastroValidator.validarEmail(secretario)) {
 			return false;
 		}
 		try {
 			pessoaDao.findByLogin(secretario.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -110,7 +112,7 @@ public class SecretarioMB {
 		}
 
 	}
-	
+
 	public void gerarCrachas() {
 		crachasPdf.gerarPdfSecretario(secretarioDao.listDesc());
 	}
@@ -151,7 +153,8 @@ public class SecretarioMB {
 		return secretarioLazyDataModel;
 	}
 
-	public void setSecretarioLazyDataModel(SecretarioLazyDataModel secretarioLazyDataModel) {
+	public void setSecretarioLazyDataModel(
+			SecretarioLazyDataModel secretarioLazyDataModel) {
 		this.secretarioLazyDataModel = secretarioLazyDataModel;
 	}
 
@@ -179,14 +182,12 @@ public class SecretarioMB {
 		this.crachasPdf = crachasPdf;
 	}
 
-	public CadastroUsuarioValidator getEmailHelper() {
-		return emailHelper;
+	public CadastroUsuarioValidator getCadastroValidator() {
+		return cadastroValidator;
 	}
 
-	public void setEmailHelper(CadastroUsuarioValidator emailHelper) {
-		this.emailHelper = emailHelper;
+	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
+		this.cadastroValidator = cadastroValidator;
 	}
-	
-	
-	
+
 }

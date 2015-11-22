@@ -101,7 +101,7 @@ public class HorarioAssistenciaMB {
 			arquivo.setCaminho(caminho);
 			salvarArquivo();
 		} catch (Exception ex) {
-			System.out.println("Erro no upload de arquivo" + ex);
+			System.out.println("Erro no upload de arquivo");
 		}
 
 	}

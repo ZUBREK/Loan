@@ -22,11 +22,18 @@ public class CoordenadorConverter implements Converter {
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component,
 			String value) throws ConverterException {
-		if (value != null && !value.isEmpty() && !value.equalsIgnoreCase("Selecione um")) {
-			CoordenadorPea pessoa = coordenadorDao.findByNomeRole(value,
-					TipoPessoa.ROLE_COORDENADOR.toString()).get(0);
-			
-			return  pessoa;
+		CoordenadorPea pessoa;
+		if (value != null && !value.isEmpty()
+				&& !value.equalsIgnoreCase("Selecione um")) {
+			try {
+				 pessoa = coordenadorDao.findByNomeRole(value,
+						TipoPessoa.ROLE_COORDENADOR.toString()).get(0);
+			} catch (Exception e) {
+				pessoa = coordenadorDao.findByNomeRole(value,
+						TipoPessoa.ROLE_TEC_COORD.toString()).get(0);
+			}
+
+			return pessoa;
 		}
 		return null;
 	}
@@ -46,5 +53,5 @@ public class CoordenadorConverter implements Converter {
 	public void setCoordenadorDao(CoordenadorDao coordenadorDao) {
 		this.coordenadorDao = coordenadorDao;
 	}
-	
+
 }

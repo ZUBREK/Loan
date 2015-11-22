@@ -26,6 +26,7 @@ public class LoginControllerMB {
 				.getAuthentication().getPrincipal();
 		pessoaLogada = pessoaDao.findByLogin(user.getUsername());
 		
+		
 		return pessoaLogada;
 	}
 

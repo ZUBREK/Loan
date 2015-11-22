@@ -9,6 +9,7 @@ import java.util.List;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 @ManagedBean(name="pessoaDao")
@@ -34,7 +35,7 @@ public class PessoaDaoImpl  extends GenericDao<Pessoa> implements PessoaDao {
 		return q.getResultList();
 	}
 	
-	public Pessoa findByLogin(String login) 
+	public Pessoa findByLogin(String login)  throws NoResultException
 	{
 		EntityManager em = emf.createEntityManager();
 		Query q = em.createQuery("select u from Pessoa u where lower(u.login) = :login ");

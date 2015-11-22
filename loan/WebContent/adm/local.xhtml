@@ -15,9 +15,19 @@
 					oncomplete="PF('lclDialog').show()" update=":lclDlg" />
 			</h:form>
 			<h:form id="table_form">
+
+				<p:contextMenu>
+					<p:menuitem id="editar" value="Editar" icon="editar16"
+						update=":lcl_form" oncomplete="PF('lclDialog').show()" />
+
+					<p:menuitem id="removerTR" value="Remover" icon="remover16"
+						oncomplete="PF('confirmDialog').show()" update=":confirm" />
+				</p:contextMenu>
+
 				<p:dataTable id="localTable" value="#{localMB.localLazyDataModel}"
 					var="lcl" emptyMessage="Nenhum registro encontrado!" rows="15"
-					rowKey="#{lcl.id}" paginator="true" lazy="true">
+					selectionMode="single" rowKey="#{lcl.id}" paginator="true"
+					lazy="true" selection="#{localMB.local}">
 
 					<f:facet name="header">
 						<h:outputText value="Locais cadastradas" />
@@ -38,39 +48,22 @@
 
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
-
-						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":lcl_form"
-							oncomplete="PF('lclDialog').show()" styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{lcl}"
-								target="#{localMB.local}" />
-
-						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
-						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;"
-							oncomplete="PF('confirmDialog').show()" update=":confirm"
-							styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{lcl}"
-								target="#{localMB.local}" />
-						</p:commandButton>
-					</p:column>
-
 				</p:dataTable>
 
 			</h:form>
 		</p:panel>
+
+
 		<p:dialog id="lclDlg" widgetVar="lclDialog" header="Nova Local"
-			width="300" height="200" modal="true" closable="false">
+			width="300" height="200" modal="true" closable="false"
+			resizable="false">
 
 			<h:form id="lcl_form">
 				<h:panelGrid columns="2">
 
 					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{localMB.local.nome}" 
+					<p:inputText id="nome" value="#{localMB.local.nome}"
 						required="true" requiredMessage="Nome é obrigatório!" />
 
 					<h:outputLabel id="bairroLb" value="Bairro:" for="bairro" />
@@ -79,25 +72,26 @@
 						required="true" requiredMessage="Bairro é obrigatório!" />
 
 					<h:outputLabel id="cidadeLb" value="Cidade:" for="cidade" />
-					<p:inputText id="cidade" value="#{localMB.local.cidade}" 
+					<p:inputText id="cidade" value="#{localMB.local.cidade}"
 						required="true" requiredMessage="Cidade é obrigatório!" />
 
-					<h:outputLabel id="logradouroLb" value="Logradouro:" for="logradouro" />
+					<h:outputLabel id="logradouroLb" value="Logradouro:"
+						for="logradouro" />
 
 					<p:inputText id="logradouro" value="#{localMB.local.logradouro}"
 						required="true" requiredMessage="Logradouro é obrigatório!" />
 
 					<h:outputLabel id="cepLb" value="CEP:" for="cep" />
 
-					<p:inputText id="cep" value="#{localMB.local.cep}"
-						required="true" requiredMessage="CEP é obrigatório!" />
+					<p:inputText id="cep" value="#{localMB.local.cep}" required="true"
+						requiredMessage="CEP é obrigatório!" />
 
 					<h:outputLabel id="numeroLb" value="Número:" for="numero" />
 
 					<p:inputText id="numero" value="#{localMB.local.numero}"
-						required="true" requiredMessage="Número é obrigatório!" >
-						</p:inputText>
-					<p:spacer height="10px"/>
+						required="true" requiredMessage="Número é obrigatório!">
+					</p:inputText>
+					<p:spacer height="10px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":table_form :lcl_form :msg"
@@ -118,7 +112,7 @@
 		<p:confirmDialog id="confirm" widgetVar="confirmDialog" global="true"
 			header="Confirma exclusão da Local?" showEffect="fade"
 			hideEffect="explode"
-			message="Deseja realmente excluir a
+			message="Deseja realmente excluir o
 				local: #{localMB.local.nome}">
 
 			<h:form>

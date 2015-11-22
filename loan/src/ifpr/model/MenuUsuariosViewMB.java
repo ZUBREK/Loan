@@ -63,6 +63,12 @@ public class MenuUsuariosViewMB {
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ESTUDANTE)) {
 
 		}
+		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)){
+			
+		}
+		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)){
+			
+		}
 
 	}
 

@@ -46,7 +46,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":coord_form"
+							style="margin-left: 3px;" update=":dados_form"
 							oncomplete="PF('coordDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{coord}"
 								target="#{coordenadorMB.coordenador}" />
@@ -73,7 +73,7 @@
 			header="Dados do Coordenador" width="600" height="200" modal="true"
 			closable="false">
 
-			<h:form id="coord_form">
+			<h:form id="dados_form">
 
 				<h:panelGrid columns="2">
 
@@ -99,11 +99,10 @@
 
 
 
-					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="codSiape" />
+					<h:outputLabel id="codSiapeLb" value="Código Siape:" for="siape" />
 
-					<p:inputText id="codSiape"
-						value="#{coordenadorMB.coordenador.siape}" size="50"
-						maxlength="20" required="true"
+					<p:inputText id="siape" value="#{coordenadorMB.coordenador.siape}"
+						size="50" maxlength="7" required="true"
 						requiredMessage="Siape é obrigatório!" />
 
 
@@ -120,20 +119,24 @@
 							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 
 					</p:selectOneMenu>
-
+					
+					<h:outputText value="É um Técnico e Coordenador? " />
+					
+					<p:selectBooleanCheckbox value="#{coordenadorMB.tecCoord}" />
 
 
 					<f:facet name="footer">
 
-						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
-							draggable="false" closable="false" resizable="false">
+						<p:dialog modal="true" widgetVar="statusDialog"
+							header="Carregando" draggable="false" closable="false"
+							resizable="false">
 
 							<p:graphicImage value="/img/64/ajax_loader.gif" />
 
 						</p:dialog>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-							update=":tableForm :coord_form :msg"
+							update=":tableForm :dados_form :msg"
 							onclick="PrimeFaces.monitorDownload(start, stop)"
 							actionListener="#{coordenadorMB.salvar}"
 							oncomplete="if(!args.validationFailed) PF('coordDialog').hide()" />
@@ -143,7 +146,7 @@
 							update=":msg" immediate="true"
 							actionListener="#{coordenadorMB.cancelar()}">
 
-							<p:resetInput target=":coord_form" />
+							<p:resetInput target=":dados_form" />
 
 						</p:commandButton>
 

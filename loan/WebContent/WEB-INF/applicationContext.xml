@@ -27,13 +27,11 @@
 		<sec:form-login login-page="/index.ifpr"
 			authentication-failure-url="/erroLogin.ifpr" default-target-url="/user/home.ifpr"/>
 		<sec:intercept-url pattern="/adm/**" access="ROLE_ADMIN" />
-		<sec:intercept-url pattern="/tec_adc/**" access="ROLE_TEC_ADM,ROLE_ADMIN" />
-		<sec:intercept-url pattern="/user/**" access="ROLE_ESTUDANTE, ROLE_SECRETARIO, ROLE_COORDENADOR, ROLE_TEC_ESP, ROLE_TEC_ADM, ROLE_ADMIN" />
-		<sec:intercept-url pattern="/coord/**" access="ROLE_COORDENADOR, ROLE_ADMIN" />
-		<sec:intercept-url pattern="/tec_coord/**" access="ROLE_TEC_COORD" />
-		<sec:intercept-url pattern="/tec_coord/coord/**" access="ROLE_COORDENADOR" />
+		<sec:intercept-url pattern="/tec_adm/**" access="ROLE_TEC_ADM,ROLE_ADMIN" />
+		<sec:intercept-url pattern="/user/**" access="ROLE_ESTUDANTE, ROLE_SECRETARIO, ROLE_COORDENADOR, ROLE_TEC_ESP, ROLE_TEC_ADM, ROLE_ADMIN, ROLE_TEC_COORD" />
+		<sec:intercept-url pattern="/coord/**" access="ROLE_COORDENADOR,ROLE_ADMIN,ROLE_TEC_COORD,ROLE_TEC_ADM" />
 		<sec:intercept-url pattern="/sec/**" access="ROLE_SECRETARIO" />
-		<sec:intercept-url pattern="/tec_coord/tec_esp/**" access="ROLE_TEC_ESP" />
+		<sec:intercept-url pattern="/tec_esp/**" access="ROLE_TEC_ESP,ROLE_ADMIN,ROLE_TEC_ADM,ROLE_TEC_COORD" />
 		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<sec:logout invalidate-session="true" />
 	</sec:http>

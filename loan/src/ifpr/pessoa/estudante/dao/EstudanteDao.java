@@ -9,5 +9,16 @@ import java.util.List;
 public interface EstudanteDao extends Dao<Estudante> {
 	public List<Estudante> pesquisarEstudanteNomeCampus(String nome, Campus campus);
 
-	List<Estudante> pesquisarPorNome(String nome);
+	public List<Estudante> pesquisarPorNome(String nome);
+	
+	
+	public Estudante pesquisarPorCpf(String cpf);
+	
+	public Estudante pesquisarPorCpf(String cpf, int id);
+	
+	public Estudante pesquisarPorMatricula(String matricula);
+	
+	public Estudante pesquisarPorMatricula(String matricula, int id);
+
+	
 }

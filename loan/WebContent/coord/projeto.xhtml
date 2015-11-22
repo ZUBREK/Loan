@@ -16,12 +16,27 @@
 			</h:form>
 
 			<h:form id="tableForm">
+				<p:contextMenu for="projetoTable">
+					<p:menuitem value="Relatórios" update=":visRelatoriosProjetoDlg"
+						icon="ui-icon-search"
+						actionListener="#{projetoMB.procurarRelatorios()}"
+						oncomplete="PF('visRelatoriosProjetoDialog').show()" />
+
+					<p:menuitem id="editarTR" value="Editar" icon="editar16"
+						update=":projeto_form" oncomplete="PF('projetoDialog').show()" />
+
+					<p:menuitem id="removerTR" value="Remover" icon="remover16"
+						oncomplete="PF('projetoConfirmDialog').show()" update=":confirm" />
+
+
+				</p:contextMenu>
 
 				<p:dataTable id="projetoTable"
 					value="#{projetoMB.projetoLazyDataModel}" var="projeto"
 					emptyMessage="Nenhum registro encontrado!" rows="15"
 					rowKey="#{projeto.id}" paginator="true" lazy="true"
-					filteredValue="#{projetoMB.projetoFiltered}">
+					filteredValue="#{projetoMB.projetoFiltered}"
+					selection="#{projetoMB.projeto}" selectionMode="single">
 
 					<f:facet name="header">
 						<h:outputText value="Projetos" />
@@ -45,27 +60,6 @@
 						<p:outputLabel value="#{projeto.coordenador.nome}" />
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
-
-						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update=":projeto_form"
-							oncomplete="PF('projetoDialog').show()" styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{time}"
-								target="#{projetoMB.projeto}" />
-
-						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
-						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;"
-							oncomplete="PF('projetoConfirmDialog').show()" update=":confirm"
-							styleClass="apenasIcone">
-							<f:setPropertyActionListener value="#{projeto}"
-								target="#{projetoMB.projeto}" />
-						</p:commandButton>
-					</p:column>
-
-
 				</p:dataTable>
 
 			</h:form>
@@ -80,25 +74,16 @@
 				<p:tabView id="tabView" widgetVar="tabBagaca">
 					<p:tab title="Dados Em Geral">
 
-						<h:panelGrid columns="3">
+						<h:panelGrid columns="2">
 
 							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 							<p:inputText id="nome" value="#{projetoMB.projeto.nome}"
 								size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
-							<p:message for="nome" />
-
-							<h:outputLabel id="descricaoLb" value="Descrição:"
-								for="descricao" />
-
-							<p:inputText id="descricao"
-								value="#{projetoMB.projeto.descricao}" size="50" required="true"
-								requiredMessage="Descrição é obrigatório!" />
-
-							<p:message for="descricao" />
 
 							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+
 							<p:selectOneMenu id="campus" value="#{projetoMB.campus}"
 								filter="true" filterMatchMode="startsWith" required="true"
 								requiredMessage="Câmpus é obrigatório!"
@@ -108,14 +93,16 @@
 
 								<f:selectItems value="#{projetoMB.listaCampus}" var="camp"
 									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
 								<p:ajax update=":projeto_form:tabView:coordenadorPEA" />
 
 							</p:selectOneMenu>
 
-							<p:message for="campus" />
+
 
 							<p:outputLabel id="modalidadeLb" value="Modalidade:"
 								for="modalidade" />
+
 							<p:selectOneMenu id="modalidade" value="#{projetoMB.modalidade}"
 								filter="true" filterMatchMode="startsWith" required="true"
 								requiredMessage="Modalidade é obrigatório!"
@@ -126,11 +113,13 @@
 								<f:selectItems value="#{projetoMB.listaModalidade}"
 									var="modalidad" itemLabel="#{modalidad.nome}"
 									itemValue="#{modalidad}" />
+
 							</p:selectOneMenu>
-							<p:message for="modalidade" />
+
 
 							<p:outputLabel id="coordenadorLb" value="Coordenador:"
 								for="coordenadorPEA" />
+
 							<p:selectOneMenu id="coordenadorPEA"
 								value="#{projetoMB.coordenador}" filter="true"
 								filterMatchMode="startsWith" required="true"
@@ -142,16 +131,27 @@
 								<f:selectItems value="#{projetoMB.listaCoordenador}"
 									var="coordenador" itemLabel="#{coordenador.nome}"
 									itemValue="#{coordenador}" />
+
 							</p:selectOneMenu>
-							<p:message for="coordenadorPEA" />
 
 							<p:commandButton id="continuarBt" value="Continuar"
 								icon="salvar16" update=":tableForm :projeto_form :msg"
 								actionListener="#{projetoMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
+							<p:commandButton id="cancelarBt1" value="Cancelar"
+								icon="cancelar16" oncomplete="PF('projetoDialog').hide()"
+								update=":msg" immediate="true"
+								actionListener="#{projetoMB.cancelar()}">
+
+								<p:resetInput target=":projeto_form" />
+
+							</p:commandButton>
+
 						</h:panelGrid>
+
 					</p:tab>
+
 					<p:tab title="Adicionar Estudantes:">
 						<h:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
 						<p:autoComplete id="estudante"
@@ -181,22 +181,117 @@
 								</p:commandButton>
 							</p:column>
 						</p:dataTable>
+
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :projeto_form :msg"
+							actionListener="#{projetoMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('projetoDialog').hide()" />
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('projetoDialog').hide()"
+							update=":msg" immediate="true"
+							actionListener="#{projetoMB.cancelar()}">
+							<p:resetInput target=":projeto_form" />
+						</p:commandButton>
+
+
 					</p:tab>
 				</p:tabView>
 			</h:form>
-			<f:facet name="footer">
-				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":tableForm :projeto_form :msg"
-					actionListener="#{projetoMB.salvar}"
-					oncomplete="if(!args.validationFailed) PF('projetoDialog').hide()" />
 
-				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
-					oncomplete="PF('projetoDialog').hide()" update=":msg"
-					immediate="true" actionListener="#{projetoMB.cancelar()}">
-					<p:resetInput target=":projeto_form" />
-				</p:commandButton>
+		</p:dialog>
 
-			</f:facet>
+
+		<p:dialog id="visRelatoriosProjetoDlg"
+			widgetVar="visRelatoriosProjetoDialog" header="Dados do Projeto"
+			width="800" height="400" modal="true" resizable="false">
+
+			<h:form id="visProjeto_form">
+
+				<p:panelGrid columns="2">
+
+					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:outputLabel id="nome" value="#{projetoMB.projeto.nome}" />
+
+					<p:outputLabel value="Coordenador:" />
+
+					<p:outputLabel value="#{projetoMB.projeto.coordenador.nome}" />
+
+					<p:outputLabel id="modalidadeLb" value="Modalidade:"
+						for="modalidade" />
+					<p:outputLabel id="modalidade"
+						value="#{projetoMB.projeto.modalidade}" />
+
+					<p:outputLabel id="campusLb" value="Campus:" for="campus" />
+
+					<p:outputLabel id="campus" value="#{projetoMB.projeto.campus}" />
+					
+					<p:outputLabel id="enviarRelatorioLb" value="Enviar Relatório:"/>
+
+					<p:fileUpload id="relatorioUpload"
+						styleClass="fileupload-boleidous"
+						fileUploadListener="#{projetoMB.handleFileUpload}"
+						label="selecionar" auto="true"
+						 multiple="false" update=":visProjeto_form:arquivosList"
+						mode="advanced" cache="false" />
+				
+
+				</p:panelGrid>
+				<p:contextMenu for="arquivosList">
+				
+					<p:menuitem value="Remover" update=":visProjeto_form:arquivosList"
+						icon="remover16" actionListener="#{projetoMB.apagarArquivo()}" />
+				
+				</p:contextMenu>
+			
+
+				<p:dataTable id="arquivosList" var="relatorio" selection="#{projetoMB.relatorio}"
+				selectionMode="single" rowKey="#{relatorio.id}"
+					value="#{projetoMB.relatorios}" paginator="true" rows="5"
+					emptyMessage="Nenhum relatório encontrado!" first="0">
+
+					<p:column headerText="Arquivo">
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+							draggable="false" closable="false" resizable="false">
+
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+						</p:dialog>
+
+						<p:commandLink id="arquivo" value="#{relatorio.nome}" ajax="false"
+							onclick="PrimeFaces.monitorDownload(start, stop)">
+							<f:setPropertyActionListener value="#{relatorio}"
+								target="#{projetoMB.relatorio}" />>
+						<p:fileDownload value="#{eventoMB.arqStreamed}" />
+						</p:commandLink>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
+
+
+					</p:column>
+
+					<p:column headerText="Data de envio">
+
+						<p:outputLabel value="#{relatorio.dataUpload}" />
+
+					</p:column>
+
+				</p:dataTable>
+
+
+			</h:form>
+
 		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="projetoConfirmDialog"

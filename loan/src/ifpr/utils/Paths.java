@@ -1,6 +1,10 @@
 package ifpr.utils;
 
 public abstract class Paths {
+	
+	public static final String SISTEMA_LOAN = "http://localhost:8080/loan";
+	
+	
 	public static final String ARQUIVOS = "/adm/arquivo/arquivo.ifpr";
 	public static final String TECADM = "/adm/tec_adm.ifpr";
 	public static final String TECESP = "/tec_adm/tec_esp.ifpr";
@@ -13,7 +17,7 @@ public abstract class Paths {
 	public static final String ESTUDANTES = "/tec_adm/estudante.ifpr";
 	public static final String PROJETOS = "/tec_adm/projeto.ifpr";
 	public static final String DELEGACOES = "/tec_adm/delegacao.ifpr";
-	public static final String HORARIOASSISTENCIA = "/tec_adm/tec_coord/coord/horarioAssistencia.xhtml";
+	public static final String HORARIOASSISTENCIA = "/tec_adm/tec_coord/coord/horarioAssistencia.ifpr";
 	public static final String CHAVES = "/adm/chave.ifpr";
 	public static final String LOCAIS = "/adm/local.ifpr";
 	
@@ -39,5 +43,12 @@ public abstract class Paths {
 	public static final String PASTA_RELATORIO = LOAN_DOCS + "/relatorioFinal";
 	public static final String RELATORIO = "RelatórioFinalJIFPR.pdf";
 	public static final String CAMINHO_RELATORIO = PASTA_RELATORIO + "/" + RELATORIO;
+	
+	
+	public static final String PASTA_ARQUIVO_EVENTO =  LOAN_DOCS + "/evento";
+	public static final String PASTA_ARQUIVO_RELATORIO = LOAN_DOCS + "/relatorios";
+	
+	public static final String CAMINHO_FOTO_PERFIL =  LOAN_DOCS + "/foto";
+	public static final String FOTO_DEFAULT = CAMINHO_FOTO_PERFIL + "/default.png";
 
 }

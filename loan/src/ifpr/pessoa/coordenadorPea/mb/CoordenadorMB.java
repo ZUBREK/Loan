@@ -41,28 +41,30 @@ public class CoordenadorMB {
 	private CoordenadorLazyDataModel coordenadorLazyDataModel;
 
 	private List<CoordenadorPea> coordenadorFiltered;
-	
+
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
-	
+
 	private List<Campus> listaCampus;
-	
+
 	private Campus campus;
-	
-	private CadastroUsuarioValidator emailHandler;
-	
+
+	@ManagedProperty(value = "#{cadastroValidator}")
+	private CadastroUsuarioValidator cadastroValidator;
+
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
+	private boolean isTecCoord;
+
 	public CoordenadorMB() {
-		emailHandler = new CadastroUsuarioValidator();
 		coordenadorFiltered = new ArrayList<CoordenadorPea>();
-		emailHandler = new CadastroUsuarioValidator();
+
 	}
 
 	public void criar() {
 		coordenador = new CoordenadorPea();
-
+		isTecCoord = false;
 	}
 
 	public void remover() {
@@ -74,18 +76,26 @@ public class CoordenadorMB {
 	}
 
 	public void salvar() {
-		if (coordenador.getId() != null) {
+		cadastroValidator.setPessoa(coordenador);
+		if (cadastroValidator.validarDados(coordenador.getSiape())) {
+			if (coordenador.getId() != null) {
 
-			coordenadorDao.update(coordenador);
-		} else if (validarLoginExistente()) {
-			coordenador.setCampus(campus);
-			gerarSenha();
-			coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
-			String md5 = criptografia.criptografar(coordenador.getSenha());
-			coordenador.setSenha(md5);
-			coordenadorDao.salvar(coordenador);
-			homeMB.criarArqFotoPerfil(coordenador);
-			enviarEmail();
+				coordenadorDao.update(coordenador);
+			} else if (validarLoginExistente()) {
+				coordenador.setCampus(campus);
+				gerarSenha();
+				if (isTecCoord) {
+					coordenador.setTipo(TipoPessoa.ROLE_TEC_COORD);
+				} else {
+					coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
+				}
+				enviarEmail();
+				String md5 = criptografia.criptografar(coordenador.getSenha());
+				coordenador.setSenha(md5);
+				coordenadorDao.salvar(coordenador);
+				homeMB.criarArqFotoPerfil(coordenador);
+
+			}
 		}
 	}
 
@@ -96,12 +106,12 @@ public class CoordenadorMB {
 	}
 
 	private void enviarEmail() {
-		emailHandler.setPessoa(coordenador);
-		emailHandler.run();
+		cadastroValidator.setPessoa(coordenador);
+		cadastroValidator.enviarEmail();
 	}
 
 	public boolean validarLoginExistente() {
-		if (!emailHandler.validarEmail(coordenador)) {
+		if (!cadastroValidator.validarEmail(coordenador)) {
 			return false;
 		}
 		try {
@@ -167,7 +177,6 @@ public class CoordenadorMB {
 	public void setCoordenadorFiltered(List<CoordenadorPea> coordenadorFiltered) {
 		this.coordenadorFiltered = coordenadorFiltered;
 	}
-	
 
 	public List<Campus> getListaCampus() {
 		listaCampus = campusDao.listarAlfabetica();
@@ -202,15 +211,20 @@ public class CoordenadorMB {
 		this.homeMB = homeMB;
 	}
 
-	public CadastroUsuarioValidator getEmailValidator() {
-		return emailHandler;
+	public CadastroUsuarioValidator getCadastroValidator() {
+		return cadastroValidator;
 	}
 
-	public void setEmailValidator(CadastroUsuarioValidator emailValidator) {
-		this.emailHandler = emailValidator;
+	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
+		this.cadastroValidator = cadastroValidator;
 	}
-	
-	
-	
-	
+
+	public boolean isTecCoord() {
+		return isTecCoord;
+	}
+
+	public void setTecCoord(boolean isTecCoord) {
+		this.isTecCoord = isTecCoord;
+	}
+
 }

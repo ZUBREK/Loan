@@ -27,10 +27,10 @@ public class Pessoa {
 	@Column(name = "id_pessoa")
 	private Integer id;
 
-	@Column(name = "nome_pessoa", length = 50)
+	@Column(name = "nome_pessoa")
 	private String nome;
 
-	@Column(name = "username", length = 30)
+	@Column(name = "username")
 	private String login;
 
 	@Column(name = "password")

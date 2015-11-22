@@ -25,8 +25,9 @@
 
 				</p:contextMenu>
 
-				<p:dataTable id="chaveTable" value="#{chaveMB.grupoChavesLazyDataModel}"
-					var="chav" emptyMessage="Nenhum registro encontrado!" rows="10"
+				<p:dataTable id="chaveTable"
+					value="#{chaveMB.grupoChavesLazyDataModel}" var="chav"
+					emptyMessage="Nenhum registro encontrado!" rows="10"
 					rowKey="#{chav.id}" paginator="true" lazy="true"
 					selection="#{chaveMB.grupoChaves}" selectionMode="single">
 
@@ -49,9 +50,23 @@
 		</p:panel>
 		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
 			header="Dados da chave:" width="1000" height="500" modal="true">
-
+			<h:form id="select_chave_form">
+				<h:outputText value="Grupo da chave: " style="font-size: 120%%"/>
+				<p:selectOneMenu id="chaveSelection"
+					value="#{chaveMB.chaveSelected}" converter="#{chaveConverter}"
+					disabled="#{chaveMB.isGrupos}">
+					<f:selectItem itemLabel="Selecione um grupo"
+						itemValue="" />
+					<f:selectItems value="#{chaveMB.grupoChaves.chaves}" var="chav"
+						itemValue="#{chav.nome}" />
+					<p:ajax event="change" update=":chav_form"
+						listener="#{chaveMB.chaveSelectionChanged}"/>
+				</p:selectOneMenu>
+				<p:spacer height="2px"/>
+			</h:form>
 			<h:form id="chav_form">
 				<p:tabView id="tabView" widgetVar="tabChave">
+
 					<p:tab title="Tabela de Resultados">
 						<p:contextMenu id="contextMenuChave" for="timeTable"
 							rendered="#{chaveMB.isNotMataMata}">
@@ -68,7 +83,7 @@
 								oncomplete="PF('classificatorioDialog').show()" />
 						</p:contextMenu>
 
-						<p:dataTable id="timeTable" rows="6"
+						<p:dataTable id="timeTable" rows="10"
 							value="#{chaveMB.timesSemNullSemDuplicado}" var="time"
 							emptyMessage="Nenhum registro encontrado!" rowKey="#{time.id}"
 							selection="#{chaveMB.timeDataTable}" selectionMode="single">
@@ -109,6 +124,7 @@
 					</p:tab>
 					<p:tab title="Partidas"
 						disabled="#{chaveMB.chave.tipo == chaveMB.tipoClassificatorio}">
+
 						<p:selectOneMenu id="time" value="#{chaveMB.timeSelectOne}"
 							converter="#{timeConverter}"
 							disabled="#{chaveMB.chave.tipo == chaveMB.tipoMataMata}">
@@ -120,9 +136,9 @@
 						</p:selectOneMenu>
 						<p:tree value="#{chaveMB.rootNode}" var="node"
 							selection="#{chaveMB.selectedNode}"
-							rendered="#{not empty chaveMB.grupoChaves}" orientation="horizontal"
-							dynamic="true" selectionMode="single" widgetVar="treeNodeChave"
-							id="treeNodeChave">
+							rendered="#{not empty chaveMB.grupoChaves}"
+							orientation="horizontal" dynamic="true" selectionMode="single"
+							widgetVar="treeNodeChave" id="treeNodeChave">
 							<p:treeNode id="treeNodePartidaTime">
 								<h:outputText id="valorNode" value="#{node}" />
 								<p:tooltip for="valorNode"
@@ -148,7 +164,6 @@
 			modal="true" closable="false">
 			<h:form id="part_form">
 				<h:panelGrid columns="2">
-
 					<p:outputLabel id="placarLb" value="Placar:" for="placar" />
 
 					<p:spinner id="placar" value="#{chaveMB.partidaTime.placar}"
@@ -186,7 +201,7 @@
 							icon="cancelar16" onsuccess="PF('partidaChavDialog').hide()"
 							update="editarChavDialog"
 							oncomplete="PF('editarChavDialog').show()" immediate="true"
-							actionListener="#{chaveMB.cancelar()}">
+							actionListener="#{chaveMB.cancelarSalvarPartidaTime()}">
 							<p:resetInput target=":part_form" />
 						</p:commandButton>
 					</f:facet>
@@ -230,11 +245,10 @@
 					<f:facet name="footer">
 						<p:commandButton id="salvarClassificacaoTimeBt" value="Salvar"
 							icon="salvar16" update="editarChavDialog :msg"
-							action="#{chaveMB.salvarPartidaTipoClassificatorio()}" immediate="true"
-							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()" >
+							action="#{chaveMB.salvarPartidaTipoClassificatorio()}"
+							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
 							<p:resetInput target=":classifc_form" />
-							</p:commandButton>
-
+						</p:commandButton>
 						<p:commandButton id="cancelarClassificacaoTimeBt" value="Cancelar"
 							icon="cancelar16" onsuccess="PF('classificatorioDialog').hide()"
 							update="editarChavDialog"
@@ -255,8 +269,8 @@
 
 					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
-					<p:inputText id="nome" value="#{chaveMB.grupoChaves.nome}" size="20"
-						required="true" requiredMessage="Nome é obrigatório!" />
+					<p:inputText id="nome" value="#{chaveMB.grupoChaves.nome}"
+						size="20" required="true" requiredMessage="Nome é obrigatório!" />
 
 					<p:outputLabel id="modalidadeLb" value="Modalidade:"
 						for="modalidade" />
@@ -277,8 +291,7 @@
 						requiredMessage="O Tipo da Chave é obrigatório!">
 						<f:selectItems value="#{chaveMB.tipos}" var="tip"
 							itemValue="#{tip}" itemLabel="#{tip.label}" />
-						<p:ajax event="change"
-							update=":chave_form:qtdGrupos"
+						<p:ajax event="change" update=":chave_form:qtdGrupos"
 							listener="#{chaveMB.tipoSelectionChanged}" />
 					</p:selectOneMenu>
 
@@ -355,7 +368,7 @@
 					actionListener="#{chaveMB.salvarPartidaTime}"
 					onsuccess="PF('partidaChavDialog').hide()"
 					oncomplete="PF('editarChavDialog').show()"
-					update="editarChavDialog" icon="ok16" />
+					update="editarChavDialog :msg" icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{chaveMB.cancelarSalvarPartidaTime()}"
 					icon="cancelar16" update="editarChavDialog"

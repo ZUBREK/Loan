@@ -137,6 +137,8 @@ public class EventoMB {
 	public void mudouPresenca() {
 		eventoPessoaDao.update(eventoPessoa);
 	}
+	
+
 
 	@PostConstruct
 	public void poust() {
@@ -306,7 +308,7 @@ public class EventoMB {
 		}
 		try {
 			TecnicoAdministrativo tecAdm = (TecnicoAdministrativo) pessoaLogada;
-			String nomeArquivoStreamed = tecAdm.getCampus().toString() + "-"
+			String nomeArquivoStreamed = tecAdm.getCampus().toString() + "_"
 					+ event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
 			String caminho = Paths.PASTA_ARQUIVO_EVENTO

@@ -1,8 +1,9 @@
-package ifpr.pessoa.coordenadorPea.horarioReposicao.mb;
+package ifpr.pessoa.coordenadorPea.horarioAssistencia.mb;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,17 +17,16 @@ import ifpr.arquivo.Arquivo;
 import ifpr.arquivo.dao.ArquivoDao;
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
-import ifpr.pessoa.coordenadorPea.horarioReposicao.HorarioAssistencia;
-import ifpr.pessoa.coordenadorPea.horarioReposicao.dao.HorarioAssistenciaDao;
-import ifpr.pessoa.coordenadorPea.horarioReposicao.model.HorarioAssistenciaLazyDataModel;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.HorarioAssistencia;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.dao.HorarioAssistenciaDao;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.model.HorarioAssistenciaLazyDataModel;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.utils.Paths;
 
 @ManagedBean(name = "horarioAssistenciaMB")
 @ViewScoped
 public class HorarioAssistenciaMB {
-
-	private final String CAMINHO_PASTA = "C:/home/loan_docs/assinaturas";
 
 	private HorarioAssistencia horarioAssistencia;
 
@@ -85,23 +85,32 @@ public class HorarioAssistenciaMB {
 			horarioAssistencia.setEstudante(estudante);
 			horarioAssistenciaDao.salvar(horarioAssistencia);
 		}
+		horarioAssistencia = null;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-		arquivo = new Arquivo();
+		arquivo = horarioAssistencia.getFotoAssinatura();
+		if (arquivo == null) {
+			arquivo = new Arquivo();
+		}
 		try {
-			File file = new File(CAMINHO_PASTA);
+			File file = new File(Paths.PASTA_ASSISTENCIA);
 			file.mkdirs();
 
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = CAMINHO_PASTA + estudante.getNome() + horarioAssistencia.getDataHora().toString();
+			String caminho = Paths.PASTA_ASSISTENCIA +"/" + estudante.getNome() + estudante.getId() + event.getFile().getFileName();
 			FileOutputStream fos = new FileOutputStream(caminho);
 			fos.write(arquivoByte);
 			fos.close();
 			arquivo.setCaminho(caminho);
+			arquivo.setDataUpload(new Date());
+			arquivo.setFotoPerfil(false);
+			arquivo.setNome(event.getFile().getFileName());
+			arquivo.setUploader(estudante);
+			horarioAssistencia.setFotoAssinatura(arquivo);
 			salvarArquivo();
 		} catch (Exception ex) {
-			System.out.println("Erro no upload de arquivo");
+			ex.printStackTrace();
 		}
 
 	}
@@ -114,6 +123,7 @@ public class HorarioAssistenciaMB {
 			arquivoDao.update(arquivo);
 			horarioAssistencia.setFotoAssinatura(arquivo);
 		}
+		horarioAssistenciaDao.update(horarioAssistencia);
 	}
 
 	public HorarioAssistencia getHorarioAssistencia() {
@@ -128,7 +138,8 @@ public class HorarioAssistenciaMB {
 		return horarioAssistenciaDao;
 	}
 
-	public void setHorarioAssistenciaDao(HorarioAssistenciaDao horarioAssistenciaDao) {
+	public void setHorarioAssistenciaDao(
+			HorarioAssistenciaDao horarioAssistenciaDao) {
 		this.horarioAssistenciaDao = horarioAssistenciaDao;
 	}
 
@@ -136,7 +147,8 @@ public class HorarioAssistenciaMB {
 		return horarioAssistenciaLazyDataModel;
 	}
 
-	public void setHorarioAssistenciaLazyDataModel(HorarioAssistenciaLazyDataModel horarioAssistenciaLazyDataModel) {
+	public void setHorarioAssistenciaLazyDataModel(
+			HorarioAssistenciaLazyDataModel horarioAssistenciaLazyDataModel) {
 		this.horarioAssistenciaLazyDataModel = horarioAssistenciaLazyDataModel;
 	}
 
@@ -144,7 +156,8 @@ public class HorarioAssistenciaMB {
 		return horarioAssistenciaFiltered;
 	}
 
-	public void setHorarioAssistenciaFiltered(List<HorarioAssistencia> horarioAssistenciaFiltered) {
+	public void setHorarioAssistenciaFiltered(
+			List<HorarioAssistencia> horarioAssistenciaFiltered) {
 		this.horarioAssistenciaFiltered = horarioAssistenciaFiltered;
 	}
 

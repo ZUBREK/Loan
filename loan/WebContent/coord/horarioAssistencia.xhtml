@@ -7,15 +7,22 @@
 	template="/layout/templates/templateGerenciamento.xhtml">
 
 	<ui:define name="body">
+
+
+
 		<p:panel id="painelPrincipal"
 			header="Gerenciamento de Horário de Assistências">
+
 			<p:growl id="msg" showDetail="true" />
+
 			<h:form>
+
 				<p:commandButton id="novoEst" value="Novo"
 					actionListener="#{horarioAssistenciaMB.criar}"
 					oncomplete="PF('assistenciaDialog').show()"
 					update=":assistenciaDlg" />
 			</h:form>
+
 
 			<h:form id="tableForm">
 
@@ -31,6 +38,7 @@
 
 					<p:column headerText="Matéria" filterBy="#{assistencia.materia}"
 						filterMatchMode="contains">
+
 						<h:outputText value="#{assistencia.materia}" />
 
 					</p:column>
@@ -56,15 +64,21 @@
 								target="#{horarioAssistenciaMB.horarioAssistencia}" />
 
 						</p:commandButton>
+
 					</p:column>
+
 					<p:column headerText="Remover" width="47">
+
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
 							oncomplete="PF('assistenciaConfirmDialog').show()"
 							update=":confirm" styleClass="apenasIcone">
+
 							<f:setPropertyActionListener value="#{assistencia}"
 								target="#{horarioAssistenciaMB.horarioAssistencia}" />
+
 						</p:commandButton>
+
 					</p:column>
 
 				</p:dataTable>
@@ -78,7 +92,8 @@
 			modal="true" closable="false">
 
 			<h:form id="assistencia_form">
-				<h:panelGrid columns="3">
+
+				<h:panelGrid columns="2">
 
 					<h:outputLabel id="materiaLb" value="Matéria:" for="materia" />
 
@@ -86,14 +101,14 @@
 						value="#{horarioAssistenciaMB.horarioAssistencia.materia}"
 						size="50" required="true" requiredMessage="Matéria é obrigatório!" />
 
-					<p:message for="materia" />
+
 
 					<h:outputLabel id="dataLb" value="Data da Assistência:" for="data" />
 					<p:calendar id="data"
 						value="#{horarioAssistenciaMB.horarioAssistencia.dataHora}"
 						locale="pt" navigator="true" pattern="dd/mm/yyyy"
 						mindate="1/1/2014" />
-					<p:message for="data" />
+
 
 					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 					<p:selectOneMenu id="campus" value="#{horarioAssistenciaMB.campus}"
@@ -105,11 +120,14 @@
 
 						<f:selectItems value="#{horarioAssistenciaMB.listaCampus}"
 							var="camp" itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
 						<p:ajax update=":assistencia_form:estudante" />
+
 					</p:selectOneMenu>
-					<p:message for="campus" />
+
 
 					<p:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
+
 					<p:selectOneMenu id="estudante"
 						value="#{horarioAssistenciaMB.estudante}" filter="true"
 						filterMatchMode="startsWith" required="true"
@@ -119,16 +137,26 @@
 						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
 						<f:selectItems value="#{horarioAssistenciaMB.listaEstudante}"
-							var="estudant" itemLabel="#{estudant}"
-							itemValue="#{estudant}" />
+							var="estudant" itemLabel="#{estudant}" itemValue="#{estudant}" />
+
+						<p:ajax update=":assistencia_form:fotoUpload" />
+
 					</p:selectOneMenu>
-					<p:message for="estudante" />
 
 					<h:outputLabel id="fotoLb" value="Foto da Assinatura:" />
-					
-					<p:fileUpload
-						fileUploadListener="horarioAssistenciaMB.handleFileUpload"
-						mode="simple" skinSimple="true" />
+
+					<p:fileUpload id="fotoUpload" styleClass="fileupload-boleidous"
+						disabled="#{empty horarioAssistenciaMB.estudante}"
+						fileUploadListener="#{horarioAssistenciaMB.handleFileUpload}"
+						label="selecionar" auto="true"
+						update=":assistencia_form:arquivo :msg" multiple="false"
+						mode="advanced" cache="false" />
+
+					<p:outputLabel value="Arquivo:" />
+
+					<p:outputLabel id="arquivo"
+						value="#{horarioAssistenciaMB.arquivo.nome}" />
+
 
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
@@ -152,6 +180,7 @@
 
 		</p:dialog>
 
+
 		<p:confirmDialog id="confirm" widgetVar="assistenciaConfirmDialog"
 			global="true" header="Confirma exclusão do Horário de Assistência?"
 			showEffect="fade" hideEffect="fade"
@@ -168,6 +197,10 @@
 					oncomplete="PF('assistenciaConfirmDialog').hide()"
 					icon="cancelar16" />
 			</h:form>
+
 		</p:confirmDialog>
+
+
 	</ui:define>
+
 </ui:composition>

@@ -1,10 +1,10 @@
-package ifpr.pessoa.coordenadorPea.horarioReposicao.model;
+package ifpr.pessoa.coordenadorPea.horarioAssistencia.model;
 
 import java.util.Comparator;
 
 import org.primefaces.model.SortOrder;
 
-import ifpr.pessoa.coordenadorPea.horarioReposicao.HorarioAssistencia;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.HorarioAssistencia;
 
 public class LazyHorarioAssistenciaSorter implements Comparator<HorarioAssistencia> {
 

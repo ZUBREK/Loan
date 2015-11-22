@@ -1,9 +1,9 @@
-package ifpr.pessoa.coordenadorPea.horarioReposicao.dao;
+package ifpr.pessoa.coordenadorPea.horarioAssistencia.dao;
 
 import java.util.List;
 
 import ifpr.dao.Dao;
-import ifpr.pessoa.coordenadorPea.horarioReposicao.HorarioAssistencia;
+import ifpr.pessoa.coordenadorPea.horarioAssistencia.HorarioAssistencia;
 
 public interface HorarioAssistenciaDao extends Dao<HorarioAssistencia> {
 	

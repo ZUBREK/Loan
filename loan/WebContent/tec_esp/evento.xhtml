@@ -116,6 +116,7 @@
 				</p:dataTable>
 
 			</h:form>
+			
 		</p:panel>
 
 		<p:dialog id="eventoDlg" widgetVar="eventoDialog"
@@ -442,11 +443,10 @@
 
 						<p:commandButton value="Marcar presença"
 							actionListener="#{eventoMB.mudouPresenca}"
-							disabled="#{eventoPessoa.wasPresente}" update="evento_form:estudantesList">
-							
-							<f:setPropertyActionListener value="#{eventoPessoa}" target="#{eventoMB.eventoPessoa}" />
-							
-							</p:commandButton>
+							disabled="#{eventoPessoa.wasPresente}"
+							update="evento_form:estudantesList">
+
+						</p:commandButton>
 
 					</p:column>
 

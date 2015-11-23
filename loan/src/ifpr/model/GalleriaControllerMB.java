@@ -1,8 +1,11 @@
 package ifpr.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,9 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
+import javax.servlet.ServletContext;
 
 import ifpr.arquivo.Arquivo;
 import ifpr.noticia.Noticia;
@@ -28,16 +29,42 @@ public class GalleriaControllerMB {
 	private Noticia noticia;
 
 	private List<Noticia> noticias;
-
-	private StreamedContent imagemStreamed;
+	
+	private List<Noticia> noticiasGalleria;
 
 	private Arquivo arquivo;
 
 	@PostConstruct
 	public void init() {
+		noticiasGalleria = new ArrayList<>();
 		noticias = noticiaDao.listDesc();
+		noticiasGalleria = noticias;
+		for (Noticia noticia : noticias) {
+			arquivo = noticia.getFoto();
+			Path path = Paths.get(arquivo.getCaminho());
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+            ServletContext scontext = (ServletContext) facesContext.getExternalContext().getContext();
+            String nomeArquivo = noticia.getId().toString() + ".jpg";
+            String arquivo = scontext.getRealPath("/temp/" + nomeArquivo);
+            try {
+				criaArquivo(Files.readAllBytes(path), arquivo);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
+	public void criaArquivo(byte[] bytes, String arquivo) {
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(arquivo);
+            fos.write(bytes);
+            fos.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } 
+    }
+	
 	public NoticiaDao getNoticiaDao() {
 		return noticiaDao;
 	}
@@ -62,25 +89,20 @@ public class GalleriaControllerMB {
 		this.noticias = noticias;
 	}
 
-	public StreamedContent getImagemStreamed() {
-		String noticiaId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-				.get("id_noticia");
-		if (noticiaId != null) {
-			noticia = noticiaDao.findById(Integer.valueOf(noticiaId));
-			arquivo = noticia.getFoto();
-			InputStream stream;
-			File file = new File(arquivo.getCaminho());
-			if (file.exists()) {
-				stream = null;
-				try {
-					stream = new FileInputStream(file);
-					imagemStreamed = new DefaultStreamedContent(stream);//
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return imagemStreamed;
+	public List<Noticia> getNoticiasGalleria() {
+		return noticiasGalleria;
+	}
+
+	public void setNoticiasGalleria(List<Noticia> noticiasGalleria) {
+		this.noticiasGalleria = noticiasGalleria;
+	}
+
+	public Arquivo getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(Arquivo arquivo) {
+		this.arquivo = arquivo;
 	}
 
 }

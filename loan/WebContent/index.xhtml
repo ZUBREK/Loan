@@ -17,12 +17,12 @@
 
 		<div id="direita">
 			<h1>Notícias</h1>
-			<p:galleria value="#{galleriaControllerMB.noticias}" var="noticia"
-				panelWidth="827" panelHeight="420" showCaption="true">
-				<p:graphicImage width = "827" height="420" value="#{galleriaControllerMB.imagemStreamed}" alt="Parte do texto da notícia"
+			<p:galleria value="#{galleriaControllerMB.noticiasGalleria}" 
+				var="noticia" panelWidth="827" panelHeight="420" showCaption="true">
+				<p:graphicImage width="827" height="420" cache="false" 
+					value="resources/images/nature#{noticia.id}.png"
 					title="#{noticia.titulo}">
-					<f:param name="id_noticia" value="#{noticia.id}"/>
-					</p:graphicImage>
+				</p:graphicImage>
 			</p:galleria>
 		</div>
 

@@ -40,6 +40,8 @@ import ifpr.competicao.time.dao.TimeDao;
 import ifpr.competicao.time.pontos.PontosTime;
 import ifpr.competicao.time.pontos.dao.PontosTimeDao;
 import ifpr.modalidade.Modalidade;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
 
 @ManagedBean(name = "chaveMB")
 @ViewScoped
@@ -68,6 +70,9 @@ public class ChaveMB {
 
 	@ManagedProperty(value = "#{partidaTimeDao}")
 	private PartidaTimeDao partidaTimeDao;
+	
+	@ManagedProperty(value = "#{homeMB}")
+	private HomeMB homeMB;
 
 	@ManagedProperty(value = "#{grupoChavesLazyDataModel}")
 	private GrupoChavesLazyDataModel grupoChavesLazyDataModel;
@@ -111,6 +116,8 @@ public class ChaveMB {
 	private Integer qtdGruposEscolhida;
 
 	private Chave chaveSelected;
+	
+	
 
 	public ChaveMB() {
 	}
@@ -1018,5 +1025,21 @@ public class ChaveMB {
 	public void setChaveSelected(Chave chaveSelected) {
 		this.chaveSelected = chaveSelected;
 	}
+	
+	public boolean getIsAdm(){
+		if(homeMB.getPessoaLogada().getTipo().equals(TipoPessoa.ROLE_ADMIN)){
+			return true;
+		}
+		return false;
+	}
+
+	public HomeMB getHomeMB() {
+		return homeMB;
+	}
+
+	public void setHomeMB(HomeMB homeMB) {
+		this.homeMB = homeMB;
+	}
+
 
 }

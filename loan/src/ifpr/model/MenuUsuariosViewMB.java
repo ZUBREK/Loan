@@ -43,31 +43,45 @@ public class MenuUsuariosViewMB {
 		adicionarItem("Página Principal", Paths.INDEX, "home16", false);
 		adicionarItem("Meu Perfil", Paths.HOME, "home16", false);
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
+			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS, "attach16", false);
 			adicionarItem("Gerenciar - Arquivos", Paths.ARQUIVOS, "attach16", false);
-
 			adicionarItem("Gerenciar - Campus", Paths.CAMPUS, "attach16", false);
-
 			adicionarItem("Gerenciar - Notícias", Paths.NOTICIAS, "attach16", false);
-
 			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "attach16", false);
-
 			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
-
+			
+			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS, "attach16", false);
+		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_COORDENADOR)) {
-
+		
+			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
+			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "attach16", false);
+		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_SECRETARIO)) {
-
+		
+			adicionarItem("Chaves", Paths.CHAVES, "attach16", false);
+		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ESTUDANTE)) {
 
-		}
-		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)){
-			
-		}
-		else if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)){
-			
+		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)) {
+	
+			adicionarItem("Gerenciar - Notícias", Paths.NOTICIAS, "attach16", false);
+			submenu = new DefaultSubMenu("Gerenciar - Usuários");
+			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
+			adicionarItem("Tec. Administrativos", Paths.TECADM, "user16", true);
+			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
+			adicionarItem("Secretários", Paths.SECRETARIOS, "user16", true);
+			model.addElement(submenu);
+			adicionarItem("Times", Paths.TIMES, "user16", false);
+		
+		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
+		
+			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS, "attach16", false);
+			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
+			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "attach16", false);
 		}
 
 	}

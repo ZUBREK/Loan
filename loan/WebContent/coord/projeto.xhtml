@@ -33,7 +33,7 @@
 
 				<p:dataTable id="projetoTable"
 					value="#{projetoMB.projetoLazyDataModel}" var="projeto"
-					emptyMessage="Nenhum registro encontrado!" rows="15"
+					emptyMessage="Nenhum registro encontrado!" rows="10"
 					rowKey="#{projeto.id}" paginator="true" lazy="true"
 					filteredValue="#{projetoMB.projetoFiltered}"
 					selection="#{projetoMB.projeto}" selectionMode="single">

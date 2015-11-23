@@ -17,7 +17,7 @@ public abstract class Paths {
 	public static final String ESTUDANTES = "/tec_adm/estudante.ifpr";
 	public static final String PROJETOS = "/coord/projeto.ifpr";
 	public static final String DELEGACOES = "/tec_adm/delegacao.ifpr";
-	public static final String HORARIOASSISTENCIA = "/tec_adm/tec_coord/coord/horarioAssistencia.ifpr";
+	public static final String HORARIOASSISTENCIA = "/coord/horarioAssistencia.ifpr";
 	public static final String CHAVES = "/sec/chave.ifpr";
 	public static final String LOCAIS = "/adm/local.ifpr";
 	public static final String EVENTOS = "/tec_esp/evento.ifpr";

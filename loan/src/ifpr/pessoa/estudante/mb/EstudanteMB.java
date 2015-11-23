@@ -101,6 +101,8 @@ public class EstudanteMB {
 	}
 
 	public void salvar() {
+		estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
+		emailHelper.setPessoa(estudante);
 		if (emailHelper.validarDadosEstudante(estudante)) {
 			if (estudante.getId() != null) {
 				estudanteDao.update(estudante);
@@ -108,11 +110,9 @@ public class EstudanteMB {
 				estudante.setCampus(campus);
 				gerarSenha();
 				enviarEmail();
-				estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
 				String md5 = criptografia.criptografar(estudante.getSenha());
 				estudante.setSenha(md5);
 				estudanteDao.salvar(estudante);
-
 			}
 		}
 

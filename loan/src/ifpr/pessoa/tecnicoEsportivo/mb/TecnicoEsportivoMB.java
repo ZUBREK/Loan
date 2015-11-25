@@ -1,16 +1,5 @@
 package ifpr.pessoa.tecnicoEsportivo.mb;
 
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.criptografia.Criptografia;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-import ifpr.pessoa.tecnicoEsportivo.dao.TecnicoEsportivoDao;
-import ifpr.pessoa.tecnicoEsportivo.model.TecnicoEsportivoLazyDataModel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +10,17 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
+import ifpr.pessoa.tecnicoEsportivo.dao.TecnicoEsportivoDao;
+import ifpr.pessoa.tecnicoEsportivo.model.TecnicoEsportivoLazyDataModel;
 
 @ManagedBean(name = "tecEspMB")
 @ViewScoped
@@ -102,8 +102,8 @@ public class TecnicoEsportivoMB {
 
 	private void enviarEmail() {
 
-		cadastroValidator.setPessoa(tecnicoEsp);
-		cadastroValidator.enviarEmail();
+		// TODO cadastroValidator.setPessoa(tecnicoEsp);
+		cadastroValidator.enviarEmail(tecnicoEsp);
 	}
 
 	public boolean validarLoginExistente() {
@@ -112,8 +112,7 @@ public class TecnicoEsportivoMB {
 		}
 		try {
 			pessoaDao.findByLogin(tecnicoEsp.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -153,8 +152,7 @@ public class TecnicoEsportivoMB {
 		return tecEspLazyDataModel;
 	}
 
-	public void setTecEspLazyDataModel(
-			TecnicoEsportivoLazyDataModel tecEspLazyDataModel) {
+	public void setTecEspLazyDataModel(TecnicoEsportivoLazyDataModel tecEspLazyDataModel) {
 		this.tecEspLazyDataModel = tecEspLazyDataModel;
 	}
 
@@ -162,8 +160,7 @@ public class TecnicoEsportivoMB {
 		return tecnicoEsportivoFiltered;
 	}
 
-	public void setTecnicoEsportivoFiltered(
-			List<TecnicoEsportivo> tecnicoEsportivoFiltered) {
+	public void setTecnicoEsportivoFiltered(List<TecnicoEsportivo> tecnicoEsportivoFiltered) {
 		this.tecnicoEsportivoFiltered = tecnicoEsportivoFiltered;
 	}
 

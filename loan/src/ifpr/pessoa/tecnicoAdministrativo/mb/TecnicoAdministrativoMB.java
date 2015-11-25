@@ -1,16 +1,5 @@
 package ifpr.pessoa.tecnicoAdministrativo.mb;
 
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.criptografia.Criptografia;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
-import ifpr.pessoa.tecnicoAdministrativo.dao.TecnicoAdministrativoDao;
-import ifpr.pessoa.tecnicoAdministrativo.model.TecnicoAdministrativoLazyDataModel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +10,17 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
+import ifpr.pessoa.tecnicoAdministrativo.dao.TecnicoAdministrativoDao;
+import ifpr.pessoa.tecnicoAdministrativo.model.TecnicoAdministrativoLazyDataModel;
 
 @ManagedBean(name = "tecnicoAdmMB")
 @ViewScoped
@@ -99,8 +99,8 @@ public class TecnicoAdministrativoMB {
 	}
 
 	private void enviarEmail() {
-		cadastroValidator.setPessoa(tecnicoAdm);
-		cadastroValidator.enviarEmail();
+		// TODO cadastroValidator.setPessoa(tecnicoAdm);
+		cadastroValidator.enviarEmail(tecnicoAdm);
 	}
 
 	public boolean validarLoginExistente() {
@@ -109,8 +109,7 @@ public class TecnicoAdministrativoMB {
 		}
 		try {
 			pessoaDao.findByLogin(tecnicoAdm.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -142,8 +141,7 @@ public class TecnicoAdministrativoMB {
 		return tecnicoAdmFiltered;
 	}
 
-	public void setTecnicoAdmFiltered(
-			List<TecnicoAdministrativo> tecnicoAdmFiltered) {
+	public void setTecnicoAdmFiltered(List<TecnicoAdministrativo> tecnicoAdmFiltered) {
 		this.tecnicoAdmFiltered = tecnicoAdmFiltered;
 	}
 
@@ -184,8 +182,7 @@ public class TecnicoAdministrativoMB {
 		this.listaCampus = listaCampus;
 	}
 
-	public void setTecnicoAdmLazyDataModel(
-			TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel) {
+	public void setTecnicoAdmLazyDataModel(TecnicoAdministrativoLazyDataModel tecnicoAdmLazyDataModel) {
 		this.tecnicoAdmLazyDataModel = tecnicoAdmLazyDataModel;
 	}
 
@@ -212,7 +209,5 @@ public class TecnicoAdministrativoMB {
 	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
 		this.cadastroValidator = cadastroValidator;
 	}
-
-	
 
 }

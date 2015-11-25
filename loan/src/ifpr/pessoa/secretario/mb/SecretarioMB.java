@@ -1,15 +1,5 @@
 package ifpr.pessoa.secretario.mb;
 
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.criptografia.Criptografia;
-import ifpr.geradorPdf.CrachasPdf;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.secretario.Secretario;
-import ifpr.pessoa.secretario.dao.SecretarioDao;
-import ifpr.pessoa.secretario.model.SecretarioLazyDataModel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +10,16 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.criptografia.Criptografia;
+import ifpr.geradorPdf.CrachasPdf;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.secretario.Secretario;
+import ifpr.pessoa.secretario.dao.SecretarioDao;
+import ifpr.pessoa.secretario.model.SecretarioLazyDataModel;
 
 @ManagedBean(name = "secretarioMB")
 @ViewScoped
@@ -90,8 +90,8 @@ public class SecretarioMB {
 	}
 
 	private void enviarEmail() {
-		cadastroValidator.setPessoa(secretario);
-		cadastroValidator.enviarEmail();
+		// cadastroValidator.setPessoa(secretario);
+		cadastroValidator.enviarEmail(secretario);
 	}
 
 	public boolean validarLoginExistente() {
@@ -100,8 +100,7 @@ public class SecretarioMB {
 		}
 		try {
 			pessoaDao.findByLogin(secretario.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -153,8 +152,7 @@ public class SecretarioMB {
 		return secretarioLazyDataModel;
 	}
 
-	public void setSecretarioLazyDataModel(
-			SecretarioLazyDataModel secretarioLazyDataModel) {
+	public void setSecretarioLazyDataModel(SecretarioLazyDataModel secretarioLazyDataModel) {
 		this.secretarioLazyDataModel = secretarioLazyDataModel;
 	}
 

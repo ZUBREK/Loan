@@ -55,7 +55,7 @@
 					<p:column headerText="Editar" width="35">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
-							style="margin-left: 3px;" update="tabGrande:dados_form"
+							style="margin-left: 3px;" update="tab_form"
 							oncomplete="PF('estudanteDialog').show()"
 							styleClass="apenasIcone">
 
@@ -88,9 +88,9 @@
 		<p:dialog id="estudanteDlg" widgetVar="estudanteDialog"
 			header="Dados do Estudante" width="700" height="400" modal="true"
 			closable="false">
-			<p:tabView id="tabGrande" widgetVar="grandeTab">
-				<p:tab id="tabPequena1" title="Dados do estudante">
-					<h:form id="dados_form">
+			<h:form id="tab_form">
+				<p:tabView id="tabGrande" widgetVar="grandeTab">
+					<p:tab id="tabPequena1" title="Dados do estudante">
 
 						<h:panelGrid columns="2">
 
@@ -206,7 +206,7 @@
 								</p:dialog>
 
 								<p:commandButton id="continuarBt" value="Continuar"
-									icon="salvar16" update=":msg"
+									icon="salvar16" update=":msg :tab_form"
 									onclick="PrimeFaces.monitorDownload(start, stop)"
 									actionListener="#{estudanteMB.salvar}"
 									oncomplete="if(!args.validationFailed) PF('grandeTab').select(1);" />
@@ -216,7 +216,7 @@
 									oncomplete="PF('estudanteDialog').hide()" update=":msg"
 									immediate="true" actionListener="#{estudanteMB.cancelar()}">
 
-									<p:resetInput target="tabGrande:dados_form" />
+									<p:resetInput target=":tab_form" />
 
 								</p:commandButton>
 
@@ -235,12 +235,9 @@
 
 						</h:panelGrid>
 
-					</h:form>
-				</p:tab>
+					</p:tab>
 
-				<p:tab title="Foto">
-					<h:form id="foto_form">
-
+					<p:tab title="Foto" disabled = "true">
 						<h:panelGrid columns="2">
 							<p:outputLabel id="fotoPerfilLb"
 								title="Selecionar foto do estudante"
@@ -249,8 +246,8 @@
 							<p:fileUpload id="fotoUpload" styleClass="fileupload-boleidous"
 								fileUploadListener="#{estudanteMB.handleFileUpload}"
 								label="#{estudanteMB.fotoPerfil == null ? 'Selecionar' : estudanteMB.fotoPerfil.nome}"
-								auto="true" update=":tabGrande:foto_form:nomeFoto"
-								multiple="false" mode="advanced" cache="false" />
+								auto="true" update="nomeFoto" multiple="false" mode="advanced"
+								cache="false" />
 
 
 							<p:outputLabel value="Arquivo:" for="nomeFoto" />
@@ -258,15 +255,15 @@
 								value="#{estudanteMB.fotoPerfil.nome}" />
 
 							<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-								update=":tableForm tabGrande:dados_form :msg"
+								update=":tableForm :tab_form :msg"
 								actionListener="#{estudanteMB.salvar}"
 								onclick="PrimeFaces.monitorDownload(start, stop)"
 								oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />
 
 						</h:panelGrid>
-					</h:form>
-				</p:tab>
-			</p:tabView>
+					</p:tab>
+				</p:tabView>
+			</h:form>
 		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="estudanteConfirmDialog"

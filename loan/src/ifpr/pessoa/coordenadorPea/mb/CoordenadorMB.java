@@ -1,16 +1,5 @@
 package ifpr.pessoa.coordenadorPea.mb;
 
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.criptografia.Criptografia;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.coordenadorPea.CoordenadorPea;
-import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
-import ifpr.pessoa.coordenadorPea.model.CoordenadorLazyDataModel;
-import ifpr.pessoa.dao.PessoaDao;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +10,17 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.criptografia.Criptografia;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.coordenadorPea.CoordenadorPea;
+import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
+import ifpr.pessoa.coordenadorPea.model.CoordenadorLazyDataModel;
+import ifpr.pessoa.dao.PessoaDao;
 
 @ManagedBean(name = "coordenadorMB")
 @ViewScoped
@@ -106,8 +106,8 @@ public class CoordenadorMB {
 	}
 
 	private void enviarEmail() {
-		cadastroValidator.setPessoa(coordenador);
-		cadastroValidator.enviarEmail();
+		// TODO cadastroValidator.setPessoa(coordenador);
+		cadastroValidator.enviarEmail(coordenador);
 	}
 
 	public boolean validarLoginExistente() {
@@ -116,8 +116,7 @@ public class CoordenadorMB {
 		}
 		try {
 			pessoaDao.findByLogin(coordenador.getLogin());
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"E-mail já existe, escolha outro");
 			FacesContext.getCurrentInstance().addMessage("Atenção", message);
 			FacesContext.getCurrentInstance().validationFailed();
@@ -165,8 +164,7 @@ public class CoordenadorMB {
 		return coordenadorLazyDataModel;
 	}
 
-	public void setCoordenadorLazyDataModel(
-			CoordenadorLazyDataModel coordenadorLazyDataModel) {
+	public void setCoordenadorLazyDataModel(CoordenadorLazyDataModel coordenadorLazyDataModel) {
 		this.coordenadorLazyDataModel = coordenadorLazyDataModel;
 	}
 

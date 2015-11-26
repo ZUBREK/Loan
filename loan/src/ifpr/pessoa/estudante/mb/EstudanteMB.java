@@ -1,21 +1,5 @@
 package ifpr.pessoa.estudante.mb;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.arquivo.dao.ArquivoDao;
-import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.criptografia.Criptografia;
-import ifpr.model.LoginControllerMB;
-import ifpr.perfilUsuario.HomeMB;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.estudante.dao.EstudanteDao;
-import ifpr.pessoa.estudante.model.EstudanteLazyDataModel;
-import ifpr.utils.Paths;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +15,22 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
+
+import ifpr.arquivo.Arquivo;
+import ifpr.arquivo.dao.ArquivoDao;
+import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.criptografia.Criptografia;
+import ifpr.model.LoginControllerMB;
+import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.pessoa.estudante.model.EstudanteLazyDataModel;
+import ifpr.utils.Paths;
 
 @ManagedBean(name = "estudanteMB")
 @ViewScoped
@@ -87,8 +87,8 @@ public class EstudanteMB {
 	public void poust() {
 		listaCampus = campusDao.listarAlfabetica();
 		FacesContext context = FacesContext.getCurrentInstance();
-		loginController = context.getApplication().evaluateExpressionGet(
-				context, "#{loginControllerMB}", LoginControllerMB.class);
+		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
+				LoginControllerMB.class);
 		pessoaLogada = loginController.getPessoaLogada();
 	}
 
@@ -102,7 +102,6 @@ public class EstudanteMB {
 
 	public void salvar() {
 		estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
-		emailHelper.setPessoa(estudante);
 		if (emailHelper.validarDadosEstudante(estudante)) {
 			if (estudante.getId() != null) {
 				estudanteDao.update(estudante);
@@ -115,26 +114,21 @@ public class EstudanteMB {
 				estudanteDao.salvar(estudante);
 			}
 		}
-
+		fotoPerfil = null;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-
+		fotoPerfil = arquivoDao.pesquisarFotoPerfil(estudante);
 		try {
-
 			String nomeArquivoStreamed = event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.PASTA_ARQUIVO_EVENTO
-					+ "/"
-					+ pessoaLogada.getId()
-					+ nomeArquivoStreamed.substring(
-							nomeArquivoStreamed.lastIndexOf('.'),
-							nomeArquivoStreamed.length());
+			String caminho = Paths.CAMINHO_FOTO_PERFIL + "/matricula_" + estudante.getMatricula()
+					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
 			criarArquivoDisco(arquivoByte, caminho);
 
 			fotoPerfil.setUploader(estudante);
 			fotoPerfil.setCaminho(caminho);
-			fotoPerfil.setNome("foto_perfil" + estudante.getId());
+			fotoPerfil.setNome("foto_perfil_estudMatricula_" + estudante.getMatricula());
 			fotoPerfil.setDataUpload(new Date());
 			fotoPerfil.setFotoPerfil(true);
 			if (fotoPerfil.getId() != null) {
@@ -146,11 +140,10 @@ public class EstudanteMB {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		return;
+		fotoPerfil = null;
 	}
 
-	private void criarArquivoDisco(byte[] bytes, String arquivo)
-			throws IOException {
+	private void criarArquivoDisco(byte[] bytes, String arquivo) throws IOException {
 		File file = new File(Paths.CAMINHO_FOTO_PERFIL);
 		file.mkdirs();
 		FileOutputStream fos;
@@ -167,12 +160,14 @@ public class EstudanteMB {
 
 	private void enviarEmail() {
 		emailHelper.setPessoa(estudante);
-		emailHelper.enviarEmail();
+		emailHelper.enviarEmail((Pessoa) estudante);
 	}
 
 	public boolean validarLoginExistente() {
-		if (!emailHelper.validarEmail(estudante)) {
-			return false;
+		if (estudante.getId() == null) {
+			if (!emailHelper.validarEmail(estudante)) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -190,6 +185,8 @@ public class EstudanteMB {
 	}
 
 	public void setEstudante(Estudante estudante) {
+		fotoPerfil = arquivoDao.pesquisarFotoPerfil(estudante);
+		campus = estudante.getCampus();
 		this.estudante = estudante;
 	}
 
@@ -221,8 +218,7 @@ public class EstudanteMB {
 		return estudanteLazyDataModel;
 	}
 
-	public void setEstudanteLazyDataModel(
-			EstudanteLazyDataModel estudanteLazyDataModel) {
+	public void setEstudanteLazyDataModel(EstudanteLazyDataModel estudanteLazyDataModel) {
 		this.estudanteLazyDataModel = estudanteLazyDataModel;
 	}
 

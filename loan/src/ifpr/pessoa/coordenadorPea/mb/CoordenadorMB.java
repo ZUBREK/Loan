@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.persistence.NoResultException;
 
 import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.campus.Campus;
@@ -76,19 +73,18 @@ public class CoordenadorMB {
 	}
 
 	public void salvar() {
+		if (isTecCoord) {
+			coordenador.setTipo(TipoPessoa.ROLE_TEC_COORD);
+		} else {
+			coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
+		}
 		cadastroValidator.setPessoa(coordenador);
 		if (cadastroValidator.validarDados(coordenador.getSiape())) {
 			if (coordenador.getId() != null) {
-
 				coordenadorDao.update(coordenador);
 			} else if (validarLoginExistente()) {
 				coordenador.setCampus(campus);
 				gerarSenha();
-				if (isTecCoord) {
-					coordenador.setTipo(TipoPessoa.ROLE_TEC_COORD);
-				} else {
-					coordenador.setTipo(TipoPessoa.ROLE_COORDENADOR);
-				}
 				enviarEmail();
 				String md5 = criptografia.criptografar(coordenador.getSenha());
 				coordenador.setSenha(md5);
@@ -106,25 +102,16 @@ public class CoordenadorMB {
 	}
 
 	private void enviarEmail() {
-		// TODO cadastroValidator.setPessoa(coordenador);
 		cadastroValidator.enviarEmail(coordenador);
 	}
 
 	public boolean validarLoginExistente() {
-		if (!cadastroValidator.validarEmail(coordenador)) {
-			return false;
+		if (coordenador.getId() == null) {
+			if (!cadastroValidator.validarEmail(coordenador)) {
+				return false;
+			}
 		}
-		try {
-			pessoaDao.findByLogin(coordenador.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"E-mail já existe, escolha outro");
-			FacesContext.getCurrentInstance().addMessage("Atenção", message);
-			FacesContext.getCurrentInstance().validationFailed();
-
-			return false;
-		} catch (NoResultException nre) {
-			return true;
-		}
+		return true;
 
 	}
 

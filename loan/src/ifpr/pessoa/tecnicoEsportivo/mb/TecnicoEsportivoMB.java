@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.persistence.NoResultException;
 
 import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.campus.Campus;
@@ -74,16 +71,15 @@ public class TecnicoEsportivoMB {
 	}
 
 	public void salvar() {
+		tecnicoEsp.setTipo(TipoPessoa.ROLE_TEC_ESP);
 		cadastroValidator.setPessoa(tecnicoEsp);
 		if (cadastroValidator.validarDados(tecnicoEsp.getSiape())) {
 			if (tecnicoEsp.getId() != null) {
-
 				tecEspDao.update(tecnicoEsp);
 			} else if (validarLoginExistente()) {
 
 				tecnicoEsp.setCampus(campus);
 				gerarSenha();
-				tecnicoEsp.setTipo(TipoPessoa.ROLE_TEC_ESP);
 				enviarEmail();
 				String md5 = criptografia.criptografar(tecnicoEsp.getSenha());
 				tecnicoEsp.setSenha(md5);
@@ -101,27 +97,16 @@ public class TecnicoEsportivoMB {
 	}
 
 	private void enviarEmail() {
-
-		// TODO cadastroValidator.setPessoa(tecnicoEsp);
 		cadastroValidator.enviarEmail(tecnicoEsp);
 	}
 
 	public boolean validarLoginExistente() {
-		if (!cadastroValidator.validarEmail(tecnicoEsp)) {
-			return false;
+		if (tecnicoEsp.getId() == null) {
+			if (!cadastroValidator.validarEmail(tecnicoEsp)) {
+				return false;
+			}
 		}
-		try {
-			pessoaDao.findByLogin(tecnicoEsp.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"E-mail já existe, escolha outro");
-			FacesContext.getCurrentInstance().addMessage("Atenção", message);
-			FacesContext.getCurrentInstance().validationFailed();
-
-			return false;
-		} catch (NoResultException nre) {
-			return true;
-		}
-
+		return true;
 	}
 
 	public Criptografia getCriptografia() {

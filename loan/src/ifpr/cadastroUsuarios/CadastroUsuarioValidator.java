@@ -94,11 +94,11 @@ public class CadastroUsuarioValidator {
 
 	public boolean validarDados(String siape) {
 		boolean isValid = true;
-
-		if (!validarEmail(pessoa)) {
-			isValid = false;
+		if (pessoa.getId() == null) {
+			if (!validarEmail(pessoa)) {
+				isValid = false;
+			}
 		}
-
 		if (!validarSiape(siape)) {
 			isValid = false;
 		}
@@ -107,12 +107,13 @@ public class CadastroUsuarioValidator {
 	}
 
 	public boolean validarDadosSec(Secretario secretario) {
+		pessoa = secretario;
 		boolean isValid = true;
-
-		if (!validarEmail(secretario)) {
-			isValid = false;
+		if (pessoa.getId() == null) {
+			if (!validarEmail(secretario)) {
+				isValid = false;
+			}
 		}
-
 		if (!validarCpf1(secretario.getCpf())) {
 			isValid = false;
 		}

@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.persistence.NoResultException;
 
 import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.criptografia.Criptografia;
@@ -67,13 +64,12 @@ public class SecretarioMB {
 	}
 
 	public void salvar() {
-		cadastroValidator.setPessoa(secretario);
+		secretario.setTipo(TipoPessoa.ROLE_SECRETARIO);
 		if (cadastroValidator.validarDadosSec(secretario)) {
 			if (secretario.getId() != null) {
 				secretarioDao.update(secretario);
 			} else if (validarLoginExistente()) {
 				gerarSenha();
-				secretario.setTipo(TipoPessoa.ROLE_SECRETARIO);
 				String md5 = criptografia.criptografar(secretario.getSenha());
 				secretario.setSenha(md5);
 				secretarioDao.salvar(secretario);
@@ -90,26 +86,16 @@ public class SecretarioMB {
 	}
 
 	private void enviarEmail() {
-		// cadastroValidator.setPessoa(secretario);
 		cadastroValidator.enviarEmail(secretario);
 	}
 
 	public boolean validarLoginExistente() {
-		if (!cadastroValidator.validarEmail(secretario)) {
-			return false;
+		if (secretario.getId() == null) {
+			if (!cadastroValidator.validarEmail(secretario)) {
+				return false;
+			}
 		}
-		try {
-			pessoaDao.findByLogin(secretario.getLogin());
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"E-mail já existe, escolha outro");
-			FacesContext.getCurrentInstance().addMessage("Atenção", message);
-			FacesContext.getCurrentInstance().validationFailed();
-
-			return false;
-		} catch (NoResultException nre) {
-			return true;
-		}
-
+		return true;
 	}
 
 	public void gerarCrachas() {

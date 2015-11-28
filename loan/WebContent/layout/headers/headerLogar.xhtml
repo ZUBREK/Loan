@@ -35,10 +35,11 @@
 			</table>
 		</form>
 
-
-		<p:commandLink value="Esqueceu sua senha?" update="senha_form"
-			oncomplete="PF('esqueceuSenhaDialog').show()"/>
-
+		<h:form id="formEsqueceuSenha">
+			<p:commandLink value="Esqueceu sua senha?" update="senha_form"
+				oncomplete="PF('esqueceuSenhaDialog').show()" styleClass="forgetPass"/>
+		</h:form>
+		
 		<p:dialog widgetVar="esqueceuSenhaDialog" closable="false"
 			resizable=" false" height="50" width="350">
 			<h:form id="senha_form">

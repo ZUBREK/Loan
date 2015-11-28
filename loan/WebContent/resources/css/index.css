@@ -58,3 +58,8 @@ div#content {
 .ui-button{
 	width:100px;
 }
+
+.forgetPass{
+	float: right;
+	padding-left: 30px; 
+}

@@ -70,7 +70,7 @@ public class ChaveMB {
 
 	@ManagedProperty(value = "#{partidaTimeDao}")
 	private PartidaTimeDao partidaTimeDao;
-	
+
 	@ManagedProperty(value = "#{homeMB}")
 	private HomeMB homeMB;
 
@@ -116,8 +116,6 @@ public class ChaveMB {
 	private Integer qtdGruposEscolhida;
 
 	private Chave chaveSelected;
-	
-	
 
 	public ChaveMB() {
 	}
@@ -511,7 +509,7 @@ public class ChaveMB {
 						partida = partidaTime.getPartida();
 						for (int i = 0; i < nodesCompetidores.size(); i++) {
 							PartidaTime ptpAtual = (PartidaTime) nodesCompetidores.get(i).getData();
-							if (!ptpAtual.equals(partidaTime)) {
+							if (!ptpAtual.equals(partidaTime) && ptpAtual.getTime() !=null) {
 								ptpAdversario = ptpAtual;
 								RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
 							}
@@ -532,7 +530,7 @@ public class ChaveMB {
 			Time timeAdversario = ptpAdversario.getTime();
 			pontosTime = partidaTime.getTime().getPontosTime();
 			if (partidaTime.getPlacar() > ptpAdversario.getPlacar() && ptpAdversario.getPlacar() != -1) {
-				partidaTimeDao.update(partidaTime);	
+				partidaTimeDao.update(partidaTime);
 				setarTimeVitoriosoPtp(partidaTime.getTime());
 				setarPlacarTime(pontosTimeAdversario, 0);
 				setarPlacarTime(pontosTime, 3);
@@ -545,14 +543,15 @@ public class ChaveMB {
 				terminarPartida();
 			} else if (partidaTime.getPlacar() == ptpAdversario.getPlacar()
 					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-				partidaTimeDao.update(partidaTime);	
-				setarPlacarTime(pontosTime, 0);
-				setarPlacarTime(pontosTimeAdversario, 0);
+				partidaTimeDao.update(partidaTime);
+				setarPlacarTime(pontosTime, 1);
+				setarPlacarTime(pontosTimeAdversario, 1);
 				partidaTimeMeuPai.setPlacar(-2);
 				partidaTimeDao.update(partidaTimeMeuPai);
 				terminarPartida();
-			}
-			else if(chave.getTipo().equals(TipoCompeticao.MATA_MATA)){
+			} else if (ptpAdversario.getPlacar() == -1) {
+				partidaTimeDao.update(partidaTime);
+			} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
 				mensagemFaces("PLACAR INVÁLIDO!", "Não pode haver empate no tipo MATA-MATA!");
 			}
 			chave = chaveDao.findById(chave.getId());
@@ -562,6 +561,8 @@ public class ChaveMB {
 					terminarChave();
 				}
 			}
+			partidaTime = null;
+			selectedNode = null;
 		}
 		RequestContext.getCurrentInstance().execute("PF('confirmPartidaDialog').hide()");
 	}
@@ -571,10 +572,10 @@ public class ChaveMB {
 		chaveDao.update(chave);
 		Time timeVencedor = timesSemNullSemDuplicado.get(0);
 		for (Chave chave : grupoChaves.getChaves()) {
-			if(chave.getTipo().equals(TipoCompeticao.MATA_MATA)){
+			if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
 				for (Partida partida : chave.getPartidas()) {
 					for (PartidaTime partidaTime : partida.getPartidasTimesPlacares()) {
-						if(partidaTime.getTime() == null){
+						if (partidaTime.getTime() == null) {
 							partidaTime.setTime(timeVencedor);
 							partidaTimeDao.update(partidaTime);
 							return;
@@ -1025,9 +1026,9 @@ public class ChaveMB {
 	public void setChaveSelected(Chave chaveSelected) {
 		this.chaveSelected = chaveSelected;
 	}
-	
-	public boolean getIsAdm(){
-		if(homeMB.getPessoaLogada().getTipo().equals(TipoPessoa.ROLE_ADMIN)){
+
+	public boolean getIsAdm() {
+		if (homeMB.getPessoaLogada().getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
 			return true;
 		}
 		return false;
@@ -1040,6 +1041,5 @@ public class ChaveMB {
 	public void setHomeMB(HomeMB homeMB) {
 		this.homeMB = homeMB;
 	}
-
 
 }

@@ -57,14 +57,14 @@
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>gerSec</from-outcome>
-			<to-view-id>/tec_adm/secretario.xhtml</to-view-id>
+			<to-view-id>/adm/secretario.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>gerEstudante</from-outcome>
-			<to-view-id>/tec_adm/estudante.xhtml</to-view-id>
+			<to-view-id>/user/estudante.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>

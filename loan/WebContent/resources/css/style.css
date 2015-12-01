@@ -9,7 +9,8 @@ div#site {
 }
 
 div#header {
-	background: #68727B; margin-bottom : 5px;
+	background:#68727B none repeat-x scroll 0px 0px;
+	margin-bottom : 5px;
 	height: 193px;
 	margin-bottom: 5px;
 

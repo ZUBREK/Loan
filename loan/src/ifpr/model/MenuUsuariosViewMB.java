@@ -43,22 +43,23 @@ public class MenuUsuariosViewMB {
 		adicionarItem("Página Principal", Paths.INDEX, "home16", false);
 		adicionarItem("Meu Perfil", Paths.HOME, "home16", false);
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
-			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS, "teacher16", false);
-			adicionarItem("Gerenciar - Arquivos", Paths.ARQUIVOS, "download16", false);
-			adicionarItem("Gerenciar - Campus", Paths.CAMPUS, "escola16", false);
-			adicionarItem("Gerenciar - Notícias", Paths.NOTICIAS, "android216", false);
-			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "planoEnsino16", false);
-			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
+			
+			adicionarItem("Eventos", Paths.EVENTOS, "teacher16", false);
+			adicionarItem("Arquivos", Paths.ARQUIVOS, "download16", false);
+			adicionarItem("Campus", Paths.CAMPUS, "escola16", false);
+			adicionarItem("Notícias", Paths.NOTICIAS, "android216", false);
+			adicionarItem("Projetos PEA", Paths.PROJETOS, "planoEnsino16", false);
+			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
 			
-			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS, "attach16", false);
+			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_COORDENADOR)) {
 		
-			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
-			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "attach16", false);
+			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
+			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_SECRETARIO)) {
 		
@@ -68,8 +69,8 @@ public class MenuUsuariosViewMB {
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)) {
 	
-			adicionarItem("Gerenciar - Notícias", Paths.NOTICIAS, "attach16", false);
-			submenu = new DefaultSubMenu("Gerenciar - Usuários");
+			adicionarItem("Notícias", Paths.NOTICIAS, "attach16", false);
+			submenu = new DefaultSubMenu("Usuários");
 			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 			adicionarItem("Tec. Administrativos", Paths.TECADM, "user16", true);
 			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
@@ -79,18 +80,18 @@ public class MenuUsuariosViewMB {
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
 		
-			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS, "attach16", false);
-			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
-			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS, "attach16", false);
+			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
+			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
+			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 		}
 
 	}
 
 	private void adicionarItensAdm() {
-		submenu = new DefaultSubMenu("Gerenciar - Usuários");
-		adicionarItem("Tec. Administrativos", Paths.TECADM, "user16", true);
+		submenu = new DefaultSubMenu("Usuários");
+		adicionarItem("Téc. Administrativos", Paths.TECADM, "user16", true);
 
-		adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
+		adicionarItem("Téc. Esportivos", Paths.TECESP, "user16", true);
 
 		adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 
@@ -98,7 +99,7 @@ public class MenuUsuariosViewMB {
 
 		adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", true);
 		model.addElement(submenu);
-		submenu = new DefaultSubMenu("Gerenciar - Competição");
+		submenu = new DefaultSubMenu("Competição");
 
 		adicionarItem("Modalidades", Paths.MODALIDADES, "user16", true);
 

@@ -75,13 +75,7 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>gerNoticia</from-outcome>
-			<to-view-id>/adm/noticia.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-	</navigation-rule>
+
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>gerTime</from-outcome>
@@ -96,28 +90,14 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>gerProjeto</from-outcome>
-			<to-view-id>/tec_adm/projeto.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-	</navigation-rule>
+
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>gerDelegacao</from-outcome>
 			<to-view-id>/tec_adm/delegacao.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>gerAssistencia</from-outcome>
-			<to-view-id>/tec_adm/tec_coord/coord/horarioAssistencia.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-	</navigation-rule>
-	
+	</navigation-rule>	
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>erro</from-outcome>

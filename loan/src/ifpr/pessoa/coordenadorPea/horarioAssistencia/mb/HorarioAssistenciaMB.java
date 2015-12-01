@@ -131,6 +131,8 @@ public class HorarioAssistenciaMB {
 	}
 
 	public void setHorarioAssistencia(HorarioAssistencia horarioAssistencia) {
+		estudante = horarioAssistencia.getEstudante();
+		campus = estudante.getCampus();
 		this.horarioAssistencia = horarioAssistencia;
 	}
 

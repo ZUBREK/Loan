@@ -137,6 +137,7 @@ public class TecnicoAdministrativoMB {
 	}
 
 	public void setTecnicoAdm(TecnicoAdministrativo tecnicoAdm) {
+		campus = tecnicoAdm.getCampus();	
 		this.tecnicoAdm = tecnicoAdm;
 	}
 

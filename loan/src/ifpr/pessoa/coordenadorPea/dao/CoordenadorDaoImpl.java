@@ -11,22 +11,20 @@ import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-@ManagedBean(name="coordenadorDao")
+@ManagedBean(name = "coordenadorDao")
 @ApplicationScoped
-public class CoordenadorDaoImpl  extends GenericDao<CoordenadorPea> implements CoordenadorDao {
-	
+public class CoordenadorDaoImpl extends GenericDao<CoordenadorPea> implements CoordenadorDao {
+
 	private static final long serialVersionUID = 1L;
-	
-	public CoordenadorDaoImpl()
-	{
+
+	public CoordenadorDaoImpl() {
 		super(CoordenadorPea.class);
 	}
 
 	@Override
 	public CoordenadorPea pesquisarPorSiape(String siape) {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
-				+ " a where a.siape = :siape");
+		Query query = em.createQuery("SELECT a from " + classe.getSimpleName() + " a where a.siape = :siape");
 		query.setParameter("siape", siape);
 
 		return (CoordenadorPea) query.getSingleResult();
@@ -35,27 +33,24 @@ public class CoordenadorDaoImpl  extends GenericDao<CoordenadorPea> implements C
 	@Override
 	public CoordenadorPea pesquisarPorSiape(String siape, int id) {
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
-				+ " a where a.siape = :siape and a.id != :id");
+		Query query = em
+				.createQuery("SELECT a from " + classe.getSimpleName() + " a where a.siape = :siape and a.id != :id");
 		query.setParameter("siape", siape);
 		query.setParameter("id", id);
 		return (CoordenadorPea) query.getSingleResult();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<CoordenadorPea> findByNomeRole(String nome) {
 		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') and authority = :role1 or authority = :role2");
+		Query q = em.createQuery(
+				"select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') and authority = :role1 or authority = :role2");
 		q.setParameter("nome", nome);
-		q.setParameter("role1", TipoPessoa.ROLE_COORDENADOR);
-		q.setParameter("role2", TipoPessoa.ROLE_TEC_COORD);
+		q.setParameter("role1", TipoPessoa.ROLE_COORDENADOR.toString());
+		q.setParameter("role2", TipoPessoa.ROLE_TEC_COORD.toString());
 		q.setMaxResults(10);
 
 		return q.getResultList();
 	}
-	
-	
-	
+
 }
-	

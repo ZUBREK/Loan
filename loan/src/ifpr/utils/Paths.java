@@ -11,10 +11,10 @@ public abstract class Paths {
 	public static final String COORDENADORES = "/tec_adm/coordenadorPea.ifpr";
 	public static final String SECRETARIOS = "/tec_adm/secretario.ifpr";
 	public static final String CAMPUS = "/adm/campus.ifpr";
-	public static final String NOTICIAS = "/tec_adm/noticia.ifpr";
+	public static final String NOTICIAS = "/adm/noticia.ifpr";
 	public static final String MODALIDADES = "/adm/modalidade.ifpr";
 	public static final String TIMES = "/tec_adm/time.ifpr";
-	public static final String ESTUDANTES = "/tec_adm/estudante.ifpr";
+	public static final String ESTUDANTES = "/user/estudante.ifpr";
 	public static final String PROJETOS = "/coord/projeto.ifpr";
 	public static final String DELEGACOES = "/tec_adm/delegacao.ifpr";
 	public static final String HORARIOASSISTENCIA = "/coord/horarioAssistencia.ifpr";

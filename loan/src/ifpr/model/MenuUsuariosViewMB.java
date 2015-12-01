@@ -55,11 +55,13 @@ public class MenuUsuariosViewMB {
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
 			
 			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
+			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_COORDENADOR)) {
 		
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
+			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_SECRETARIO)) {
 		
@@ -69,20 +71,27 @@ public class MenuUsuariosViewMB {
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)) {
 	
-			adicionarItem("Notícias", Paths.NOTICIAS, "attach16", false);
+			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
+			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
+			
 			submenu = new DefaultSubMenu("Usuários");
 			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
-			adicionarItem("Tec. Administrativos", Paths.TECADM, "user16", true);
 			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
-			adicionarItem("Secretários", Paths.SECRETARIOS, "user16", true);
 			model.addElement(submenu);
-			adicionarItem("Times", Paths.TIMES, "user16", false);
+			submenu = new DefaultSubMenu("Competição");
+
+			adicionarItem("Times", Paths.TIMES, "user16", true);
+			adicionarItem("Delegações", Paths.DELEGACOES, "attach16", true);
+			model.addElement(submenu);
+
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
 		
 			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
+			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
+
 		}
 
 	}

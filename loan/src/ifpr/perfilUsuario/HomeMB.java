@@ -46,6 +46,7 @@ public class HomeMB {
 	private Arquivo arquivo;
 	private Pessoa pessoaLogada;
 	private boolean isAluno;
+	private boolean isAdm;
 	private List<String> atributos;
 	public RelatorioFinal relatorioFinal;
 
@@ -58,6 +59,7 @@ public class HomeMB {
 				context, "#{relatorioFinal}", RelatorioFinal.class);
 		pessoaLogada = loginController.getPessoaLogada();
 		isAluno = false;
+		isAdm = false;
 	}
 
 	@PostConstruct
@@ -69,6 +71,8 @@ public class HomeMB {
 		}
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ESTUDANTE))
 			isAluno = true;
+		if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
+			isAdm = true;
 
 	}
 
@@ -232,5 +236,12 @@ public class HomeMB {
 		this.relatorioFinal = relatorioFinal;
 	}
 
+	public boolean isAdm() {
+		return isAdm;
+	}
 
+	public void setAdm(boolean isAdm) {
+		this.isAdm = isAdm;
+	}
+	
 }

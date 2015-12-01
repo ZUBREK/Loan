@@ -120,6 +120,7 @@ public class CoordenadorMB {
 	}
 
 	public void setCoordenador(CoordenadorPea coordenador) {
+		campus = coordenador.getCampus();
 		this.coordenador = coordenador;
 	}
 

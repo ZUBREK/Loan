@@ -182,6 +182,7 @@ public class DelegacaoMB {
 	}
 
 	public void setDelegacao(Delegacao delegacao) {
+		campus = delegacao.getCampus();
 		this.delegacao = delegacao;
 	}
 

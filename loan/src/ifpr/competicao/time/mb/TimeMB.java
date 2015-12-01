@@ -1,19 +1,5 @@
 package ifpr.competicao.time.mb;
 
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.competicao.time.Time;
-import ifpr.competicao.time.dao.TimeDao;
-import ifpr.competicao.time.estudante.TimeEstudante;
-import ifpr.competicao.time.estudante.dao.TimeEstudanteDao;
-import ifpr.competicao.time.model.TimeLazyDataModel;
-import ifpr.modalidade.Modalidade;
-import ifpr.modalidade.dao.ModalidadeDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.estudante.dao.EstudanteDao;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-import ifpr.pessoa.tecnicoEsportivo.dao.TecnicoEsportivoDao;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +10,20 @@ import javax.faces.bean.ViewScoped;
 
 import org.primefaces.event.SelectEvent;
 
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.competicao.time.Time;
+import ifpr.competicao.time.dao.TimeDao;
+import ifpr.competicao.time.estudante.TimeEstudante;
+import ifpr.competicao.time.estudante.dao.TimeEstudanteDao;
+import ifpr.competicao.time.model.TimeLazyDataModel;
+import ifpr.modalidade.Modalidade;
+import ifpr.modalidade.dao.ModalidadeDao;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
+
 @ManagedBean(name = "timeMB")
 @ViewScoped
 public class TimeMB {
@@ -32,6 +32,9 @@ public class TimeMB {
 
 	@ManagedProperty(value = "#{timeDao}")
 	private TimeDao timeDao;
+
+	@ManagedProperty(value = "#{pessoaDao}")
+	private PessoaDao pessoaDao;
 
 	@ManagedProperty(value = "#{timeLazyDataModel}")
 	private TimeLazyDataModel timeLazyDataModel;
@@ -52,12 +55,9 @@ public class TimeMB {
 
 	private Modalidade modalidade;
 
-	@ManagedProperty(value = "#{tecnicoEsportivoDao}")
-	private TecnicoEsportivoDao tecEsportivoDao;
+	private List<Pessoa> listaTecEsportivo;
 
-	private List<TecnicoEsportivo> listaTecEsportivo;
-
-	private TecnicoEsportivo tecEsportivo;
+	private Pessoa tecEsportivo;
 
 	private List<Estudante> listaEstudante;
 
@@ -143,6 +143,9 @@ public class TimeMB {
 	}
 
 	public void setTime(Time time) {
+		campus = time.getCampus();
+		modalidade = time.getModalidade();
+		tecEsportivo = time.getTecnico();
 		this.time = time;
 	}
 
@@ -206,29 +209,13 @@ public class TimeMB {
 		return listaModalidade;
 	}
 
-	public TecnicoEsportivoDao getTecEsportivoDao() {
-		return tecEsportivoDao;
-	}
-
-	public void setTecEsportivoDao(TecnicoEsportivoDao tecEsportivoDao) {
-		this.tecEsportivoDao = tecEsportivoDao;
-	}
-
-	public List<TecnicoEsportivo> getListaTecEsportivo() {
-		listaTecEsportivo = tecEsportivoDao.listarPessoaByCampusEmAlfabetica(campus);
+	public List<Pessoa> getListaTecEsportivo() {
+		listaTecEsportivo = pessoaDao.listarPessoaByCampusEmAlfabetica(campus);
 		return listaTecEsportivo;
 	}
 
-	public void setListaTecEsportivo(List<TecnicoEsportivo> listaTecEsportivo) {
+	public void setListaTecEsportivo(List<Pessoa> listaTecEsportivo) {
 		this.listaTecEsportivo = listaTecEsportivo;
-	}
-
-	public TecnicoEsportivo getTecEsportivo() {
-		return tecEsportivo;
-	}
-
-	public void setTecEsportivo(TecnicoEsportivo tecEsportivo) {
-		this.tecEsportivo = tecEsportivo;
 	}
 
 	public void setListaModalidade(List<Modalidade> listaModalidade) {
@@ -291,4 +278,19 @@ public class TimeMB {
 		this.timeEstudante = timeEstudante;
 	}
 
+	public Pessoa getTecEsportivo() {
+		return tecEsportivo;
+	}
+
+	public void setTecEsportivo(Pessoa tecEsportivo) {
+		this.tecEsportivo = tecEsportivo;
+	}
+
+	public PessoaDao getPessoaDao() {
+		return pessoaDao;
+	}
+
+	public void setPessoaDao(PessoaDao pessoaDao) {
+		this.pessoaDao = pessoaDao;
+	}
 }

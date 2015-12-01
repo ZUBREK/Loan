@@ -111,13 +111,12 @@
 									itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
 							</p:selectOneMenu>
 
-							<p:outputLabel id="tecEsportivoLb" value="Ténico Esportivo:"
+							<p:outputLabel id="tecEsportivoLb" value="Técnico Esportivo:"
 								for="tecEsportiv" />
 							<p:selectOneMenu id="tecEsportiv" value="#{timeMB.tecEsportivo}"
 								filter="true" filterMatchMode="startsWith" required="true"
-								requiredMessage="Ténico Esportivo é obrigatório!"
-								converter="#{tecnicoEsportivoConverter}"
-								disabled="#{empty timeMB.campus}">
+								requiredMessage="Técnico Esportivo é obrigatório!"
+								converter="#{pessoaConverter}" disabled="#{empty timeMB.campus}">
 								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
 								<f:selectItems value="#{timeMB.listaTecEsportivo}"

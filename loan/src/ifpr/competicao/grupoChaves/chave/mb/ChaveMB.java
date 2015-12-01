@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -116,6 +117,8 @@ public class ChaveMB {
 	private Integer qtdGruposEscolhida;
 
 	private Chave chaveSelected;
+
+	private Date dataHora;
 
 	public ChaveMB() {
 	}
@@ -475,6 +478,7 @@ public class ChaveMB {
 			partidaDao.salvar(partida);
 		} else {
 			partida.setLocal(local);
+			partida.setDataHora(dataHora);
 			partidaDao.update(partida);
 		}
 	}
@@ -509,8 +513,10 @@ public class ChaveMB {
 						partida = partidaTime.getPartida();
 						for (int i = 0; i < nodesCompetidores.size(); i++) {
 							PartidaTime ptpAtual = (PartidaTime) nodesCompetidores.get(i).getData();
-							if (!ptpAtual.equals(partidaTime) && ptpAtual.getTime() !=null) {
+							if (!ptpAtual.equals(partidaTime) && ptpAtual.getTime() != null) {
 								ptpAdversario = ptpAtual;
+								local = partidaTime.getPartida().getLocal();
+								dataHora = partidaTime.getPartida().getDataHora();
 								RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
 							}
 						}
@@ -1040,6 +1046,14 @@ public class ChaveMB {
 
 	public void setHomeMB(HomeMB homeMB) {
 		this.homeMB = homeMB;
+	}
+
+	public Date getDataHora() {
+		return dataHora;
+	}
+
+	public void setDataHora(Date dataHora) {
+		this.dataHora = dataHora;
 	}
 
 }

@@ -154,6 +154,7 @@ public class TecnicoEsportivoMB {
 	}
 
 	public void setTecnicoEsp(TecnicoEsportivo tecnicoEsp) {
+		campus = tecnicoEsp.getCampus();
 		this.tecnicoEsp = tecnicoEsp;
 	}
 

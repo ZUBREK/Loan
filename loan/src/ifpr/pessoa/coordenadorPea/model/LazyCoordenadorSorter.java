@@ -18,7 +18,7 @@ public class LazyCoordenadorSorter implements Comparator<CoordenadorPea> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public int compare(CoordenadorPea p1, CoordenadorPea  p2) {
+	public int compare(CoordenadorPea p1, CoordenadorPea p2) {
 		try {
 			Object value1 = CoordenadorPea.class.getField(this.sortField).get(p1);
 			Object value2 = CoordenadorPea.class.getField(this.sortField).get(p2);

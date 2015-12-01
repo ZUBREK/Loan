@@ -284,7 +284,6 @@ public class RelatorioFinal {
 		addLinha("3° LUGAR: " + timeTerceiro.get(1).getNome(), false);
 	}
 
-	@SuppressWarnings("null")
 	private void addVencedores(List<Time> listaTime) {
 		Time timeVencedor = null;
 		Time timeSegundo = null;

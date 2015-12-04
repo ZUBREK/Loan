@@ -182,8 +182,8 @@
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
-						navigator="true" pattern="dd/mm/yyyy HH:mm"
-						maxdate="#{chaveMB.currentDate}" yearRange="c:c" required="true"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" readonlyInput="true"
+						maxdate="#{chaveMB.dataAtual}" yearRange="c:c" required="true"
 						requiredMessage="Data de início é obrigatória" mask="true" />
 
 					<p:outputLabel id="localLb" value="Local:" for="local" />
@@ -233,9 +233,9 @@
 
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
-					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}"
-						locale="pt" navigator="true" pattern="dd/mm/yyyy HH:mm"
-						yearRange="c:c" required="true" maxdate="#{chaveMB.currentDate}"
+					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" yearRange="c:c"
+						required="true" maxdate="#{chaveMB.dataAtual}"
 						requiredMessage="Data de início é obrigatória" mask="true" />
 
 					<p:outputLabel id="localLb" value="Local:" for="local" />

@@ -61,6 +61,7 @@ public class NoticiaMB {
 	}
 
 	public void criar() {
+		fotoNoticia = null;
 		noticia = new Noticia();
 
 	}
@@ -75,7 +76,7 @@ public class NoticiaMB {
 
 	public void salvar() {
 		if (fotoNoticia == null) {
-			mensagemFaces("ERRO!", "Selecione uma foto para a notícia!");
+			mensagemErroFaces("ERRO!", "Selecione uma foto para a notícia!");
 		} else {
 			if (noticia.getId() != null) {
 				noticia.setData(new Date());
@@ -126,9 +127,11 @@ public class NoticiaMB {
 		fos.close();
 	}
 
-	public void mensagemFaces(String titulo, String message) {
+	public void mensagemErroFaces(String titulo, String message) {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.validationFailed();
 	}
 
 	public Noticia getNoticia() {

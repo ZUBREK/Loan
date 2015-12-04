@@ -285,26 +285,18 @@ public class ChaveMB {
 	}
 
 	public void criar() {
+
+		qtdGruposPossiveis = null;
+		modalidade = null;
+		tipo = null;
+		tipos = null;
+		qtdGruposEscolhida = null;
 		grupoChaves = new GrupoChaves();
 	}
 
 	public void remover() {
 		try {
-			if (grupoChaves.getTipo().equals(TipoChaveamento.GRUPOS)) {
-				for (Chave chave : grupoChaves.getChaves()) {
-					pegarTimes(chave);
-					for (Time time : timesSemNullSemDuplicado) {
-						PontosTime pt = time.getPontosTime();
-						pt.setDerrotas(0);
-						pt.setEmpates(0);
-						pt.setPontos(0);
-						pt.setVitorias(0);
-						pt.setClassificacao(0);
-						pontosTimeDao.update(pt);
-					}
-				}
-			} else {
-				chave = grupoChaves.getChaves().get(0);
+			for (Chave chave : grupoChaves.getChaves()) {
 				pegarTimes(chave);
 				for (Time time : timesSemNullSemDuplicado) {
 					PontosTime pt = time.getPontosTime();
@@ -316,6 +308,7 @@ public class ChaveMB {
 					pontosTimeDao.update(pt);
 				}
 			}
+
 			grupoChavesDao.remover(grupoChaves);
 		} catch (ConstraintViolationException e) {
 			// facesmessage bagaça
@@ -1049,6 +1042,9 @@ public class ChaveMB {
 	}
 
 	public Date getDataHora() {
+		if (dataHora == null) {
+			return new Date();
+		}
 		return dataHora;
 	}
 

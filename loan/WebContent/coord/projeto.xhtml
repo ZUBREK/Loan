@@ -16,27 +16,12 @@
 			</h:form>
 
 			<h:form id="tableForm">
-				<p:contextMenu for="projetoTable">
-					<p:menuitem value="Relatórios" update=":visRelatoriosProjetoDlg"
-						icon="ui-icon-search"
-						actionListener="#{projetoMB.procurarRelatorios()}"
-						oncomplete="PF('visRelatoriosProjetoDialog').show()" />
-
-					<p:menuitem id="editarTR" value="Editar" icon="editar16"
-						update=":projeto_form" oncomplete="PF('projetoDialog').show()" />
-
-					<p:menuitem id="removerTR" value="Remover" icon="remover16"
-						oncomplete="PF('projetoConfirmDialog').show()" update=":confirm" />
-
-
-				</p:contextMenu>
 
 				<p:dataTable id="projetoTable"
 					value="#{projetoMB.projetoLazyDataModel}" var="projeto"
 					emptyMessage="Nenhum registro encontrado!" rows="10"
 					rowKey="#{projeto.id}" paginator="true" lazy="true"
-					filteredValue="#{projetoMB.projetoFiltered}"
-					selection="#{projetoMB.projeto}" selectionMode="single">
+					filteredValue="#{projetoMB.projetoFiltered}">
 
 					<f:facet name="header">
 						<h:outputText value="Projetos" />
@@ -60,10 +45,39 @@
 						<p:outputLabel value="#{projeto.coordenador.nome}" />
 					</p:column>
 
+					<p:column headerText="Editar" width="35">
+						<p:commandButton id="editarTR" value=" " style="margin-left: 3px;"
+							icon="editar16" update=":projeto_form"
+							oncomplete="PF('projetoDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{projeto}"
+								target="#{projetoMB.projeto}" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value=""
+							style="margin-left: 10px;" icon="remover16"
+							oncomplete="PF('projetoConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{projeto}"
+								target="#{projetoMB.projeto}" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column headerText="Relatórios" width="55">
+						<p:commandButton id="removerTR" value=""
+							style="margin-left: 15px;" update=":visRelatoriosProjetoDlg"
+							icon="ui-icon-search"
+							actionListener="#{projetoMB.procurarRelatorios()}"
+							oncomplete="PF('visRelatoriosProjetoDialog').show()"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{projeto}"
+								target="#{projetoMB.projeto}" />
+						</p:commandButton>
+					</p:column>
+
 				</p:dataTable>
-
 			</h:form>
-
 		</p:panel>
 
 		<p:dialog id="projetoDlg" widgetVar="projetoDialog"
@@ -226,29 +240,30 @@
 					<p:outputLabel id="campusLb" value="Campus:" for="campus" />
 
 					<p:outputLabel id="campus" value="#{projetoMB.projeto.campus}" />
-					
-					<p:outputLabel id="enviarRelatorioLb" value="Enviar Relatório:"/>
+
+					<p:outputLabel id="enviarRelatorioLb" value="Enviar Relatório:" />
 
 					<p:fileUpload id="relatorioUpload"
 						styleClass="fileupload-boleidous"
 						fileUploadListener="#{projetoMB.handleFileUpload}"
-						label="selecionar" auto="true"
-						 multiple="false" update=":visProjeto_form:arquivosList"
-						mode="advanced" cache="false" />
-				
+						label="selecionar" auto="true" multiple="false"
+						update=":visProjeto_form:arquivosList" mode="advanced"
+						cache="false" />
+
 
 				</p:panelGrid>
 				<p:contextMenu for="arquivosList">
-				
+
 					<p:menuitem value="Remover" update=":visProjeto_form:arquivosList"
 						icon="remover16" actionListener="#{projetoMB.apagarArquivo()}" />
-				
-				</p:contextMenu>
-			
 
-				<p:dataTable id="arquivosList" var="relatorio" selection="#{projetoMB.relatorio}"
-				selectionMode="single" rowKey="#{relatorio.id}"
-					value="#{projetoMB.relatorios}" paginator="true" rows="5"
+				</p:contextMenu>
+
+
+				<p:dataTable id="arquivosList" var="relatorio"
+					selection="#{projetoMB.relatorio}" selectionMode="single"
+					rowKey="#{relatorio.id}" value="#{projetoMB.relatorios}"
+					paginator="true" rows="5"
 					emptyMessage="Nenhum relatório encontrado!" first="0">
 
 					<p:column headerText="Arquivo">

@@ -16,18 +16,9 @@
 			</h:form>
 			<h:form id="table_form">
 
-				<p:contextMenu for="localTable">
-					<p:menuitem id="editar" value="Editar" icon="editar16"
-						update=":lcl_form" oncomplete="PF('lclDialog').show()" />
-
-					<p:menuitem id="removerTR" value="Remover" icon="remover16"
-						oncomplete="PF('confirmDialog').show()" update=":confirm" />
-				</p:contextMenu>
-
 				<p:dataTable id="localTable" value="#{localMB.localLazyDataModel}"
 					var="lcl" emptyMessage="Nenhum registro encontrado!" rows="10"
-					selectionMode="single" rowKey="#{lcl.id}" paginator="true"
-					lazy="true" selection="#{localMB.local}">
+					rowKey="#{lcl.id}" paginator="true" lazy="true">
 
 					<f:facet name="header">
 						<h:outputText value="Locais cadastradas" />
@@ -48,6 +39,24 @@
 
 					</p:column>
 
+					<p:column headerText="Editar" width="35">
+						<p:commandButton id="editarTR" value=" " style="margin-left: 3px;"
+							icon="editar16" update=":lcl_form"
+							oncomplete="PF('lclDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{lcl}"
+								target="#{localMB.local}" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value=""
+							style="margin-left: 10px;" icon="remover16"
+							oncomplete="PF('confirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{lcl}"
+								target="#{localMB.local}" />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 
 			</h:form>

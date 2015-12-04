@@ -18,8 +18,7 @@
 				<p:dataTable id="chaveTable"
 					value="#{chaveMB.grupoChavesLazyDataModel}" var="chav"
 					emptyMessage="Nenhum registro encontrado!" rows="10"
-					rowKey="#{chav.id}" paginator="true" lazy="true"
-					selection="#{chaveMB.grupoChaves}" selectionMode="single">
+					rowKey="#{chav.id}" paginator="true" lazy="true">
 
 					<f:facet name="header">
 						<h:outputText value="Chaves cadastradas" />
@@ -42,7 +41,7 @@
 							oncomplete="PF('editarChavDialog').show()"
 							styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{chav}"
-								target="#{chaveMB.chave}" />
+								target="#{chaveMB.grupoChaves}" />
 						</p:commandButton>
 					</p:column>
 					<p:column headerText="Remover" width="47">
@@ -51,7 +50,7 @@
 							oncomplete="PF('confirmDialog').show()"
 							rendered="#{chaveMB.isAdm}" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{chav}"
-								target="#{chaveMB.chave}" />
+								target="#{chaveMB.grupoChaves}" />
 						</p:commandButton>
 					</p:column>
 
@@ -183,7 +182,7 @@
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
-						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/2015"
+						navigator="true" pattern="dd/mm/yyyy HH:mm"
 						maxdate="#{chaveMB.currentDate}" yearRange="c:c" required="true"
 						requiredMessage="Data de início é obrigatória" mask="true" />
 
@@ -234,9 +233,9 @@
 
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
-					<p:calendar id="dataInicio" value="#{chaveMB.partida.dataHora}"
+					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}"
 						locale="pt" navigator="true" pattern="dd/mm/yyyy HH:mm"
-						yearRange="c:c" required="true"
+						yearRange="c:c" required="true" maxdate="#{chaveMB.currentDate}"
 						requiredMessage="Data de início é obrigatória" mask="true" />
 
 					<p:outputLabel id="localLb" value="Local:" for="local" />

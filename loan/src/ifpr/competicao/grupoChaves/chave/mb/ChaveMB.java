@@ -1056,4 +1056,8 @@ public class ChaveMB {
 		this.dataHora = dataHora;
 	}
 
+	public Date getCurrentDate() {
+		return new Date();
+	}
+
 }

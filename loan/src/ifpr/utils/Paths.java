@@ -37,12 +37,12 @@ public abstract class Paths {
 	public static final String PASTA_DECLARACOES =  LOAN_DOCS + "/declaracoes";
 	public static final String MOLDURA_DECLARACAO = LOAN_DOCS + "/molduraDeclaracoes.png";
 	public static final String ASSINATURA_DECLARAO = LOAN_DOCS + "/assinaturaDeclaracoes.png";
-	public static final String ARQUIVO_DECLARACOES = "DeclaraçõesJIFPR.pdf";
+	public static final String ARQUIVO_DECLARACOES = "DeclaracoesJIFPR.pdf";
 	public static final String CAMINHO_ARQUIVO_DECLARACOES = PASTA_DECLARACOES + "/" + ARQUIVO_DECLARACOES;
 	
 	
 	public static final String PASTA_RELATORIO = LOAN_DOCS + "/relatorioFinal";
-	public static final String RELATORIO = "RelatórioFinalJIFPR.pdf";
+	public static final String RELATORIO = "RelatorioFinalJIFPR.pdf";
 	public static final String CAMINHO_RELATORIO = PASTA_RELATORIO + "/" + RELATORIO;
 	
 	

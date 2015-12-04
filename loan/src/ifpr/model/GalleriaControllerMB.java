@@ -1,10 +1,6 @@
 package ifpr.model;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +8,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 
 import ifpr.arquivo.Arquivo;
 import ifpr.noticia.Noticia;
@@ -39,7 +33,7 @@ public class GalleriaControllerMB {
 		noticiasGalleria = new ArrayList<>();
 		noticias = noticiaDao.listDesc();
 		noticiasGalleria = noticias;
-		for (Noticia noticia : noticias) {
+		/*for (Noticia noticia : noticias) {
 			arquivo = noticia.getFoto();
 			Path path = Paths.get(arquivo.getCaminho());
 			FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -51,7 +45,7 @@ public class GalleriaControllerMB {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 
 	public void criaArquivo(byte[] bytes, String arquivo) {

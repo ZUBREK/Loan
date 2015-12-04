@@ -11,20 +11,10 @@
 			<p:growl id="msg" showDetail="true" />
 			<h:form>
 				<p:commandButton id="novoChave" value="Nova"
-					actionListener="#{chaveMB.criar}" rendered="#{chaveMB.isAdm}" 
+					actionListener="#{chaveMB.criar}" rendered="#{chaveMB.isAdm}"
 					oncomplete="PF('chavDialog').show()" update=":chavDlg" />
 			</h:form>
 			<h:form id="table_form">
-				<p:contextMenu id="contextMenuChave" for="chaveTable">
-					<p:menuitem value="Visualizar" update=":editarChavDialog"
-						icon="ui-icon-search" action="#{chaveMB.iniciarTreeNode()}"
-						oncomplete="PF('editarChavDialog').show()" />
-
-					<p:menuitem value="Remover" update=":confirm" icon="remover16"
-						oncomplete="PF('confirmDialog').show()" rendered="#{chaveMB.isAdm}"  />
-
-				</p:contextMenu>
-
 				<p:dataTable id="chaveTable"
 					value="#{chaveMB.grupoChavesLazyDataModel}" var="chav"
 					emptyMessage="Nenhum registro encontrado!" rows="10"
@@ -44,6 +34,27 @@
 					<p:column headerText="Tipo">
 						<h:outputText value="#{chav.tipo.label}" />
 					</p:column>
+
+					<p:column headerText="Ver" width="35">
+						<p:commandButton id="editarTR" value=" " style="margin-left: 3px;"
+							update=":editarChavDialog" icon="ui-icon-search"
+							action="#{chaveMB.iniciarTreeNode()}"
+							oncomplete="PF('editarChavDialog').show()"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{chav}"
+								target="#{chaveMB.chave}" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value=""
+							style="margin-left: 10px;" update=":confirm" icon="remover16"
+							oncomplete="PF('confirmDialog').show()"
+							rendered="#{chaveMB.isAdm}" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{chav}"
+								target="#{chaveMB.chave}" />
+						</p:commandButton>
+					</p:column>
+
 				</p:dataTable>
 
 			</h:form>
@@ -51,18 +62,17 @@
 		<p:dialog id="editarChavDialog" widgetVar="editarChavDialog"
 			header="Dados da chave:" width="1000" height="500" modal="true">
 			<h:form id="select_chave_form">
-				<h:outputText value="Grupo da chave: " style="font-size: 120%%"/>
+				<h:outputText value="Grupo da chave: " style="font-size: 120%%" />
 				<p:selectOneMenu id="chaveSelection"
 					value="#{chaveMB.chaveSelected}" converter="#{chaveConverter}"
 					disabled="#{chaveMB.isGrupos}">
-					<f:selectItem itemLabel="Selecione um grupo"
-						itemValue="" />
+					<f:selectItem itemLabel="Selecione um grupo" itemValue="" />
 					<f:selectItems value="#{chaveMB.grupoChaves.chaves}" var="chav"
 						itemValue="#{chav.nome}" />
 					<p:ajax event="change" update=":chav_form"
-						listener="#{chaveMB.chaveSelectionChanged}"/>
+						listener="#{chaveMB.chaveSelectionChanged}" />
 				</p:selectOneMenu>
-				<p:spacer height="2px"/>
+				<p:spacer height="2px" />
 			</h:form>
 			<h:form id="chav_form">
 				<p:tabView id="tabView" widgetVar="tabChave">
@@ -172,11 +182,10 @@
 
 					<p:outputLabel id="dataInicioLb" value="Data de Início:"
 						for="dataInicio" />
-					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}"
-						locale="pt" navigator="true" pattern="dd/mm/yyyy HH:mm"
-						mindate="1/1/2015" maxdate="31/12/2050" yearRange="c:c"
-						required="true" requiredMessage="Data de início é obrigatória"
-						mask="true" />
+					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/2015"
+						maxdate="#{chaveMB.currentDate}" yearRange="c:c" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true" />
 
 					<p:outputLabel id="localLb" value="Local:" for="local" />
 					<p:selectOneMenu id="local" value="#{chaveMB.local}" filter="true"

@@ -19,17 +19,6 @@
 			</h:form>
 
 			<h:form id="tableForm">
-
-				<p:contextMenu>
-
-					<p:menuitem id="editarTR" value="Editar" icon="editar16"
-						update=":noticia_form" oncomplete="PF('noticiaDialog').show()" />
-
-					<p:menuitem id="removerTR" value="Remover" icon="remover16"
-						oncomplete="PF('noticiaConfirmDialog').show()" update=":confirm" />
-
-				</p:contextMenu>
-
 				<p:dataTable id="noticiaTable"
 					value="#{noticiaMB.noticiaLazyDataModel}" var="notic"
 					emptyMessage="Nenhum registro encontrado!" rows="10"
@@ -53,6 +42,26 @@
 								pattern="dd/MM/yyyy HH:mm" />
 						</h:outputText>
 
+					</p:column>
+					
+					<p:column headerText="Editar" width="35">
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							style="margin-left: 3px;" update=":noticia_form"
+							oncomplete="PF('noticiaDialog').show()" styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{notic}"
+								target="#{noticiaMB.noticia}" />
+						</p:commandButton>
+					</p:column>
+					
+					<p:column headerText="Remover" width="47">
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 10px;"
+							oncomplete="PF('noticiaConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+							<f:setPropertyActionListener value="#{notic}"
+								target="#{noticiaMB.noticia}" />
+						</p:commandButton>
 					</p:column>
 
 				</p:dataTable>

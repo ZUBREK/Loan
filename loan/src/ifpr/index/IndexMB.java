@@ -128,7 +128,7 @@ public class IndexMB {
 
 			email.setSubject("[LOAN] - Nova Senha");
 			// gerar senha
-			email.setMsg("Olá " + pessoa.getNome() + ", \n\n Sua nova senha é:"
+			email.setMsg("Olá " + pessoa.getNome() + ", \n\n Sua nova senha: "
 					+ pessoa.getSenha()
 					+ "\n\n Para acessar o site clique aqui: "
 					+ Paths.SISTEMA_LOAN + " \n\n Atenciosamente \n Loan Team");

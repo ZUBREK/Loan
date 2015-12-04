@@ -3,14 +3,17 @@ package ifpr.noticia.mb;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 
@@ -71,30 +74,36 @@ public class NoticiaMB {
 	}
 
 	public void salvar() {
-		if (noticia.getId() != null) {
-			noticia.setData(new Date());
-			noticiaDao.update(noticia);
+		if (fotoNoticia == null) {
+			mensagemFaces("ERRO!", "Selecione uma foto para a notícia!");
 		} else {
-			noticia.setData(new Date());
-			noticiaDao.salvar(noticia);
+			if (noticia.getId() != null) {
+				noticia.setData(new Date());
+				noticiaDao.update(noticia);
+			} else {
+				noticia.setData(new Date());
+				noticiaDao.salvar(noticia);
+			}
 		}
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-		fotoNoticia = noticia.getFoto();
 		if (fotoNoticia == null) {
 			fotoNoticia = new Arquivo();
+		} else if (noticia.getData() == null) {
+			noticia.setData(new Date());
 		}
 		try {
-			String nomeArquivoStreamed = "NoticiaID" + noticia.getId() + "_" + event.getFile().getFileName();
+			fotoNoticia.setDataUpload(new Date());
+			String nomeArquivoStreamed = event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.PASTA_IMAGEM_NOTICIA + "/" + pessoaLogada.getId()
+			SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+			String caminho = Paths.PASTA_IMAGEM_NOTICIA + "/" + formater.format(noticia.getData())
 					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
 			criarArquivoDisco(arquivoByte, caminho);
 			fotoNoticia.setUploader(pessoaLogada);
 			fotoNoticia.setCaminho(caminho);
 			fotoNoticia.setNome(nomeArquivoStreamed);
-			fotoNoticia.setDataUpload(new Date());
 			if (fotoNoticia.getId() != null) {
 				arquivoDao.update(fotoNoticia);
 			} else {
@@ -117,11 +126,17 @@ public class NoticiaMB {
 		fos.close();
 	}
 
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+	}
+
 	public Noticia getNoticia() {
 		return noticia;
 	}
 
 	public void setNoticia(Noticia noticia) {
+		fotoNoticia = noticia.getFoto();
 		this.noticia = noticia;
 	}
 

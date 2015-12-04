@@ -159,21 +159,20 @@
 								</p:commandButton>
 							</p:column>
 						</p:dataTable>
+
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :time_form :msg"
+							actionListener="#{timeMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('timeDialog').hide()" />
 					</p:tab>
 				</p:tabView>
 			</h:form>
 			<f:facet name="footer">
-				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":tableForm :time_form :msg"
-					actionListener="#{timeMB.salvar}"
-					oncomplete="if(!args.validationFailed) PF('timeDialog').hide()" />
-
 				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
 					oncomplete="PF('timeDialog').hide()" update=":msg" immediate="true"
 					actionListener="#{timeMB.cancelar()}">
 					<p:resetInput target=":time_form" />
 				</p:commandButton>
-
 			</f:facet>
 		</p:dialog>
 

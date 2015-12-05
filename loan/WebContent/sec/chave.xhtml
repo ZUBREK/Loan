@@ -117,16 +117,16 @@
 								<h:outputText value="#{time.pontosTime.vitorias}" />
 							</p:column>
 							<p:column headerText="Empates"
-								rendered="#{chaveMB.chave.tipo != chaveMB.tipoClassificatorio}">
+								rendered="#{chaveMB.chave.tipo == chaveMB.tipoPontosCorridos}">
 								<h:outputText value="#{time.pontosTime.empates}" />
 							</p:column>
 							<p:column headerText="Derrotas"
-								rendered="#{chaveMB.chave.tipo != chaveMB.tipoClassificatorio}">
+								rendered="#{chaveMB.chave.tipo == chaveMB.tipoPontosCorridos}">
 								<h:outputText value="#{time.pontosTime.derrotas}" />
 							</p:column>
 
 							<p:column headerText="Total de Pontos"
-								rendered="#{chaveMB.chave.tipo != chaveMB.tipoClassificatorio}">
+								rendered="#{chaveMB.chave.tipo == chaveMB.tipoPontosCorridos}">
 								<h:outputText value="#{time.pontosTime.pontos}" />
 							</p:column>
 						</p:dataTable>
@@ -154,7 +154,7 @@
 									value="Clique para adicionar o placar do #{node}"
 									showEffect="fade" hideEffect="fade" />
 							</p:treeNode>
-							<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" />
+							<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" update=":part_form"/>
 
 						</p:tree>
 						<p:spacer height="10px" />
@@ -179,12 +179,15 @@
 						min="0" max="1000" required="true"
 						requiredMessage="Preencha os pontos(gols) do time!" />
 
-					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+					<p:outputLabel id="dataInicioLb" value="Data de Início da Partida:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy HH:mm" readonlyInput="true"
-						maxdate="#{chaveMB.dataAtual}" yearRange="c:c" required="true"
-						requiredMessage="Data de início é obrigatória" mask="true" />
+						yearRange="c:c" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true">
+						<p:ajax event="dateSelect" listener="#{chaveMB.checarData}"
+							update=":msg" />
+					</p:calendar>
 
 					<p:outputLabel id="localLb" value="Local:" for="local" />
 					<p:selectOneMenu id="local" value="#{chaveMB.local}" filter="true"
@@ -231,12 +234,15 @@
 						max="100" required="true"
 						requiredMessage="Preencha a classificação do time!" />
 
-					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+					<p:outputLabel id="dataInicioLb" value="Data de Início da Partida:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
-						navigator="true" pattern="dd/mm/yyyy HH:mm" yearRange="c:c"
-						required="true" maxdate="#{chaveMB.dataAtual}"
-						requiredMessage="Data de início é obrigatória" mask="true" />
+						navigator="true" pattern="dd/mm/yyyy HH:mm" readonlyInput="true"
+						yearRange="c:c" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true">
+						<p:ajax event="dateSelect" listener="#{chaveMB.checarData}"
+							update=":msg" />
+					</p:calendar>
 
 					<p:outputLabel id="localLb" value="Local:" for="local" />
 					<p:selectOneMenu id="local" value="#{chaveMB.local}" filter="true"
@@ -257,6 +263,7 @@
 							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
 							<p:resetInput target=":classifc_form" />
 						</p:commandButton>
+						
 						<p:commandButton id="cancelarClassificacaoTimeBt" value="Cancelar"
 							icon="cancelar16" onsuccess="PF('classificatorioDialog').hide()"
 							update="editarChavDialog"
@@ -276,7 +283,6 @@
 				<h:panelGrid columns="2">
 
 					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
-
 					<p:inputText id="nome" value="#{chaveMB.grupoChaves.nome}"
 						size="20" required="true" requiredMessage="Nome é obrigatório!" />
 
@@ -293,6 +299,7 @@
 						<f:selectItems value="#{timeMB.listaModalidade}" var="modalidd"
 							itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
 					</p:selectOneMenu>
+					
 					<p:outputLabel id="tipoLb" value="Tipo da chaveamento:" for="tipo" />
 					<p:selectOneMenu id="tipo" value="#{chaveMB.tipo}" label=""
 						disabled="#{empty chaveMB.modalidade}" required="true"
@@ -314,6 +321,7 @@
 					</p:selectOneMenu>
 
 					<p:spacer height="10px" />
+					
 					<f:facet name="footer">
 						<p:dialog modal="true" widgetVar="statusDialog"
 							header="Carregando" draggable="false" closable="false"

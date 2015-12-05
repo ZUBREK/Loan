@@ -562,12 +562,16 @@ public class ChaveMB {
 			if (getIsAdm()) {
 				if (partidaTimeMeuPai.getTime() != null) {
 					setarPontosTime(partidaTimeMeuPai.getTime().getPontosTime(), -3);
-					if (partidaTimeMeuPai.getTime().equals(partidaTime.getTime())) {
+					if (!partidaTimeMeuPai.getTime().equals(partidaTime.getTime())) {
 						diminuirDerrota(partidaTime.getTime().getPontosTime());
 					} else {
 						diminuirDerrota(ptpAdversario.getTime().getPontosTime());
 					}
-
+				} else {
+					if (partidaTimeMeuPai.getPlacar() == -2) {
+						diminuirEmpate(partidaTime.getTime().getPontosTime());
+						diminuirEmpate(ptpAdversario.getTime().getPontosTime());
+					}
 				}
 			}
 			PontosTime pontosTimeAdversario = ptpAdversario.getTime().getPontosTime();
@@ -609,6 +613,12 @@ public class ChaveMB {
 			selectedNode = null;
 		}
 		RequestContext.getCurrentInstance().execute("PF('confirmPartidaDialog').hide()");
+	}
+
+	private void diminuirEmpate(PontosTime pontosTime2) {
+		pontosTime2.setPontos(pontosTime2.getPontos() - 1);
+		pontosTime2.setEmpates(pontosTime2.getEmpates() - 1);
+
 	}
 
 	private void diminuirDerrota(PontosTime pontosTime2) {
@@ -655,6 +665,7 @@ public class ChaveMB {
 		if (pontosGanhos > 1) {
 			pontosTime2.setVitorias(pontosTime2.getVitorias() + 1);
 		} else if (pontosGanhos == 1) {
+
 			pontosTime2.setEmpates(pontosTime2.getEmpates() + 1);
 		} else if (pontosGanhos == 0) {
 			pontosTime2.setDerrotas(pontosTime2.getDerrotas() + 1);

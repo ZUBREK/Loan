@@ -1,5 +1,6 @@
 package ifpr.competicao.grupoChaves.chave.mb;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import javax.validation.ValidationException;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -119,6 +121,8 @@ public class ChaveMB {
 	private Chave chaveSelected;
 
 	private Date dataHora;
+
+	private Integer placar;
 
 	public ChaveMB() {
 	}
@@ -278,6 +282,21 @@ public class ChaveMB {
 		return false;
 	}
 
+	public void checarData(SelectEvent event) {
+		Date dataAtual = new Date();
+		Date dataSelecionada = (Date) event.getObject();
+		SimpleDateFormat formater = new SimpleDateFormat("yyyy");
+		String anoDataSelecionada = formater.format(dataSelecionada);
+		String anoDataAtual = formater.format(dataAtual);
+		if (dataSelecionada.after(dataAtual)) {
+			mensagemErroFaces("ERRO!", "Data inválida - Data posterior ao dia atual");
+		} else if (!anoDataSelecionada.equals(anoDataAtual)) {
+			mensagemErroFaces("ERRO!", "Data inválida - Ano anterior ao atual");
+		} else if (partida.getDataHora() != null && !dataSelecionada.equals(partida.getDataHora())) {
+			mensagemAvisoFaces("Tem certeza?", "Você está alterando uma data já cadastrada!");
+		}
+	}
+
 	private void adicionarItensLista(List<PartidaTime> ptps) {
 		for (PartidaTime partidaTimePlacar : ptps) {
 			partidaTimes.add(partidaTimePlacar);
@@ -316,9 +335,16 @@ public class ChaveMB {
 
 	}
 
-	public void mensagemFaces(String titulo, String message) {
+	public void mensagemErroFaces(String titulo, String message) {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.validationFailed();
+	}
+
+	public void mensagemAvisoFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_WARN, titulo, message));
 	}
 
 	public void cancelar() {
@@ -500,20 +526,14 @@ public class ChaveMB {
 			partidaTimeMeuPai = (PartidaTime) meuPai.getData();
 			List<TreeNode> nodesCompetidores = meuPai.getChildren();
 			if (partidaTime.getTime() != null) {
-				if (partidaTimeMeuPai.getTime() == null) {
-					if (partidaTime.getPlacar() == -1) {
-						pontosTime = partidaTime.getTime().getPontosTime();
-						partida = partidaTime.getPartida();
-						for (int i = 0; i < nodesCompetidores.size(); i++) {
-							PartidaTime ptpAtual = (PartidaTime) nodesCompetidores.get(i).getData();
-							if (!ptpAtual.equals(partidaTime) && ptpAtual.getTime() != null) {
-								ptpAdversario = ptpAtual;
-								local = partidaTime.getPartida().getLocal();
-								dataHora = partidaTime.getPartida().getDataHora();
-								RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
-							}
+				if (!getIsAdm()) {
+					if (partidaTimeMeuPai.getTime() == null) {
+						if (partidaTime.getPlacar() == -1) {
+							setarPartidaPontosAdversario(nodesCompetidores);
 						}
 					}
+				} else {
+					setarPartidaPontosAdversario(nodesCompetidores);
 				}
 			}
 		} catch (Exception e) {
@@ -521,37 +541,62 @@ public class ChaveMB {
 		}
 	}
 
+	private void setarPartidaPontosAdversario(List<TreeNode> nodesCompetidores) {
+		pontosTime = partidaTime.getTime().getPontosTime();
+		partida = partidaTime.getPartida();
+		for (int i = 0; i < nodesCompetidores.size(); i++) {
+			PartidaTime ptpAtual = (PartidaTime) nodesCompetidores.get(i).getData();
+			if (!ptpAtual.equals(partidaTime) && ptpAtual.getTime() != null) {
+				ptpAdversario = ptpAtual;
+				local = partidaTime.getPartida().getLocal();
+				dataHora = partidaTime.getPartida().getDataHora();
+				placar = partidaTime.getPlacar();
+				RequestContext.getCurrentInstance().execute("PF('partidaChavDialog').show()");
+			}
+		}
+	}
+
 	public void salvarPartidaTime() {
 		salvarPartida();
 		if (partidaTime.getPlacar() != -1) {
+			if (getIsAdm()) {
+				if (partidaTimeMeuPai.getTime() != null) {
+					setarPontosTime(partidaTimeMeuPai.getTime().getPontosTime(), -3);
+					if (partidaTimeMeuPai.getTime().equals(partidaTime.getTime())) {
+						diminuirDerrota(partidaTime.getTime().getPontosTime());
+					} else {
+						diminuirDerrota(ptpAdversario.getTime().getPontosTime());
+					}
 
+				}
+			}
 			PontosTime pontosTimeAdversario = ptpAdversario.getTime().getPontosTime();
 			Time timeAdversario = ptpAdversario.getTime();
 			pontosTime = partidaTime.getTime().getPontosTime();
 			if (partidaTime.getPlacar() > ptpAdversario.getPlacar() && ptpAdversario.getPlacar() != -1) {
 				partidaTimeDao.update(partidaTime);
 				setarTimeVitoriosoPtp(partidaTime.getTime());
-				setarPlacarTime(pontosTimeAdversario, 0);
-				setarPlacarTime(pontosTime, 3);
+				setarPontosTime(pontosTimeAdversario, 0);
+				setarPontosTime(pontosTime, 3);
 				terminarPartida();
 			} else if (partidaTime.getPlacar() < ptpAdversario.getPlacar()) {
 				partidaTimeDao.update(partidaTime);
 				setarTimeVitoriosoPtp(timeAdversario);
-				setarPlacarTime(pontosTime, 0);
-				setarPlacarTime(pontosTimeAdversario, 3);
+				setarPontosTime(pontosTime, 0);
+				setarPontosTime(pontosTimeAdversario, 3);
 				terminarPartida();
 			} else if (partidaTime.getPlacar() == ptpAdversario.getPlacar()
 					&& !chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
 				partidaTimeDao.update(partidaTime);
-				setarPlacarTime(pontosTime, 1);
-				setarPlacarTime(pontosTimeAdversario, 1);
+				setarPontosTime(pontosTime, 1);
+				setarPontosTime(pontosTimeAdversario, 1);
 				partidaTimeMeuPai.setPlacar(-2);
 				partidaTimeDao.update(partidaTimeMeuPai);
 				terminarPartida();
 			} else if (ptpAdversario.getPlacar() == -1) {
 				partidaTimeDao.update(partidaTime);
 			} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-				mensagemFaces("PLACAR INVÁLIDO!", "Não pode haver empate no tipo MATA-MATA!");
+				mensagemErroFaces("PLACAR INVÁLIDO!", "Não pode haver empate no tipo MATA-MATA!");
 			}
 			chave = chaveDao.findById(chave.getId());
 			iniciarTreeNode();
@@ -564,6 +609,12 @@ public class ChaveMB {
 			selectedNode = null;
 		}
 		RequestContext.getCurrentInstance().execute("PF('confirmPartidaDialog').hide()");
+	}
+
+	private void diminuirDerrota(PontosTime pontosTime2) {
+		pontosTime2.setDerrotas(pontosTime2.getDerrotas() - 1);
+		pontosTimeDao.update(pontosTime2);
+
 	}
 
 	private void terminarChave() {
@@ -599,15 +650,18 @@ public class ChaveMB {
 		salvarPartida();
 	}
 
-	private void setarPlacarTime(PontosTime pontosTime2, int pontosGanhos) {
+	private void setarPontosTime(PontosTime pontosTime2, int pontosGanhos) {
 		pontosTime2.setPontos(pontosTime2.getPontos() + pontosGanhos);
 		if (pontosGanhos > 1) {
 			pontosTime2.setVitorias(pontosTime2.getVitorias() + 1);
 		} else if (pontosGanhos == 1) {
 			pontosTime2.setEmpates(pontosTime2.getEmpates() + 1);
-		} else {
+		} else if (pontosGanhos == 0) {
 			pontosTime2.setDerrotas(pontosTime2.getDerrotas() + 1);
+		} else if (pontosGanhos < 0) {
+			pontosTime2.setVitorias(pontosTime2.getVitorias() - 1);
 		}
+
 		pontosTimeDao.update(pontosTime2);
 	}
 
@@ -796,7 +850,7 @@ public class ChaveMB {
 		if (!grupoChavesDao.hasChave(modalidade)) {
 			timesModalidade = timeDao.pesquisarPorModalidade(modalidade);
 			if (timesModalidade.size() < 2) {
-				mensagemFaces("Erro na Quantidade de Times!", "Quantidade de times insuficiente!");
+				mensagemErroFaces("Erro na Quantidade de Times!", "Quantidade de times insuficiente!");
 				ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
 				tiposOld.clear();
 				TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
@@ -817,7 +871,7 @@ public class ChaveMB {
 				}
 			}
 		} else {
-			mensagemFaces("Erro!", "Já existe uma chave para a modalidade selecionada!");
+			mensagemErroFaces("Erro!", "Já existe uma chave para a modalidade selecionada!");
 			ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
 			tiposOld.clear();
 			TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
@@ -927,6 +981,10 @@ public class ChaveMB {
 
 	public TipoCompeticao getTipoClassificatorio() {
 		return TipoCompeticao.CLASSIFICATORIO;
+	}
+
+	public TipoCompeticao getTipoPontosCorridos() {
+		return TipoCompeticao.PONTOS_CORRIDOS;
 	}
 
 	public boolean getIsNotMataMata() {
@@ -1042,9 +1100,6 @@ public class ChaveMB {
 	}
 
 	public Date getDataHora() {
-		if (dataHora == null) {
-			return new Date();
-		}
 		return dataHora;
 	}
 
@@ -1052,8 +1107,12 @@ public class ChaveMB {
 		this.dataHora = dataHora;
 	}
 
-	public Date getCurrentDate() {
-		return new Date();
+	public Integer getPlacar() {
+		return placar;
+	}
+
+	public void setPlacar(Integer placar) {
+		this.placar = placar;
 	}
 
 }

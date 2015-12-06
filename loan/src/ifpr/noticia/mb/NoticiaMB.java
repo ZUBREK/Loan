@@ -91,16 +91,17 @@ public class NoticiaMB {
 	public void handleFileUpload(FileUploadEvent event) {
 		if (fotoNoticia == null) {
 			fotoNoticia = new Arquivo();
-		} else if (noticia.getData() == null) {
+		} 
+		if (noticia.getData() == null) {
 			noticia.setData(new Date());
 		}
 		try {
-			fotoNoticia.setDataUpload(new Date());
-			String nomeArquivoStreamed = event.getFile().getFileName();
-			byte[] arquivoByte = event.getFile().getContents();
 			SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
-			String caminho = Paths.PASTA_IMAGEM_NOTICIA + "/" + formater.format(noticia.getData())
-					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
+			fotoNoticia.setDataUpload(new Date());
+			String nomeArquivoStreamed = formater.format(noticia.getData()) + event.getFile().getFileName();
+			byte[] arquivoByte = event.getFile().getContents();
+
+			String caminho = Paths.PASTA_IMAGEM_NOTICIA + "/" + nomeArquivoStreamed;
 			criarArquivoDisco(arquivoByte, caminho);
 			fotoNoticia.setUploader(pessoaLogada);
 			fotoNoticia.setCaminho(caminho);
@@ -110,6 +111,7 @@ public class NoticiaMB {
 			} else {
 				arquivoDao.salvar(fotoNoticia);
 				noticia.setFoto(fotoNoticia);
+				noticiaDao.salvar(noticia);
 			}
 
 		} catch (Exception ex) {

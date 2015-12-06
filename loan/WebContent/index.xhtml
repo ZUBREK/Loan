@@ -20,7 +20,7 @@
 			<p:galleria value="#{galleriaControllerMB.noticiasGalleria}" 
 				var="noticia" panelWidth="827" panelHeight="420" showCaption="true">
 				<p:graphicImage width="827" height="420" cache="false" 
-					value="resources/images/nature#{noticia.id}.png"
+					value="http://localhost:8080/loan/noticia/#{noticia.foto.nome}"
 					title="#{noticia.titulo}">
 				</p:graphicImage>
 			</p:galleria>

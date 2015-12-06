@@ -1,18 +1,5 @@
 package ifpr.perfilUsuario;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.arquivo.dao.ArquivoDao;
-import ifpr.geradorPdf.RelatorioFinal;
-import ifpr.model.LoginControllerMB;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.TipoPessoa;
-import ifpr.pessoa.coordenadorPea.CoordenadorPea;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.secretario.Secretario;
-import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
-import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-import ifpr.utils.Paths;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,17 +13,29 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@ManagedBean(name = "homeMB")
-@SessionScoped
-public class HomeMB {
+import ifpr.arquivo.Arquivo;
+import ifpr.arquivo.dao.ArquivoDao;
+import ifpr.geradorPdf.RelatorioFinal;
+import ifpr.model.LoginControllerMB;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.TipoPessoa;
+import ifpr.pessoa.coordenadorPea.CoordenadorPea;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.secretario.Secretario;
+import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
+import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
+import ifpr.utils.Paths;
 
+@ManagedBean(name = "homeMB")
+@ViewScoped
+public class HomeMB {
 
 	private StreamedContent imagem;
 	private LoginControllerMB loginController;
@@ -50,13 +49,12 @@ public class HomeMB {
 	private List<String> atributos;
 	public RelatorioFinal relatorioFinal;
 
-
 	public HomeMB() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		loginController = context.getApplication().evaluateExpressionGet(
-				context, "#{loginControllerMB}", LoginControllerMB.class);
-		relatorioFinal = context.getApplication().evaluateExpressionGet(
-				context, "#{relatorioFinal}", RelatorioFinal.class);
+		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
+				LoginControllerMB.class);
+		relatorioFinal = context.getApplication().evaluateExpressionGet(context, "#{relatorioFinal}",
+				RelatorioFinal.class);
 		pessoaLogada = loginController.getPessoaLogada();
 		isAluno = false;
 		isAdm = false;
@@ -64,14 +62,13 @@ public class HomeMB {
 
 	@PostConstruct
 	public void init() {
-		try {
-			arquivo = arquivoDao.pesquisarFotoPerfil(pessoaLogada);
-		} catch (Exception e) {
+		arquivo = arquivoDao.pesquisarFotoPerfil(pessoaLogada);
+		if (arquivo.getId() == null) {
 			criarArqFotoPerfil(pessoaLogada);
 		}
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ESTUDANTE))
 			isAluno = true;
-		if(pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
+		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN))
 			isAdm = true;
 
 	}
@@ -82,16 +79,12 @@ public class HomeMB {
 
 	public void handleFileUpload(FileUploadEvent event) {
 		try {
-			String nomeArquivoStreamed = event.getFile().getFileName();
+			String nomeArquivoStreamed = pessoaLogada.getId() + "_" + event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.CAMINHO_FOTO_PERFIL
-					+ "/"
-					+ pessoaLogada.getId()
-					+ nomeArquivoStreamed.substring(
-							nomeArquivoStreamed.lastIndexOf('.'),
-							nomeArquivoStreamed.length());
+			String caminho = Paths.CAMINHO_FOTO_PERFIL + "/" + nomeArquivoStreamed;
 			criarArquivoDisco(arquivoByte, caminho);
 			arquivo.setCaminho(caminho);
+			arquivo.setNome(nomeArquivoStreamed);
 			salvarArquivo();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -99,7 +92,6 @@ public class HomeMB {
 	}
 
 	public void criarArqFotoPerfil(Pessoa pessoa) {
-		arquivo = new Arquivo();
 		arquivo.setFotoPerfil(true);
 		arquivo.setCaminho(Paths.FOTO_DEFAULT);
 		arquivo.setNome("fotoPerfil" + pessoa.getId());
@@ -116,8 +108,7 @@ public class HomeMB {
 		}
 	}
 
-	private void criarArquivoDisco(byte[] bytes, String arquivo)
-			throws IOException {
+	private void criarArquivoDisco(byte[] bytes, String arquivo) throws IOException {
 		File file = new File(Paths.CAMINHO_FOTO_PERFIL);
 		file.mkdirs();
 		FileOutputStream fos;
@@ -207,9 +198,8 @@ public class HomeMB {
 			atributos.add("Matricula: " + estudante.getMatricula());
 			atributos.add("RG: " + estudante.getRg());
 			atributos.add("CPF: " + estudante.getCpf());
-			atributos.add("Data de Nascimento: "
-					+ new SimpleDateFormat("dd/MM/yyyy").format(estudante
-							.getDataNascimento()));
+			atributos.add(
+					"Data de Nascimento: " + new SimpleDateFormat("dd/MM/yyyy").format(estudante.getDataNascimento()));
 			atributos.add("Câmpus: " + estudante.getCampus());
 
 		}
@@ -220,7 +210,7 @@ public class HomeMB {
 		this.atributos = atributos;
 	}
 
-	public boolean isAluno() {
+	public boolean getIsAluno() {
 		return isAluno;
 	}
 
@@ -243,5 +233,5 @@ public class HomeMB {
 	public void setAdm(boolean isAdm) {
 		this.isAdm = isAdm;
 	}
-	
+
 }

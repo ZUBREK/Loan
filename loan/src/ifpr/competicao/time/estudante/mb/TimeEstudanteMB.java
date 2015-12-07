@@ -44,7 +44,12 @@ public class TimeEstudanteMB {
 	}
 
 	public void remover() {
-		timeEstudanteDao.remover(timeEstudante);
+		try {
+			timeEstudanteDao.remover(timeEstudante);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

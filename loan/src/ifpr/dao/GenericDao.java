@@ -78,7 +78,7 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 	}
 
 	@Override
-	public void remover(T obj) {
+	public void remover(T obj) throws Exception {
 		EntityManager em = emf.createEntityManager();
 		try {
 			utx.begin();
@@ -95,7 +95,7 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 					utx.rollback();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		} finally {
 			em.close();
 		}

@@ -1,15 +1,5 @@
 package ifpr.competicao.time.mb;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-
-import org.primefaces.event.SelectEvent;
-
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.competicao.time.Time;
@@ -23,6 +13,18 @@ import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.estudante.dao.EstudanteDao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "timeMB")
 @ViewScoped
@@ -82,6 +84,8 @@ public class TimeMB {
 	public void criar() {
 		time = new Time();
 		isUpdate = false;
+		campus = null;
+		modalidade = null;
 	}
 
 	@PostConstruct
@@ -91,16 +95,38 @@ public class TimeMB {
 	}
 
 	public void remover() {
-		timeDao.remover(time);
+
+		try {
+			timeDao.remover(time);
+		} catch (Exception ex) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
+					"Time em competição não pode ser apagado!");
+			context.addMessage("Atenção", message);
+
+		}
+		time = null;
 	}
 
 	public void cancelar() {
 		if (isUpdate == true) {
 			time = null;
 		} else {
-			remover();
+			if (time.getId() != null) {
+				remover();
+			} else {
+				time = null;
+			}
 			isUpdate = true;
 		}
+
+		campus = null;
+		modalidade = null;
+	}
+
+	public void cancelarEstudante() {
+		timeEstudante = null;
 	}
 
 	public void salvar() {
@@ -112,24 +138,34 @@ public class TimeMB {
 			time.setTecnico(tecEsportivo);
 			timeDao.salvar(time);
 		}
+
 	}
 
 	public void adicionarEstudante() {
-		TimeEstudante timeEstd = new TimeEstudante();
-		timeEstd.setEstudante(estudante);
-		timeEstd.setTime(time);
-		timeEstudanteDao.salvar(timeEstd);
-		time.getTimeEstudante().add(timeEstd);
-		estudante = new Estudante();
+		if (estudante.getId() != null) {
+			TimeEstudante timeEstd = new TimeEstudante();
+			timeEstd.setEstudante(estudante);
+			timeEstd.setTime(time);
+			timeEstudanteDao.salvar(timeEstd);
+			time.getTimeEstudante().add(timeEstd);
+			estudante = new Estudante();
+		}
 	}
 
 	public void removerEstudante() {
-		timeEstudanteDao.remover(timeEstudante);
+		try {
+			timeEstudanteDao.remover(timeEstudante);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
 		time.getTimeEstudante().remove(timeEstudante);
+		timeEstudante = null;
 	}
 
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
-		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampus(nome, campus);
+		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome,
+				campus, time);
 		return listaEstudante;
 	}
 

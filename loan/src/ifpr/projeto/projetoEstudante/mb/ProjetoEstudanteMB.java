@@ -37,7 +37,12 @@ public class ProjetoEstudanteMB {
 	}
 
 	public void remover() {
-		projetoEstudanteDao.remover(projetoEstudante);
+		try {
+			projetoEstudanteDao.remover(projetoEstudante);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

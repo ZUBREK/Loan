@@ -185,10 +185,10 @@ public class EventoMB {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Datas inválidas!",
+					FacesMessage.SEVERITY_ERROR, "Datas invï¿½lidas!",
 					"A data final deve ser posterior a inicial!");
 
-			context.addMessage("Atenção", message);
+			context.addMessage("Atenï¿½ï¿½o", message);
 			context.validationFailed();
 
 			return;
@@ -227,10 +227,10 @@ public class EventoMB {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Datas inválidas!",
+					FacesMessage.SEVERITY_ERROR, "Datas invï¿½lidas!",
 					"A data final deve ser posterior a inicial!");
 
-			context.addMessage("Atenção", message);
+			context.addMessage("Atenï¿½ï¿½o", message);
 			context.validationFailed();
 
 			return;
@@ -253,10 +253,10 @@ public class EventoMB {
 
 				FacesContext context = FacesContext.getCurrentInstance();
 				FacesMessage message = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Datas inválidas!",
+						FacesMessage.SEVERITY_ERROR, "Datas invï¿½lidas!",
 						"A data final deve ser posterior a inicial!");
 
-				context.addMessage("Atenção", message);
+				context.addMessage("Atenï¿½ï¿½o", message);
 				context.validationFailed();
 
 				return;
@@ -272,9 +272,15 @@ public class EventoMB {
 	}
 
 	public void removerPessoa() {
-		eventoPessoaDao.remover(eventoPessoa);
-		evento.getEventoPessoas().remove(eventoPessoa);
-		eventoDao.remover(evento);
+		try {
+			eventoPessoaDao.remover(eventoPessoa);
+			evento.getEventoPessoas().remove(eventoPessoa);
+			eventoDao.remover(evento);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	public String popularArquivos() {
@@ -339,7 +345,12 @@ public class EventoMB {
 			File file = new File(arquivoEvento.getCaminho());
 			file.delete();
 
-			arquivoEventoDao.remover(arquivoEvento);
+			try {
+				arquivoEventoDao.remover(arquivoEvento);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			arquivoEvento = null;
 		}
 		return;

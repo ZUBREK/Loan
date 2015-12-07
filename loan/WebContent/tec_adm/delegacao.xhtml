@@ -36,23 +36,24 @@
 					<p:column headerText="Câmpus">
 						<p:outputLabel value="#{delegacao.campus.cidade}" />
 					</p:column>
-					
+
 					<p:column headerText="Declarações" width="70">
 
 						<p:commandButton id="gerarDeclaracaoPessoa" icon="pdf16" value=" "
 							style="margin-left: 20px;" ajax="false"
-							actionListener="#{delegacaoMB.gerarDeclaracoes(delegacao)}" 
+							actionListener="#{delegacaoMB.gerarDeclaracoes(delegacao)}"
 							styleClass="apenasIcone">
-							<p:fileDownload id="download" value="#{declaracoesPdf.arqStreamed}" />
+							<p:fileDownload id="download"
+								value="#{declaracoesPdf.arqStreamed}" />
 						</p:commandButton>
 					</p:column>
-					
+
 
 					<p:column headerText="Crachás" width="43">
 
 						<p:commandButton id="gerarCrachaPessoa" icon="pdf16" value=" "
 							style="margin-left: 3px;" ajax="false"
-							actionListener="#{delegacaoMB.gerarCrachas(delegacao)}" 
+							actionListener="#{delegacaoMB.gerarCrachas(delegacao)}"
 							styleClass="apenasIcone">
 							<p:fileDownload id="download" value="#{crachasPdf.arqStreamed}" />
 						</p:commandButton>
@@ -85,23 +86,23 @@
 		</p:panel>
 
 		<p:dialog id="delegacaoDlg" widgetVar="delegacaoDialog"
-			header="Dados da Delegação" width="600" height="200" modal="true"
+			header="Dados da Delegação" width="600" height="350" modal="true"
 			closable="false">
 
 			<h:form id="delegacao_form">
 				<p:tabView id="tabView" widgetVar="tabBagaca">
 					<p:tab title="Dados Em Geral">
 
-						<h:panelGrid columns="3">
+						<h:panelGrid columns="2">
 
 							<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
 
 							<p:inputText id="nome" value="#{delegacaoMB.delegacao.nome}"
 								size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
-							<p:message for="nome" />
 
 							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+
 							<p:selectOneMenu id="campus" value="#{delegacaoMB.campus}"
 								filter="true" filterMatchMode="startsWith" required="true"
 								requiredMessage="Câmpus é obrigatório!"
@@ -115,69 +116,114 @@
 
 							</p:selectOneMenu>
 
-							<p:message for="campus" />
-
 							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":tableForm :delegacao_form :msg"
+								icon="salvar16" update=":delegacao_form :msg"
 								actionListener="#{delegacaoMB.salvar}"
-								oncomplete="PF('tabBagaca').select(1);" />
+								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
+
+							<p:commandButton id="cancelarBt" value="Cancelar"
+								icon="cancelar16" oncomplete="PF('delegacaoDialog').hide()"
+								update=":tableForm :msg" immediate="true"
+								actionListener="#{delegacaoMB.cancelar()}">
+
+								<p:resetInput target=":delegacao_form" />
+
+							</p:commandButton>
 
 						</h:panelGrid>
 					</p:tab>
-					<p:tab title="Adicionar Pessoas:">
-						<h:outputLabel id="pessoasLb" value="Pessoa:" for="pessoa" />
-						<p:autoComplete id="pessoa"
-							completeMethod="#{delegacaoMB.pesquisarPessoaNome}"
-							value="#{delegacaoMB.pessoa}" converter="#{pessoaConverter}"
-							minQueryLength="3" forceSelection="true">
-							<p:ajax event="itemSelect" listener="#{delegacaoMB.onItemSelect}" />
-						</p:autoComplete>
 
-						<p:commandButton id="addPessoasBt" value="Adicionar" icon="apply"
-							actionListener="#{delegacaoMB.adicionarPessoa()}"
-							update=":delegacao_form:tabView:pessoasList" />
+					<p:tab title="Adicionar Pessoas:"
+						disabled="#{delegacaoMB.delegacao.id == null}">
 
+
+						<p:panelGrid columns="3">
+						
+							<h:outputLabel id="pessoasLb" value="Nome da Pessoa: " for="pessoa" />
+
+							<p:autoComplete id="pessoa"
+								completeMethod="#{delegacaoMB.pesquisarPessoaNome}"
+								value="#{delegacaoMB.pessoa}" converter="#{pessoaConverter}"
+								minQueryLength="3" forceSelection="true">
+
+								<p:ajax event="itemSelect"
+									listener="#{delegacaoMB.onItemSelect}" />
+
+							</p:autoComplete>
+
+							<p:commandButton id="addPessoasBt" value="Adicionar" icon="apply"
+								actionListener="#{delegacaoMB.adicionarPessoa()}"
+								update=":delegacao_form:tabView:pessoasList :delegacao_form:tabView:pessoa" />
+
+							<p:outputLabel value="Chefe da delegação: " for="chefe" />
+
+							<p:selectOneMenu id="chefe" label="Chefe da Delegação"
+								value="#{delegacaoMB.chefeDelegacao}" converter="#{pessoaConverter}">
+
+								<p:ajax event="itemSelect" listener="#{delegacaoMB.marcarChefe}" />
+
+								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+								<f:selectItems value="#{delegacaoMB.delegacao.delegacaoPessoas}"
+									var="delegPessoa" itemLabel="#{delegPessoa.pessoa.nome}"
+									itemValue="#{delegPessoa.pessoa}" />
+
+							</p:selectOneMenu>
+							
+							<p:spacer />
+							
+						</p:panelGrid>
+						
 						<p:dataTable id="pessoasList" var="delegacaoPessoa"
 							value="#{delegacaoMB.delegacao.delegacaoPessoas}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
+
 							<p:column headerText="Nome">
+
 								<h:outputText value="#{delegacaoPessoa.pessoa.nome}" />
+
 							</p:column>
 
 							<p:column headerText="Ações">
-								<p:selectBooleanCheckbox itemLabel="Chefe"
-									value="#{delegacaoPessoa.chefe}">
-									<p:ajax update=":msg" listener="#{delegacaoMB.marcarChefe()}">
-										<f:setPropertyActionListener value="#{delegacaoPessoa}"
-											target="#{delegacaoMB.delegacaoPessoa}" />
-									</p:ajax>
-								</p:selectBooleanCheckbox>
 
 								<p:commandButton id="removeEstudanteBt" value="Remover"
 									icon="remover16"
 									oncomplete="PF('delegacaoPessoaConfirmDialog').show()"
 									update=":confirmRmv">
+
 									<f:setPropertyActionListener value="#{delegacaoPessoa}"
 										target="#{delegacaoMB.delegacaoPessoa}" />
+
 								</p:commandButton>
+
 							</p:column>
+
 						</p:dataTable>
+
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :delegacao_form :msg"
+							actionListener="#{delegacaoMB.salvar}"
+							onstart="PF('tabBagaca').select(0);"
+							oncomplete="if(!args.validationFailed) PF('delegacaoDialog').hide()" />
+
+						<p:commandButton id="cancelarBt2" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('delegacaoDialog').hide();"
+							onstart="PF('tabBagaca').select(0);" update=":tableForm :msg "
+							immediate="true" actionListener="#{delegacaoMB.cancelar()}">
+
+							<p:resetInput target=":delegacao_form" />
+
+						</p:commandButton>
+
 					</p:tab>
+
 				</p:tabView>
+
 			</h:form>
-			<f:facet name="footer">
-				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
-					update=":tableForm :delegacao_form :msg"
-					actionListener="#{delegacaoMB.salvar}"
-					oncomplete="if(!args.validationFailed) PF('delegacaoDialog').hide()" />
 
-				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
-					oncomplete="PF('delegacaoDialog').hide()" update=":tableForm :msg"
-					immediate="true" actionListener="#{delegacaoMB.cancelar()}">
-					<p:resetInput target=":delegacao_form" />
-				</p:commandButton>
 
-			</f:facet>
+
+
 		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="delegacaoConfirmDialog"

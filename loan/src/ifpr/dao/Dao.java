@@ -12,7 +12,7 @@ public interface Dao<T> {
 
 	public T update(T obj);
 
-	public void remover(T obj);
+	public void remover(T obj) throws Exception;
 
 	public T findById(int id);
 

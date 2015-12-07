@@ -63,7 +63,12 @@ public class TecnicoEsportivoMB {
 	}
 
 	public void remover() {
-		tecEspDao.remover(tecnicoEsp);
+		try {
+			tecEspDao.remover(tecnicoEsp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

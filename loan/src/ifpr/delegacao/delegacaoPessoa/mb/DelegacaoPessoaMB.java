@@ -37,7 +37,12 @@ public class DelegacaoPessoaMB {
 	}
 
 	public void remover() {
-		delegacaoPessoaDao.remover(delegacaoPessoa);
+		try {
+			delegacaoPessoaDao.remover(delegacaoPessoa);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

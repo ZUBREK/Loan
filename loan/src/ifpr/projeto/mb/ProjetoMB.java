@@ -124,7 +124,12 @@ public class ProjetoMB {
 	}
 
 	public void remover() {
-		projetoDao.remover(projeto);
+		try {
+			projetoDao.remover(projeto);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {
@@ -149,22 +154,30 @@ public class ProjetoMB {
 	}
 
 	public void adicionarEstudante() {
-		ProjetoEstudante projetoEstd = new ProjetoEstudante();
-		projetoEstd.setEstudante(estudante);
-		projetoEstd.setProjeto(projeto);
-		projetoEstudanteDao.salvar(projetoEstd);
-		projeto.getProjetoEstudante().add(projetoEstd);
-		estudante = new Estudante();
+		if (estudante.getId() != null) {
+			ProjetoEstudante projetoEstd = new ProjetoEstudante();
+			projetoEstd.setEstudante(estudante);
+			projetoEstd.setProjeto(projeto);
+			projetoEstudanteDao.salvar(projetoEstd);
+			projeto.getProjetoEstudante().add(projetoEstd);
+			estudante = new Estudante();
+		}
 	}
 
 	public void removerEstudante() {
-		projetoEstudanteDao.remover(projetoEstudante);
-		projeto.getProjetoEstudante().remove(projetoEstudante);
+		try {
+			projetoEstudanteDao.remover(projetoEstudante);
+			projeto.getProjetoEstudante().remove(projetoEstudante);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
 		listaEstudante = estudanteDao
-				.pesquisarEstudanteNomeCampus(nome, campus);
+				.pesquisarEstudanteNomeCampusProjeto(nome, campus,projeto);
 		return listaEstudante;
 	}
 
@@ -207,7 +220,7 @@ public class ProjetoMB {
 			relatorio.setNome(nomeArquivoStreamed);
 			relatorio.setDataUpload(new Date());
 			relatorio.setProjeto(projeto);
-			
+
 			relatorioProjetoDao.salvar(relatorio);
 			procurarRelatorios();
 		} catch (Exception ex) {
@@ -217,14 +230,20 @@ public class ProjetoMB {
 	}
 
 	public void apagarArquivo() {
-		if (relatorio != null) {
-			File file = new File(relatorio.getCaminho());
-			file.delete();
 
-			relatorioProjetoDao.remover(relatorio);
-			relatorio = null;
-			procurarRelatorios();
+		try {
+			if (relatorio != null) {
+				File file = new File(relatorio.getCaminho());
+				file.delete();
+				relatorioProjetoDao.remover(relatorio);
+				relatorio = null;
+				procurarRelatorios();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 		return;
 	}
 

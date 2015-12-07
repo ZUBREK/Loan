@@ -65,7 +65,12 @@ public class CoordenadorMB {
 	}
 
 	public void remover() {
-		coordenadorDao.remover(coordenador);
+		try {
+			coordenadorDao.remover(coordenador);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

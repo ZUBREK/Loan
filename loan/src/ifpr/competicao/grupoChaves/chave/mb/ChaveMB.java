@@ -336,8 +336,9 @@ public class ChaveMB {
 			}
 
 			grupoChavesDao.remover(grupoChaves);
-		} catch (ConstraintViolationException e) {
-			// facesmessage baga�a
+		} catch (Exception e) {
+			//TODO: arrumar a msg
+			// facesmessage bagaca
 		}
 
 	}
@@ -608,7 +609,7 @@ public class ChaveMB {
 				} else if (ptpAdversario.getPlacar() == -1) {
 					partidaTimeDao.update(partidaTime);
 				} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-					mensagemErroFaces("PLACAR INVÁLIDO!", "Não pode haver empate no tipo MATA-MATA!");
+					mensagemErroFaces("PLACAR INVÃ�LIDO!", "NÃ£o pode haver empate no tipo MATA-MATA!");
 				}
 				chave = chaveDao.findById(chave.getId());
 				iniciarTreeNode();
@@ -891,7 +892,7 @@ public class ChaveMB {
 				}
 			}
 		} else {
-			mensagemErroFaces("Erro!", "Já existe uma chave para a modalidade selecionada!");
+			mensagemErroFaces("Erro!", "JÃ¡ existe uma chave para a modalidade selecionada!");
 			ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
 			tiposOld.clear();
 			TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);

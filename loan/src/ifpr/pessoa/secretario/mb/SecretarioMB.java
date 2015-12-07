@@ -56,7 +56,12 @@ public class SecretarioMB {
 	}
 
 	public void remover() {
-		secretarioDao.remover(secretario);
+		try {
+			secretarioDao.remover(secretario);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

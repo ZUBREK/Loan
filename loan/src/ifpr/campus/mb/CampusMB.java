@@ -35,7 +35,12 @@ public class CampusMB {
 	}
 
 	public void remover() {
-		campusDao.remover(campus);
+		try{
+			campusDao.remover(campus);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

@@ -1,6 +1,7 @@
 package ifpr.pessoa.dao;
 
 import ifpr.dao.Dao;
+import ifpr.delegacao.Delegacao;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
 
@@ -13,6 +14,8 @@ public interface PessoaDao extends Dao<Pessoa> {
 	public Pessoa findByLogin(String login);
 	
 	public List<Pessoa> findByRole(TipoPessoa tipo);
+
+	public List<Pessoa> pesquisarPorNomeParaDelegacao(String nome, Delegacao delegacao);
 	
 	
 }

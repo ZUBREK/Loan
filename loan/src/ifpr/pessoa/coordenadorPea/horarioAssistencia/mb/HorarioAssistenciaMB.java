@@ -71,7 +71,12 @@ public class HorarioAssistenciaMB {
 	}
 
 	public void remover() {
-		horarioAssistenciaDao.remover(horarioAssistencia);
+		try {
+			horarioAssistenciaDao.remover(horarioAssistencia);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

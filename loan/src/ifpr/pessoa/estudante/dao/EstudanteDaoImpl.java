@@ -1,8 +1,10 @@
 package ifpr.pessoa.estudante.dao;
 
 import ifpr.campus.Campus;
+import ifpr.competicao.time.Time;
 import ifpr.dao.GenericDao;
 import ifpr.pessoa.estudante.Estudante;
+import ifpr.projeto.Projeto;
 
 import java.util.List;
 
@@ -22,20 +24,6 @@ public class EstudanteDaoImpl extends GenericDao<Estudante> implements
 		super(Estudante.class);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Estudante> pesquisarEstudanteNomeCampus(String nome,
-			Campus campus) {
-		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from "
-						+ classe.getSimpleName()
-						+ " u where campus = :campus and lower(u.nome) like concat('%', :nome, '%') ");
-		q.setParameter("campus", campus);
-		q.setParameter("nome", nome);
-		q.setMaxResults(10);
-		return (List<Estudante>) q.getResultList();
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -74,17 +62,50 @@ public class EstudanteDaoImpl extends GenericDao<Estudante> implements
 		query.setParameter("matricula", matricula);
 		return (Estudante) query.getSingleResult();
 	}
-	
+
 	@Override
-	public Estudante pesquisarPorMatricula(String matricula,int id) {
+	public Estudante pesquisarPorMatricula(String matricula, int id) {
 		EntityManager em = emf.createEntityManager();
 		Query query = em.createQuery("SELECT a from " + classe.getSimpleName()
 				+ " a where a.matricula = :matricula and a.id != :id");
 		query.setParameter("matricula", matricula);
 		query.setParameter("id", id);
 		return (Estudante) query.getSingleResult();
-		
+
 	}
-	
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Estudante> pesquisarEstudanteNomeCampusTime(String nome,
+			Campus campus, Time time) {
+
+		EntityManager em = emf.createEntityManager();
+		Query q = em
+				.createQuery("select u from "
+						+ classe.getSimpleName()
+						+ " u where campus = :campus and lower(u.nome) like concat('%', :nome, '%') and u not in (select es.estudante from TimeEstudante es where es.time = :time) ");
+		q.setParameter("campus", campus);
+		q.setParameter("nome", nome);
+		q.setParameter("time", time);
+		q.setMaxResults(10);
+		return (List<Estudante>) q.getResultList();
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Estudante> pesquisarEstudanteNomeCampusProjeto(String nome,
+			Campus campus, Projeto projeto) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em
+				.createQuery("select u from "
+						+ classe.getSimpleName()
+						+ " u where campus = :campus and lower(u.nome) like concat('%', :nome, '%') and u not in (select pj.estudante from ProjetoEstudante pj where pj.projeto = :projeto ) ");
+		q.setParameter("campus", campus);
+		q.setParameter("nome", nome);
+		q.setParameter("projeto", projeto);
+		q.setMaxResults(10);
+		return (List<Estudante>) q.getResultList();
+	}
+
 }

@@ -65,7 +65,7 @@
 					</p:column>
 
 					<p:column headerText="Relatórios" width="55">
-						<p:commandButton id="removerTR" value=""
+						<p:commandButton id="visRelatorioTR" value=""
 							style="margin-left: 15px;" update=":visRelatoriosProjetoDlg"
 							icon="ui-icon-search"
 							actionListener="#{projetoMB.procurarRelatorios()}"
@@ -149,7 +149,7 @@
 							</p:selectOneMenu>
 
 							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":tableForm :projeto_form :msg"
+								icon="salvar16" update=":projeto_form :msg"
 								actionListener="#{projetoMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
@@ -166,14 +166,19 @@
 
 					</p:tab>
 
-					<p:tab title="Adicionar Estudantes:">
+					<p:tab title="Adicionar Estudantes:" disabled="#{projetoMB.projeto.id == null}">
+					
 						<h:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
+						
 						<p:autoComplete id="estudante"
 							completeMethod="#{projetoMB.pesquisarEstudanteNome}"
 							value="#{projetoMB.estudante}" converter="#{estudanteConverter}"
 							minQueryLength="3" forceSelection="true">
+							
 							<p:ajax event="itemSelect" listener="#{projetoMB.onItemSelect}" />
+							
 						</p:autoComplete>
+						
 						<p:commandButton id="addEstudanteBt" value="Adicionar"
 							icon="apply" actionListener="#{projetoMB.adicionarEstudante()}"
 							update=":projeto_form:tabView:estudantesList" />
@@ -181,19 +186,25 @@
 						<p:dataTable id="estudantesList" var="projetoEstudante"
 							value="#{projetoMB.projeto.projetoEstudante}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
+							
 							<p:column headerText="Nome">
 								<h:outputText value="#{projetoEstudante.estudante.nome}" />
 							</p:column>
 
 							<p:column headerText="Ações">
+							
 								<p:commandButton id="removeEstudanteBt" value="Remover"
 									icon="remover16"
 									oncomplete="PF('projetoEstConfirmDialog').show()"
 									update=":confirmRmv">
+									
 									<f:setPropertyActionListener value="#{projetoEstudante}"
 										target="#{projetoMB.projetoEstudante}" />
+										
 								</p:commandButton>
+								
 							</p:column>
+							
 						</p:dataTable>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
@@ -205,7 +216,9 @@
 							icon="cancelar16" oncomplete="PF('projetoDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{projetoMB.cancelar()}">
+							
 							<p:resetInput target=":projeto_form" />
+							
 						</p:commandButton>
 
 

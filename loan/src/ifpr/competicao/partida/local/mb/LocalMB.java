@@ -34,7 +34,12 @@ public class LocalMB {
 	}
 
 	public void remover() {
-		localDao.remover(local);
+		try {
+			localDao.remover(local);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

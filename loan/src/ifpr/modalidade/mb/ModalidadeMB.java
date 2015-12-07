@@ -9,7 +9,6 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.validation.ConstraintViolationException;
 
 
 @ManagedBean(name = "modalidadeMB")
@@ -38,8 +37,8 @@ public class ModalidadeMB {
 	public void remover() {
 		try{
 			modalidadeDao.remover(modalidade);
-		}catch(ConstraintViolationException e){
-			//facesmessage bagaça
+		}catch(Exception e){
+			//facesmessage bagaï¿½a
 		}
 		
 	}

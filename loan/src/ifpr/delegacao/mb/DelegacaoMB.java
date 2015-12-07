@@ -8,8 +8,8 @@ import ifpr.delegacao.delegacaoPessoa.DelegacaoPessoa;
 import ifpr.delegacao.delegacaoPessoa.dao.DelegacaoPessoaDao;
 import ifpr.delegacao.delegacaoPessoa.mb.DelegacaoPessoaMB;
 import ifpr.delegacao.model.DelegacaoLazyDataModel;
-import ifpr.geradorPdf.DeclaracoesPdf;
 import ifpr.geradorPdf.CrachasPdf;
+import ifpr.geradorPdf.DeclaracoesPdf;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.coordenadorPea.CoordenadorPea;
@@ -56,6 +56,8 @@ public class DelegacaoMB {
 
 	private Pessoa pessoa;
 
+	private Pessoa chefeDelegacao;
+
 	@ManagedProperty(value = "#{delegacaoPessoaDao}")
 	private DelegacaoPessoaDao delegacaoPessoaDao;
 
@@ -89,16 +91,30 @@ public class DelegacaoMB {
 	}
 
 	public void remover() {
-		delegacaoDao.remover(delegacao);
+
+		try {
+			for (DelegacaoPessoa dlg : delegacao.getDelegacaoPessoas()) {
+				delegacaoPessoaDao.remover(dlg);
+			}
+			delegacaoDao.remover(delegacao);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {
 		if (isUpdate == true) {
 			delegacao = null;
 		} else {
-			remover();
+			if (delegacao.getId() != null) {
+				remover();
+			} else {
+				delegacao = null;
+			}
 			isUpdate = true;
 		}
+		campus = null;
 	}
 
 	public void salvar() {
@@ -108,31 +124,42 @@ public class DelegacaoMB {
 			delegacao.setCampus(campus);
 			delegacaoDao.salvar(delegacao);
 		}
+		campus = null;
 	}
 
 	public void adicionarPessoa() {
-		delegacaoPessoa = new DelegacaoPessoa();
-		delegacaoPessoa.setPessoa(pessoa);
-		delegacaoPessoa.setDelegacao(delegacao);
-		delegacaoPessoaDao.salvar(delegacaoPessoa);
-		delegacao.getDelegacaoPessoas().add(delegacaoPessoa);
-		pessoa = new Pessoa();
+		if (pessoa != null) {
+			delegacaoPessoa = new DelegacaoPessoa();
+			delegacaoPessoa.setPessoa(pessoa);
+			delegacaoPessoa.setDelegacao(delegacao);
+			delegacaoPessoaDao.salvar(delegacaoPessoa);
+			delegacao.getDelegacaoPessoas().add(delegacaoPessoa);
+			pessoa = new Pessoa();
+		}
 	}
 
 	public void removerPessoa() {
-		delegacaoPessoaDao.remover(delegacaoPessoa);
+		try {
+			delegacaoPessoaDao.remover(delegacaoPessoa);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		delegacao.getDelegacaoPessoas().remove(delegacaoPessoa);
 	}
 
 	public List<Pessoa> pesquisarPessoaNome(String nome) {
+
 		List<Pessoa> listaPessoaNome;
 		listaPessoa = new ArrayList<Pessoa>();
-		listaPessoaNome = pessoaDao.pesquisarPorNome(nome);
+		listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome,
+				delegacao);
 		Pessoa pessoaVerifica = new Pessoa();
 		for (int i = 0; i < listaPessoaNome.size(); i++) {
 			pessoaVerifica = (Pessoa) listaPessoaNome.get(i);
 			verificaPessoa(pessoaVerifica);
 		}
+
 		return listaPessoa;
 	}
 
@@ -174,7 +201,18 @@ public class DelegacaoMB {
 	}
 
 	public void marcarChefe() {
-		delegacaoPessoa.setChefe(true);
+		if (chefeDelegacao != null) {
+			for (DelegacaoPessoa dlg : delegacao.getDelegacaoPessoas()) {
+
+				if (dlg.getPessoa().getId() == chefeDelegacao.getId()) {
+					dlg.setChefe(true);
+					delegacaoPessoaDao.update(dlg);
+				} else if (dlg.isChefe()) {
+					dlg.setChefe(false);
+					delegacaoPessoaDao.update(dlg);
+				}
+			}
+		}
 	}
 
 	public Delegacao getDelegacao() {
@@ -198,7 +236,8 @@ public class DelegacaoMB {
 		return delegacaoLazyDataModel;
 	}
 
-	public void setDelegacaoLazyDataModel(DelegacaoLazyDataModel delegacaoLazyDataModel) {
+	public void setDelegacaoLazyDataModel(
+			DelegacaoLazyDataModel delegacaoLazyDataModel) {
 		this.delegacaoLazyDataModel = delegacaoLazyDataModel;
 	}
 
@@ -305,5 +344,13 @@ public class DelegacaoMB {
 	public void setDeclaracoesPdf(DeclaracoesPdf declaracoesPdf) {
 		this.declaracoesPdf = declaracoesPdf;
 	}
-	
+
+	public Pessoa getChefeDelegacao() {
+		return chefeDelegacao;
+	}
+
+	public void setChefeDelegacao(Pessoa chefeDelegacao) {
+		this.chefeDelegacao = chefeDelegacao;
+	}
+
 }

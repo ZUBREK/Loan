@@ -93,7 +93,12 @@ public class EstudanteMB {
 	}
 
 	public void remover() {
-		estudanteDao.remover(estudante);
+		try {
+			estudanteDao.remover(estudante);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

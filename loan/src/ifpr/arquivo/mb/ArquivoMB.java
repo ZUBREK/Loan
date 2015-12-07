@@ -84,7 +84,12 @@ public class ArquivoMB {
 	public void remover() {
 		File file = new File(arquivo.getCaminho());
 		file.delete();
-		arquivoDao.remover(arquivo);
+		try{
+			arquivoDao.remover(arquivo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public ArquivoDao getArquivoDao() {

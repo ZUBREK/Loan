@@ -63,7 +63,12 @@ public class TecnicoAdministrativoMB {
 	}
 
 	public void remover() {
-		tecnicoAdmDao.remover(tecnicoAdm);
+		try {
+			tecnicoAdmDao.remover(tecnicoAdm);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {

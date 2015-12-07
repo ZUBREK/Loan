@@ -67,7 +67,12 @@ public class NoticiaMB {
 	}
 
 	public void remover() {
-		noticiaDao.remover(noticia);
+		try {
+			noticiaDao.remover(noticia);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void cancelar() {
@@ -76,7 +81,7 @@ public class NoticiaMB {
 
 	public void salvar() {
 		if (fotoNoticia == null) {
-			mensagemErroFaces("ERRO!", "Selecione uma foto para a notícia!");
+			mensagemErroFaces("ERRO!", "Selecione uma foto para a notï¿½cia!");
 		} else {
 			if (noticia.getId() != null) {
 				noticia.setData(new Date());

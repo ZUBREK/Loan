@@ -182,7 +182,7 @@
 					<p:outputLabel id="dataInicioLb" value="Data de Início da Partida:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
-						navigator="true" pattern="dd/mm/yyyy HH:mm" readonlyInput="true"
+						pattern="dd/MM/yyyy HH:mm" readonlyInput="true"
 						yearRange="c:c" required="true"
 						requiredMessage="Data de início é obrigatória" mask="true">
 						<p:ajax event="dateSelect" listener="#{chaveMB.checarData}"
@@ -237,7 +237,7 @@
 					<p:outputLabel id="dataInicioLb" value="Data de Início da Partida:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
-						navigator="true" pattern="dd/mm/yyyy HH:mm" readonlyInput="true"
+						navigator="true" pattern="dd/MM/yyyy HH:mm" readonlyInput="true"
 						yearRange="c:c" required="true"
 						requiredMessage="Data de início é obrigatória" mask="true">
 						<p:ajax event="dateSelect" listener="#{chaveMB.checarData}"

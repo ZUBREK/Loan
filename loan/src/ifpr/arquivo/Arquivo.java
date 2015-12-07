@@ -28,7 +28,7 @@ public class Arquivo {
 	@Column(name="caminho_arquivo")
 	private String caminho;
 
-	@Column(name="nome_arquivo",length=50)
+	@Column(name="nome_arquivo")
 	private String nome;
 
 	@Column(name="isFoto_perfil")

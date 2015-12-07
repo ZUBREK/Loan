@@ -25,7 +25,7 @@ public abstract class Paths {
 	public static final String INDEX = "/index.ifpr";
 	public static final String HOME = "/user/home.ifpr";
 	
-	public static final String LOAN_DOCS = "C:/home/loan_docs";
+	public static final String LOAN_DOCS = "C:/temp/loan_docs";
 	
 	public static final String PASTA_CRACHAS = LOAN_DOCS + "/cracha";
 	public static final String MOLDURA_CRACHA = LOAN_DOCS + "/molduraCracha.png";

@@ -13,15 +13,17 @@
 
 
 			<h:form id="idForm">
-				<p:fileUpload id="fotoPerfilUpload" rendered="#{!homeMB.aluno}"
+				<p:fileUpload id="fotoPerfilUpload" rendered="#{!homeMB.isAluno}"
 					styleClass="fileupload-boleidous"
 					fileUploadListener="#{homeMB.handleFileUpload}"
 					label="Procurar outra imagem de perfil" auto="true"
-					update=":idForm imagem" multiple="false" mode="advanced"
+					update="imagem" multiple="false" mode="advanced"
 					cache="false" />
 				<p:panelGrid id="panelFoto" columns="1" styleClass="imagemPerfil">
-					<p:graphicImage value="#{homeMB.imagem}" title="Foto de Perfil"
-						width="250" height="200" id="imagem" cache="false" />
+					<p:graphicImage
+						value="http://localhost:8080/loan/foto/#{homeMB.arquivo.nome}"
+						title="Foto de Perfil" width="250" height="200" id="imagem"
+						cache="false" />
 				</p:panelGrid>
 				<p:panelGrid columns="3">
 
@@ -32,8 +34,8 @@
 						oncomplete="PF('novoEmailDialog').show()" update="emailDlg" />
 
 					<p:commandButton id="gerarRelatorioFinal" rendered="#{homeMB.adm}"
-						icon="pdf16" value="Gerar Relatório"
-						ajax="false" actionListener="#{homeMB.gerarRelatorio()}">
+						icon="pdf16" value="Gerar Relatório" ajax="false"
+						actionListener="#{homeMB.gerarRelatorio()}">
 
 						<p:fileDownload id="download"
 							value="#{relatorioFinal.arqStreamed}" />

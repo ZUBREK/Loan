@@ -75,8 +75,8 @@ public class CadastroUsuarioValidator {
 
 			email.setSubject("[LOAN] - Novo cadastro");
 			// gerar senha
-			email.setMsg("Ol· " + pessoa.getNome() + ", \n\n VocÍ foi cadastrado no Sistema Loan como um "
-					+ pessoa.getTipo().getLabel() + " \n Para acessar o sistema seus dados s„o:"
+			email.setMsg("Ol√° " + pessoa.getNome() + ", \n\n Voc√™ foi cadastrado no Sistema Loan como um "
+					+ pessoa.getTipo().getLabel() + " \n Para acessar o sistema seus dados s√£o:"
 					+ " \n\n\t Login de acesso: " + pessoa.getLogin() + " \n\t Senha: " + pessoa.getSenha()
 					+ "\n\n Para acessar o site clique aqui: " + Paths.SISTEMA_LOAN
 					+ " \n\n Atenciosamente \n Loan Team");
@@ -87,7 +87,7 @@ public class CadastroUsuarioValidator {
 		} catch (EmailException e) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Falha no envio do e-mail!");
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 		}
 	}
@@ -154,9 +154,9 @@ public class CadastroUsuarioValidator {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"Digite apenas os n˙meros do RG!");
+					"Digite apenas os n√∫meros do RG!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 			UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:rg");
 			input.setValid(false);
@@ -172,9 +172,9 @@ public class CadastroUsuarioValidator {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"Digite apenas os n˙meros do RG!");
+					"Digite apenas os n√∫meros do RG!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 			UIInput input = (UIInput) context.getViewRoot().findComponent("tabGrande:dados_form:rg");
 			input.setValid(false);
@@ -191,9 +191,9 @@ public class CadastroUsuarioValidator {
 		if (siape.length() != 7) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"Siape com tamanho indevido, use 7 n˙meros!");
+					"Siape com tamanho indevido, use 7 n√∫meros!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:siape");
@@ -204,9 +204,9 @@ public class CadastroUsuarioValidator {
 		if (!siape.matches(regex)) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"Siape deve conter apenas n˙meros!");
+					"Siape deve conter apenas n√∫meros!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:siape");
@@ -226,9 +226,9 @@ public class CadastroUsuarioValidator {
 			}
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Siape j· cadastrado!");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Siape j√° cadastrado!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:siape");
@@ -245,9 +245,9 @@ public class CadastroUsuarioValidator {
 				}
 
 				FacesContext context = FacesContext.getCurrentInstance();
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Siape j· cadastrado!");
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Siape j√° cadastrado!");
 
-				context.addMessage("AtenÁ„o", message);
+				context.addMessage("Aten√ß√£o", message);
 				context.validationFailed();
 
 				UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:siape");
@@ -265,9 +265,9 @@ public class CadastroUsuarioValidator {
 
 					FacesContext context = FacesContext.getCurrentInstance();
 					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-							"Siape j· cadastrado!");
+							"Siape j√° cadastrado!");
 
-					context.addMessage("AtenÁ„o", message);
+					context.addMessage("Aten√ß√£o", message);
 					context.validationFailed();
 
 					UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:siape");
@@ -292,9 +292,9 @@ public class CadastroUsuarioValidator {
 			}
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "MatrÌcula j· cadastrada!");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Matr√≠cula j√° cadastrada!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent("tabGrande:dados_form:matricula");
@@ -311,8 +311,8 @@ public class CadastroUsuarioValidator {
 		String cpf = onlyNumbers(CPFOrig);
 		if (!isCpf(onlyNumbers(cpf))) {
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um CPF v·lido!");
-			context.addMessage("AtenÁ„o", message);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um CPF v√°lido!");
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 			return false;
 		}
@@ -327,8 +327,8 @@ public class CadastroUsuarioValidator {
 		String cpf = onlyNumbers(CPFOrig);
 		if (!isCpf(onlyNumbers(cpf))) {
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um CPF v·lido!");
-			context.addMessage("AtenÁ„o", message);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um CPF v√°lido!");
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 			return false;
 		}
@@ -357,9 +357,9 @@ public class CadastroUsuarioValidator {
 			}
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j· cadastrado!");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j√° cadastrado!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:cpf");
@@ -376,9 +376,9 @@ public class CadastroUsuarioValidator {
 				}
 
 				FacesContext context = FacesContext.getCurrentInstance();
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j· cadastrado!");
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j√° cadastrado!");
 
-				context.addMessage("AtenÁ„o", message);
+				context.addMessage("Aten√ß√£o", message);
 				context.validationFailed();
 
 				UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:cpf");
@@ -403,9 +403,9 @@ public class CadastroUsuarioValidator {
 			}
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j· cadastrado!");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j√° cadastrado!");
 
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent("tabGrande:dados_form:cpf");
@@ -422,9 +422,9 @@ public class CadastroUsuarioValidator {
 				}
 
 				FacesContext context = FacesContext.getCurrentInstance();
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j· cadastrado!");
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "CPF j√° cadastrado!");
 
-				context.addMessage("AtenÁ„o", message);
+				context.addMessage("Aten√ß√£o", message);
 				context.validationFailed();
 
 				UIInput input = (UIInput) context.getViewRoot().findComponent(":dados_form:cpf");
@@ -507,17 +507,17 @@ public class CadastroUsuarioValidator {
 
 	public boolean validarEmail(Pessoa pessoa) {
 		if (!isEmailValid(pessoa.getLogin())) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um e-mail v·lido!");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um e-mail v√°lido!");
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 			return false;
 		}
 		try {
 			pessoaDao.findByLogin(pessoa.getLogin());
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"E-mail j· existe, cadastre outro!");
-			FacesContext.getCurrentInstance().addMessage("AtenÁ„o", message);
+					"E-mail j√° existe, cadastre outro!");
+			FacesContext.getCurrentInstance().addMessage("Aten√ß√£o", message);
 			FacesContext.getCurrentInstance().validationFailed();
 
 			return false;
@@ -529,17 +529,17 @@ public class CadastroUsuarioValidator {
 
 	public boolean validarEmail(String email) {
 		if (!isEmailValid(email)) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um e-mail v·lido!");
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Digite um e-mail v√°lido!");
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage("AtenÁ„o", message);
+			context.addMessage("Aten√ß√£o", message);
 			context.validationFailed();
 			return false;
 		}
 		try {
 			pessoaDao.findByLogin(email);
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
-					"E-mail j· existe, cadastre outro!");
-			FacesContext.getCurrentInstance().addMessage("AtenÁ„o", message);
+					"E-mail j√° existe, cadastre outro!");
+			FacesContext.getCurrentInstance().addMessage("Aten√ß√£o", message);
 			FacesContext.getCurrentInstance().validationFailed();
 
 			return false;

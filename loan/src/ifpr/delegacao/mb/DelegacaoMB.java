@@ -1,12 +1,21 @@
 package ifpr.delegacao.mb;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.event.SelectEvent;
+
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.delegacao.Delegacao;
 import ifpr.delegacao.dao.DelegacaoDao;
 import ifpr.delegacao.delegacaoPessoa.DelegacaoPessoa;
 import ifpr.delegacao.delegacaoPessoa.dao.DelegacaoPessoaDao;
-import ifpr.delegacao.delegacaoPessoa.mb.DelegacaoPessoaMB;
 import ifpr.delegacao.model.DelegacaoLazyDataModel;
 import ifpr.geradorPdf.CrachasPdf;
 import ifpr.geradorPdf.DeclaracoesPdf;
@@ -17,16 +26,6 @@ import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
 import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-
-import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "delegacaoMB")
 @ViewScoped
@@ -63,8 +62,6 @@ public class DelegacaoMB {
 	private DelegacaoPessoaDao delegacaoPessoaDao;
 
 	private DelegacaoPessoa delegacaoPessoa;
-
-	private DelegacaoPessoaMB delegacaoPessoaMb;
 
 	private boolean isUpdate;
 
@@ -324,14 +321,6 @@ public class DelegacaoMB {
 
 	public void setUpdate(boolean isUpdate) {
 		this.isUpdate = isUpdate;
-	}
-
-	public DelegacaoPessoaMB getDelegacaoPessoaMb() {
-		return delegacaoPessoaMb;
-	}
-
-	public void setDelegacaoPessoaMb(DelegacaoPessoaMB delegacaoPessoaMb) {
-		this.delegacaoPessoaMb = delegacaoPessoaMb;
 	}
 
 	public CrachasPdf getCrachasPdf() {

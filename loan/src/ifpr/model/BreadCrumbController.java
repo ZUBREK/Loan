@@ -72,6 +72,9 @@ public class BreadCrumbController {
 
 		} else if (caminhoView.equals((Paths.EVENTOS).substring(0, Paths.EVENTOS.lastIndexOf(".")))) {
 			adicionarItem("Gerenciar - Eventos", Paths.EVENTOS);
+
+		} else if (caminhoView.equals((Paths.JOGOS).substring(0, Paths.JOGOS.lastIndexOf(".")))) {
+			adicionarItem("Gerenciar - Jogos", Paths.JOGOS);
 		}
 
 	}

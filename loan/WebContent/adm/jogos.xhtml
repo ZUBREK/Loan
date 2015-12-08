@@ -1,0 +1,650 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/templates/templateGerenciamento.xhtml">
+
+	<ui:define name="body">
+
+		<p:panel id="painelPrincipal" header="Gerenciamento de jogoss">
+
+			<p:growl id="msg" showDetail="true" />
+
+			<h:form>
+
+				<p:commandButton id="novoJogos" value="Novo"
+					actionListener="#{jogosMB.criar}"
+					oncomplete="PF('jogosDialog').show()" update=":jogosDlg" />
+			</h:form>
+
+			<h:form id="tableForm">
+
+				<p:contextMenu id="contextMenuTecEsp" for="jogosTable"
+					rendered="#{jogosMB.tecEsp}">
+
+					<p:menuitem value="Visualizar" update=":visEventoDlg"
+						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
+
+					<p:menuitem value="Editar" update=":jogosDlg :confirm"
+						icon="editar16" oncomplete="PF('jogosDialog').show()">
+					</p:menuitem>
+
+					<p:menuitem value="Remover" update="jogosTable :confirm"
+						icon="remover16" oncomplete="PF('jogosConfirmDialog').show()" />
+
+				</p:contextMenu>
+
+				<p:contextMenu id="contextMenuAdm" for="jogosTable"
+					rendered="#{jogosMB.adm}">
+
+					<p:menuitem value="Visualizar"
+						update=":visEventoDlg :visEventoMapaDlg"
+						action="#{jogosMB.popularArquivos()}" icon="ui-icon-search"
+						actionListener="#{jogosMB.abrirDialog()}" />
+
+					<p:menuitem value="Editar" update="jogosAdmDlg :confirm"
+						action="#{jogosMB.popularArquivos()}" icon="editar16"
+						actionListener="#{jogosMB.abrirEditDialog()}">
+					</p:menuitem>
+
+					<p:menuitem value="Remover" update="jogosTable :confirm"
+						icon="remover16" oncomplete="PF('jogosConfirmDialog').show()" />
+
+				</p:contextMenu>
+
+				<p:contextMenu id="contextMenuTecAdm" for="jogosTable"
+					rendered="#{jogosMB.tecAdm}">
+
+					<p:menuitem value="Visualizar" update=":visEventoTecAdmDlg"
+						icon="ui-icon-search" action="#{jogosMB.procurarArquivo()}"
+						oncomplete="PF('visEventoTecAdmDialog').show()" />
+
+				</p:contextMenu>
+
+
+				<p:dataTable id="jogosTable" style="clear:both;"
+					value="#{jogosMB.jogosLazyDataModel}" var="jogos"
+					emptyMessage="Nenhum registro encontrado!" rows="15"
+					rowKey="#{jogos.id}" paginator="true" lazy="true"
+					selection="#{jogosMB.jogos}" selectionMode="single"
+					filteredValue="#{jogosMB.jogosFiltered}">
+
+					<f:facet name="header">
+						<p:outputPanel>
+							<p:outputLabel value="Eventos" />
+
+						</p:outputPanel>
+					</f:facet>
+
+
+					<p:column headerText="Nome" filterBy="#{jogos.nome}"
+						filterMatchMode="contains">
+
+						<h:outputText value="#{jogos.nome}" />
+
+					</p:column>
+
+
+					<p:column headerText="Data de Encerramento">
+						<h:outputText value="#{jogos.dataHoraFinal}" id="dataFim">
+							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+								pattern="dd/MM/yyyy - HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo">
+						<p:outputLabel value="#{jogos.tipo.label}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+			
+		</p:panel>
+
+		<p:dialog id="jogosDlg" widgetVar="jogosDialog"
+			header="Dados do jogos" width="800" height="400" modal="true"
+			closable="false">
+
+			<h:form id="jogos_form">
+
+				<p:panelGrid id="grid" columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{jogosMB.jogos.nome}" size="60"
+						maxlength="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
+
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:inputText id="descricao" value="#{jogosMB.jogos.descricao}"
+						size="60" maxlength="255" required="true"
+						requiredMessage="Descrição é obrigatório!" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+
+					<p:calendar id="dataInicio"
+						value="#{jogosMB.jogos.dataHoraInicio}" locale="pt"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
+						maxdate="31/12/2050" yearRange="2015:2020" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true" />
+
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+
+					<p:calendar id="dataFim" value="#{jogosMB.jogos.dataHoraFinal}"
+						locale="pt" mask="true" navigator="true"
+						pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980" maxdate="31/12/2020"
+						yearRange="2015:2020" required="true"
+						requiredMessage="Data de encerramento é obrigatória" />
+
+					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+
+					<p:selectOneMenu id="campus" value="#{jogosMB.campus}"
+						filter="true" filterMatchMode="startsWith"
+						converter="#{campusConverter}">
+
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{jogosMB.listaCampus}" var="camp"
+							itemLabel="#{camp.cidade}" itemValue="#{camp}" />
+
+						<p:ajax process="@this" event="change"
+							update=":jogos_form:addGrid" />
+
+					</p:selectOneMenu>
+
+					<p:outputLabel id="modalidadeLb" value="Modalidade:"
+						for="modalidade" />
+
+					<p:selectOneMenu id="modalidade" value="#{jogosMB.modalidade}"
+						filter="true" filterMatchMode="startsWith"
+						converter="#{modalidadeConverter}">
+
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{jogosMB.listaModalidade}" var="modalidd"
+							itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
+
+						<p:ajax process="@this" event="change"
+							update=":jogos_form:addGrid" />
+
+					</p:selectOneMenu>
+
+					<h:panelGrid id="addGrid" columns="2" cellpadding="5">
+
+						<h:outputLabel for="menu" value="Estudantes:" />
+
+						<p:selectCheckboxMenu id="menu"
+							disabled="#{empty jogosMB.campus or empty jogosMB.modalidade}"
+							value="#{jogosMB.estudantesSelecionados}" label="Estudantes"
+							filter="true" filterMatchMode="startsWith"
+							panelStyle="width:250px" converter="#{estudanteConverter}">
+
+							<f:selectItems value="#{jogosMB.estudantes}" />
+
+						</p:selectCheckboxMenu>
+
+						<p:spacer />
+						<p:spacer />
+						<p:spacer />
+						<p:commandButton id="addEstudanteBt" value="Adicionar Estudantes"
+							disabled="#{empty jogosMB.campus or empty jogosMB.modalidade}"
+							icon="apply" actionListener="#{jogosMB.adicionarEstudante()}"
+							update=":jogos_form:estudantesList" />
+
+					</h:panelGrid>
+
+				</p:panelGrid>
+
+
+
+				<p:dataTable id="estudantesList" var="jogosPessoa"
+					value="#{jogosMB.jogos.jogosPessoas}"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+
+					<p:column headerText="Nome">
+
+						<p:outputLabel value="#{jogosPessoa.pessoa.nome}" />
+
+					</p:column>
+
+					<p:column>
+
+						<p:commandButton value="Remover"
+							update=":jogos_form:estudantesList :confirmRmv" icon="remover16"
+							oncomplete="PF('jogosEstConfirmDialog').show()" />
+
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":jogos_form :msg :tableForm"
+					actionListener="#{jogosMB.salvarTreino}"
+					oncomplete="if(!args.validationFailed) PF('jogosDialog').hide();" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('jogosDialog').hide()" update=":msg"
+					immediate="true" actionListener="#{jogosMB.cancelar()}">
+
+					<p:resetInput target=":jogos_form" />
+
+				</p:commandButton>
+
+			</h:form>
+
+
+			<f:facet name="footer">
+				Esse jogos é do tipo treino.
+			</f:facet>
+
+		</p:dialog>
+
+		<p:dialog id="jogosArqDlg" widgetVar="jogosArqDialog"
+			header="Dados do jogos" width="750" height="300" modal="true"
+			closable="false">
+
+			<h:form id="jogosArq_form">
+
+				<p:panelGrid id="grid" columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{jogosMB.jogos.nome}" size="60"
+						maxlength="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
+
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:inputText id="descricao" value="#{jogosMB.jogos.descricao}"
+						size="60" required="true" maxlength="255"
+						requiredMessage="Descrição é obrigatório!" />
+
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+
+					<p:calendar id="dataFim" value="#{jogosMB.jogos.dataHoraFinal}"
+						locale="pt" mask="true" navigator="true" pattern="dd/mm/yyyy"
+						mindate="01/01/2015" maxdate="31/12/2020" yearRange="2015:2020"
+						required="true"
+						requiredMessage="Data de encerramento é obrigatória" />
+
+
+				</p:panelGrid>
+
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":jogosArq_form :msg :tableForm"
+					actionListener="#{jogosMB.salvarEvtArquivo}"
+					oncomplete="if(!args.validationFailed) PF('jogosArqDialog').hide();" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('jogosArqDialog').hide()" update=":msg"
+					immediate="true" actionListener="#{jogosMB.cancelar()}">
+
+					<p:resetInput target=":jogosArq_form" />
+
+				</p:commandButton>
+
+			</h:form>
+
+			<f:facet name="footer">
+				Esse jogos é do Entrega de Mapa de Modalidades.
+			</f:facet>
+
+		</p:dialog>
+
+		<p:dialog id="jogosAdmDlg" widgetVar="jogosAdmDialog"
+			header="Dados do jogos" width="750" height="200" modal="true"
+			closable="false">
+
+			<h:form id="jogosAdm_form">
+
+				<p:panelGrid id="grid" columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:inputText id="nome" value="#{jogosMB.jogos.nome}" size="60"
+						maxlength="60" required="true"
+						requiredMessage="Nome é obrigatório!" />
+
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:inputText id="descricao" value="#{jogosMB.jogos.descricao}"
+						size="60" required="true" maxlength="255"
+						requiredMessage="Descrição é obrigatório!" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+
+					<p:calendar id="dataInicio"
+						value="#{jogosMB.jogos.dataHoraInicio}" locale="pt"
+						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
+						maxdate="31/12/2050" yearRange="2015:2020" required="true"
+						requiredMessage="Data de início é obrigatória" mask="true" />
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+
+					<p:calendar id="dataFim" value="#{jogosMB.jogos.dataHoraFinal}"
+						locale="pt" mask="true" navigator="true"
+						pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980" maxdate="31/12/2020"
+						yearRange="2015:2020" required="true"
+						requiredMessage="Data de encerramento é obrigatória" />
+
+				</p:panelGrid>
+
+				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+					update=":jogosAdm_form :msg :tableForm"
+					action="#{jogosMB.salvarEventoRef()}"
+					oncomplete="if(!args.validationFailed) PF('jogosAdmDialog').hide();" />
+
+				<p:commandButton id="cancelarBt" value="Cancelar" icon="cancelar16"
+					oncomplete="PF('jogosAdmDialog').hide()" update=":msg"
+					immediate="true" actionListener="#{jogosMB.cancelarEventoAdm()}">
+
+					<p:resetInput target=":jogosAdm_form" />
+
+				</p:commandButton>
+
+			</h:form>
+
+			<f:facet name="footer">
+				Esse jogos é de refeição.
+			</f:facet>
+
+		</p:dialog>
+
+
+		<p:dialog id="visEventoDlg" widgetVar="visEventoDialog"
+			header="Dados do jogos" width="750" height="300" modal="true">
+
+			<h:form id="visEvento_form">
+
+				<p:panelGrid columns="2">
+
+					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:outputLabel id="nome" value="#{jogosMB.jogos.nome}" />
+
+					<p:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:outputLabel id="descricao" value="#{jogosMB.jogos.descricao}" />
+
+					<p:outputLabel value="Tipo:" />
+
+					<p:outputLabel value="#{jogosMB.jogos.tipo.label}" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:outputLabel id="dataInicio"
+						value="#{jogosMB.jogos.dataHoraInicio}">
+
+						<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+							pattern="dd/MM/yyyy - HH:mm" />
+
+					</p:outputLabel>
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+
+					<p:outputLabel id="dataFim"
+						value="#{jogosMB.jogos.dataHoraFinal}">
+
+						<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
+							pattern="dd/MM/yyyy - HH:mm" />
+
+					</p:outputLabel>
+
+
+				</p:panelGrid>
+
+				<p:dataTable id="estudantesList" var="jogosPessoa"
+					value="#{jogosMB.jogos.jogosPessoas}" paginator="true" rows="5"
+					rowKey="#{jogosPessoa.id}"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+
+					<p:column headerText="Nome">
+
+						<h:outputText value="#{jogosPessoa.pessoa.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Presente">
+
+						<p:outputLabel
+							value="#{jogosPessoa.wasPresente  ? 'Compareceu' : 'Presença não registrada'}" />
+
+					</p:column>
+
+
+					<p:column headerText="Marcar Presença">
+
+						<p:commandButton value="Marcar presença"
+							actionListener="#{jogosMB.mudouPresenca}"
+							disabled="#{jogosPessoa.wasPresente}"
+							update="jogos_form:estudantesList">
+
+						</p:commandButton>
+
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog id="visEventoMapaDlg" widgetVar="visEventoMapaDialog"
+			header="Dados do jogos" width="750" height="300" modal="true">
+
+			<h:form id="visEventoMapa_form">
+
+				<p:panelGrid columns="2">
+
+					<p:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:outputLabel id="nome" value="#{jogosMB.jogos.nome}" />
+
+					<p:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:outputLabel id="descricao" value="#{jogosMB.jogos.descricao}" />
+
+					<p:outputLabel value="Tipo:" />
+
+					<p:outputLabel value="#{jogosMB.jogos.tipo.label}" />
+
+					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+						for="dataInicio" />
+					<p:outputLabel id="dataInicio"
+						value="#{jogosMB.jogos.dataHoraInicio}" />
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+					<p:outputLabel id="dataFim"
+						value="#{jogosMB.jogos.dataHoraFinal}" />
+
+				</p:panelGrid>
+
+				<p:dataTable id="pessoaList" var="arquivo"
+					value="#{jogosMB.arquivos}" paginator="true" rows="5"
+					emptyMessage="Nenhum registro encontrado!" first="0">
+
+					<p:column headerText="Nome">
+
+						<p:outputLabel value="#{arquivo.jogosPessoa.pessoa.nome}" />
+
+					</p:column>
+
+					<p:column headerText="Arquivo">
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+							draggable="false" closable="false" resizable="false">
+
+							<p:graphicImage value="/img/64/ajax_loader.gif" />
+
+						</p:dialog>
+
+						<p:commandLink id="arquivo" value="#{arquivo.nome}" ajax="false"
+							onclick="PrimeFaces.monitorDownload(start, stop)">
+							<f:setPropertyActionListener value="#{arquivo}"
+								target="#{jogosMB.arquivoEvento}" />
+							<p:fileDownload value="#{jogosMB.arqStreamed}" />
+						</p:commandLink>
+
+						<script type="text/javascript">
+						
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
+
+
+					</p:column>
+
+					<p:column headerText="Data">
+
+						<p:outputLabel value="#{arquivo.jogosPessoa.dataHora}" />
+
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog id="visEventoTecAdmDlg" widgetVar="visEventoTecAdmDialog"
+			header="Informações sobre o jogos" width="750" height="300"
+			modal="true">
+
+			<h:form id="visEventoTecAdm_form">
+
+				<p:panelGrid columns="2">
+
+					<h:outputLabel id="nomeLb" value="Nome:" for="nome" />
+
+					<p:outputLabel id="nome" value="#{jogosMB.jogos.nome}" />
+
+					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+
+					<p:outputLabel id="descricao" value="#{jogosMB.jogos.descricao}" />
+
+					<p:outputLabel value="Tipo:" />
+
+					<p:outputLabel value="#{jogosMB.jogos.tipo.label}" />
+
+					<p:outputLabel id="dataInicioLb" value="Criado em:"
+						for="dataInicio" />
+					<p:outputLabel id="dataInicio"
+						value="#{jogosMB.jogos.dataHoraInicio}" />
+
+					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
+						for="dataFim" />
+					<p:outputLabel id="dataFim"
+						value="#{jogosMB.jogos.dataHoraFinal}" />
+
+					<p:outputLabel id="enviarMapaLb" title="Enviar Mapa de Modalidades"
+						value="Enviar Mapa de Modalidades:" />
+
+					<p:fileUpload id="mapaModUpload" styleClass="fileupload-boleidous"
+						fileUploadListener="#{jogosMB.handleFileUpload}"
+						label="selecionar" auto="true"
+						update=":visEventoTecAdm_form:arquivo" multiple="false"
+						mode="advanced" cache="false" />
+
+					<p:outputLabel id="arquivoLb" value="Arquivo:" />
+
+					<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+						draggable="false" closable="false" resizable="false">
+						<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+					</p:dialog>
+
+					<p:commandLink id="arquivo" value="#{jogosMB.arquivoEvento.nome}"
+						ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+						<p:fileDownload value="#{jogosMB.arqStreamed}" />
+					</p:commandLink>
+
+					<p:commandButton id="excluirArquivo" value="Excluir"
+						icon="remover16" style="margin-left: 10px;"
+						update=":visEventoTecAdm_form:arquivo"
+						actionListener="#{jogosMB.apagarArquivo()}">
+					</p:commandButton>
+
+
+					<script type="text/javascript">
+						function start() {
+   							 PF('statusDialog').show();
+						}
+ 
+						function stop() {
+   							 PF('statusDialog').hide();
+							}
+						</script>
+
+
+				</p:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+
+
+		<p:confirmDialog id="confirm" widgetVar="jogosConfirmDialog"
+			global="true" header="Confirma exclusão do jogos?" showEffect="fade"
+			hideEffect="fade" severity="alert"
+			message="Deseja realmente excluir o
+				jogos: #{jogosMB.jogos.nome}?">
+
+			<p:outputLabel
+				value="Isso apagará todas as informações relacionadas a este jogos!" />
+
+			<h:form>
+
+				<p:commandButton value="Sim"
+					actionListener="#{jogosMB.removerPessoa()}"
+					oncomplete="PF('jogosConfirmDialog').hide()" update=":tableForm :msg"
+					icon="ok16" />
+
+				<p:commandButton value="Não" actionListener="#{jogosMB.cancelar()}"
+					oncomplete="PF('jogosConfirmDialog').hide()" icon="cancelar16" />
+
+			</h:form>
+
+		</p:confirmDialog>
+
+		<p:confirmDialog id="confirmRmv" widgetVar="jogosEstConfirmDialog"
+			global="true" header="Remover estudante do jogos?" showEffect="fade"
+			hideEffect="fade"
+			message="Deseja realmente excluir o
+				estudante: #{jogosMB.jogosPessoa.pessoa.nome}">
+
+			<h:form>
+
+				<p:commandButton value="Sim"
+					actionListener="#{jogosMB.removerPessoa()}"
+					oncomplete="PF('jogosEstConfirmDialog').hide()"
+					update=":jogos_form:estudantesList" icon="ok16" />
+
+				<p:commandButton value="Não" actionListener="#{jogosMB.cancelar()}"
+					oncomplete="PF('jogosEstConfirmDialog').hide()" icon="cancelar16" />
+
+			</h:form>
+
+		</p:confirmDialog>
+
+	</ui:define>
+
+
+</ui:composition>

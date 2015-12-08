@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -82,16 +83,20 @@ public class ArquivoMB {
 	}
 
 	public void remover() {
-		File file = new File(arquivo.getCaminho());
-		file.delete();
 		try{
 			arquivoDao.remover(arquivo);
+			File file = new File(arquivo.getCaminho());
+			file.delete();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemFaces("ERRO!", "Arquivo não pôde ser removido!");
 		}
 	}
 
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+	}
+	
 	public ArquivoDao getArquivoDao() {
 		return arquivoDao;
 	}

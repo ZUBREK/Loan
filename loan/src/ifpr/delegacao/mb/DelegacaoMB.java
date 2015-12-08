@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.SelectEvent;
 
@@ -96,11 +98,15 @@ public class DelegacaoMB {
 			}
 			delegacaoDao.remover(delegacao);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemFaces("Erro!", "Não foi possível remover a delegação!");
 		}
 	}
 
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+	}
+	
 	public void cancelar() {
 		if (isUpdate == true) {
 			delegacao = null;
@@ -143,7 +149,6 @@ public class DelegacaoMB {
 		try {
 			delegacaoPessoaDao.remover(delegacaoPessoa);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		delegacao.getDelegacaoPessoas().remove(delegacaoPessoa);

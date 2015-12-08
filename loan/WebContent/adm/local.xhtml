@@ -126,7 +126,7 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{localMB.remover()}"
-					oncomplete="PF('confirmDialog').hide()" update=":table_form"
+					oncomplete="PF('confirmDialog').hide()" update=":table_form :msg"
 					icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{localMB.cancelar()}"
 					oncomplete="PF('confirmDialog').hide()" icon="cancelar16" />

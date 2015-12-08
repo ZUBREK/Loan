@@ -191,7 +191,7 @@
 				<p:commandButton value="Sim"
 					actionListener="#{horarioAssistenciaMB.remover()}"
 					oncomplete="PF('assistenciaConfirmDialog').hide()"
-					update=":tableForm" icon="ok16" />
+					update=":tableForm :msg" icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{horarioAssistenciaMB.cancelar()}"
 					oncomplete="PF('assistenciaConfirmDialog').hide()"

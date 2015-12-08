@@ -244,7 +244,8 @@ public class TimeMB {
 	}
 
 	public List<Pessoa> getListaTecEsportivo() {
-		listaTecEsportivo = pessoaDao.listarTecEspByCampusEmAlfabetica(campus);
+		//TODO
+		//MEXER AKI listaTecEsportivo = pessoaDao.listarTecEspByCampusEmAlfabetica(campus);
 		return listaTecEsportivo;
 	}
 

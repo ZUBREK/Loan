@@ -92,7 +92,7 @@
 			<h:form>
 				<p:commandButton value="Sim"
 					actionListener="#{modalidadeMB.remover()}"
-					oncomplete="PF('confirmDialog').hide()" update=":table_form"
+					oncomplete="PF('confirmDialog').hide()" update=":table_form :msg"
 					icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{modalidadeMB.cancelar()}"

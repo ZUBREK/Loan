@@ -97,7 +97,7 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{arquivoMB.remover}"
-					oncomplete="PF('arqvConfirmDialog').hide()" update=":tableForm"
+					oncomplete="PF('arqvConfirmDialog').hide()" update=":tableForm :msg"
 					icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{arquivoMB.cancelar}"
 					oncomplete="PF('arqvConfirmDialog').hide()" icon="cancelar16" />

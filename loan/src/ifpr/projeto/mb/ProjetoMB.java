@@ -136,6 +136,7 @@ public class ProjetoMB {
 			for (RelatorioProjeto relProj : projeto.getRelatoriosProjeto()) {
 				apagarArquivo(relProj);
 			}
+			projetoDao.findById(projeto.getId());
 			projetoDao.remover(projeto);
 		} catch (Exception e) {
 			mensagemAvisoFaces("Erro!", "Não foi possível apagar o projeto!");
@@ -238,7 +239,7 @@ public class ProjetoMB {
 	public void apagarRelatorio() {
 		apagarArquivo(relatorio);
 	}
-	
+
 	public void apagarArquivo(RelatorioProjeto relProj) {
 		try {
 			if (relProj != null) {
@@ -268,7 +269,7 @@ public class ProjetoMB {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_WARN, titulo, message));
 	}
-	
+
 	public ProjetoEstudanteDao getProjetoEstudanteDao() {
 		return projetoEstudanteDao;
 	}

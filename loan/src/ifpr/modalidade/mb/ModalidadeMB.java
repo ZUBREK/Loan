@@ -6,49 +6,52 @@ import ifpr.modalidade.model.ModalidadeLazyDataModel;
 
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-
+import javax.faces.context.FacesContext;
 
 @ManagedBean(name = "modalidadeMB")
 @ViewScoped
 public class ModalidadeMB {
 
-	
 	private Modalidade modalidade;
-	
-	
+
 	private List<Modalidade> modalidadeList;
-	
-	@ManagedProperty(value="#{modalidadeDao}")
+
+	@ManagedProperty(value = "#{modalidadeDao}")
 	private ModalidadeDao modalidadeDao;
-	
-	@ManagedProperty(value="#{modalidadeLazyDataModel}")
+
+	@ManagedProperty(value = "#{modalidadeLazyDataModel}")
 	private ModalidadeLazyDataModel modalidadeLazyDataModel;
-	
-	
-	
+
 	public void criar() {
 		modalidade = new Modalidade();
 
 	}
 
 	public void remover() {
-		try{
+		try {
 			modalidadeDao.remover(modalidade);
-		}catch(Exception e){
-			//facesmessage baga�a
+		} catch (Exception e) {
+			mensagemAvisoFaces("Erro!",
+					"Impossível remover Modalidade - verifique se ela tem relação com outros registros!");
 		}
-		
+
+	}
+
+	public void mensagemAvisoFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_FATAL, titulo, message));
 	}
 
 	public void cancelar() {
 		modalidade = null;
 	}
-	
-	public void salvar(){
-		
+
+	public void salvar() {
+
 		if (modalidade.getId() != null) {
 
 			modalidadeDao.update(modalidade);
@@ -85,8 +88,7 @@ public class ModalidadeMB {
 		return modalidadeLazyDataModel;
 	}
 
-	public void setModalidadeLazyDataModel(
-			ModalidadeLazyDataModel modalidadeLazyDataModel) {
+	public void setModalidadeLazyDataModel(ModalidadeLazyDataModel modalidadeLazyDataModel) {
 		this.modalidadeLazyDataModel = modalidadeLazyDataModel;
 	}
 }

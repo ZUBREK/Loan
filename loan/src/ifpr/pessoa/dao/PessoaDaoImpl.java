@@ -1,12 +1,5 @@
 package ifpr.pessoa.dao;
 
-import ifpr.campus.Campus;
-import ifpr.dao.GenericDao;
-import ifpr.delegacao.Delegacao;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.TipoPessoa;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -14,6 +7,11 @@ import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import ifpr.dao.GenericDao;
+import ifpr.delegacao.Delegacao;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.TipoPessoa;
 
 @ManagedBean(name = "pessoaDao")
 @ApplicationScoped
@@ -54,46 +52,6 @@ public class PessoaDaoImpl extends GenericDao<Pessoa> implements PessoaDao {
 		q.setParameter("role", tipo.toString());
 
 		return q.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Pessoa> listarTecEspByCampusEmAlfabetica(Campus campus) {
-		List<Pessoa> pessoas = new ArrayList<>();
-		EntityManager em = emf.createEntityManager();
-		Query q1 = em.createQuery(
-				"select u from Pessoa u where campus = :campus and authority = :role1");
-		q1.setParameter("campus", campus);
-		q1.setParameter("role1", TipoPessoa.ROLE_TEC_ESP.toString());
-		q1.setMaxResults(10);
-		pessoas.addAll(q1.getResultList()); 
-		Query q2 = em.createQuery(
-				"select u from Pessoa u where campus = :campus and authority = :role2");
-		q2.setParameter("campus", campus);
-		q2.setParameter("role2", TipoPessoa.ROLE_TEC_COORD.toString());
-		q2.setMaxResults(10);
-		pessoas.addAll(q2.getResultList()); 
-		return pessoas;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Pessoa> listarCoordByCampusEmAlfabetica(Campus campus) {
-		List<Pessoa> pessoas = new ArrayList<>();
-		EntityManager em = emf.createEntityManager();
-		Query q1 = em.createQuery(
-				"select u from Pessoa u where campus = :campus and authority = :role1");
-		q1.setParameter("campus", campus);
-		q1.setParameter("role1", TipoPessoa.ROLE_COORDENADOR.toString());
-		q1.setMaxResults(10);
-		pessoas.addAll(q1.getResultList()); 
-		Query q2 = em.createQuery(
-				"select u from Pessoa u where campus = :campus and authority = :role2");
-		q2.setParameter("campus", campus);
-		q2.setParameter("role2", TipoPessoa.ROLE_TEC_COORD.toString());
-		q2.setMaxResults(10);
-		pessoas.addAll(q2.getResultList()); 
-		return pessoas;
 	}
 
 	@SuppressWarnings("unchecked")

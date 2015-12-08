@@ -6,9 +6,11 @@ import ifpr.campus.model.CampusLazyDataModel;
 
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 
 @ManagedBean(name = "campusMB")
@@ -38,11 +40,15 @@ public class CampusMB {
 		try{
 			campusDao.remover(campus);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemAvisoFaces("Erro!", "Impossível remover Campus - verifique se ele tem relação com outros registros!");
 		}
 	}
 
+	public void mensagemAvisoFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_FATAL, titulo, message));
+	}
+	
 	public void cancelar() {
 		campus = null;
 	}

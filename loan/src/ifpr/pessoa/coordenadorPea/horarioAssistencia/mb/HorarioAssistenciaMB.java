@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 
@@ -72,11 +74,17 @@ public class HorarioAssistenciaMB {
 
 	public void remover() {
 		try {
+			File file = new File(horarioAssistencia.getFotoAssinatura().getCaminho());
+			file.delete();
 			horarioAssistenciaDao.remover(horarioAssistencia);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemFaces("Erro!", "O Horário assistencia não pôde ser removido!");
 		}
+	}
+
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 	}
 
 	public void cancelar() {
@@ -103,7 +111,8 @@ public class HorarioAssistenciaMB {
 			file.mkdirs();
 
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.PASTA_ASSISTENCIA +"/" + estudante.getNome() + estudante.getId() + event.getFile().getFileName();
+			String caminho = Paths.PASTA_ASSISTENCIA + "/" + estudante.getNome() + estudante.getId()
+					+ event.getFile().getFileName();
 			FileOutputStream fos = new FileOutputStream(caminho);
 			fos.write(arquivoByte);
 			fos.close();
@@ -145,8 +154,7 @@ public class HorarioAssistenciaMB {
 		return horarioAssistenciaDao;
 	}
 
-	public void setHorarioAssistenciaDao(
-			HorarioAssistenciaDao horarioAssistenciaDao) {
+	public void setHorarioAssistenciaDao(HorarioAssistenciaDao horarioAssistenciaDao) {
 		this.horarioAssistenciaDao = horarioAssistenciaDao;
 	}
 
@@ -154,8 +162,7 @@ public class HorarioAssistenciaMB {
 		return horarioAssistenciaLazyDataModel;
 	}
 
-	public void setHorarioAssistenciaLazyDataModel(
-			HorarioAssistenciaLazyDataModel horarioAssistenciaLazyDataModel) {
+	public void setHorarioAssistenciaLazyDataModel(HorarioAssistenciaLazyDataModel horarioAssistenciaLazyDataModel) {
 		this.horarioAssistenciaLazyDataModel = horarioAssistenciaLazyDataModel;
 	}
 
@@ -163,8 +170,7 @@ public class HorarioAssistenciaMB {
 		return horarioAssistenciaFiltered;
 	}
 
-	public void setHorarioAssistenciaFiltered(
-			List<HorarioAssistencia> horarioAssistenciaFiltered) {
+	public void setHorarioAssistenciaFiltered(List<HorarioAssistencia> horarioAssistenciaFiltered) {
 		this.horarioAssistenciaFiltered = horarioAssistenciaFiltered;
 	}
 

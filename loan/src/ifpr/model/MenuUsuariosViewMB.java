@@ -40,16 +40,16 @@ public class MenuUsuariosViewMB {
 	@PostConstruct
 	public void init() {
 		model = new DefaultMenuModel();
-		adicionarItem("Página Principal", Paths.INDEX, "home16", false);
+		adicionarItem("PÃ¡gina Principal", Paths.INDEX, "home16", false);
 		adicionarItem("Meu Perfil", Paths.HOME, "home16", false);
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
 			
 			adicionarItem("Eventos", Paths.EVENTOS, "teacher16", false);
 			adicionarItem("Arquivos", Paths.ARQUIVOS, "download16", false);
 			adicionarItem("Campus", Paths.CAMPUS, "escola16", false);
-			adicionarItem("Notícias", Paths.NOTICIAS, "android216", false);
+			adicionarItem("NotÃ­cias", Paths.NOTICIAS, "android216", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "planoEnsino16", false);
-			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
+			adicionarItem("HorÃ¡rios de AssistÃªncias", Paths.HORARIOASSISTENCIA, "atendimento16", false);
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
@@ -59,7 +59,7 @@ public class MenuUsuariosViewMB {
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_COORDENADOR)) {
 		
-			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
+			adicionarItem("HorÃ¡rios de AssistÃªncias", Paths.HORARIOASSISTENCIA, "atendimento16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 		
@@ -71,24 +71,24 @@ public class MenuUsuariosViewMB {
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)) {
 	
-			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
+			adicionarItem("HorÃ¡rios de AssistÃªncias", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 			
-			submenu = new DefaultSubMenu("Usuários");
+			submenu = new DefaultSubMenu("UsuÃ¡rios");
 			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
 			model.addElement(submenu);
-			submenu = new DefaultSubMenu("Competição");
+			submenu = new DefaultSubMenu("CompetiÃ§Ã£o");
 
 			adicionarItem("Times", Paths.TIMES, "user16", true);
-			adicionarItem("Delegações", Paths.DELEGACOES, "attach16", true);
+			adicionarItem("DelegaÃ§Ãµes", Paths.DELEGACOES, "attach16", true);
 			model.addElement(submenu);
 
 		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
 		
 			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
-			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
+			adicionarItem("HorÃ¡rios de AssistÃªncias", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 
@@ -97,24 +97,24 @@ public class MenuUsuariosViewMB {
 	}
 
 	private void adicionarItensAdm() {
-		submenu = new DefaultSubMenu("Usuários");
-		adicionarItem("Téc. Administrativos", Paths.TECADM, "user16", true);
+		submenu = new DefaultSubMenu("UsuÃ¡rios");
+		adicionarItem("TÃ©c. Administrativos", Paths.TECADM, "user16", true);
 
-		adicionarItem("Téc. Esportivos", Paths.TECESP, "user16", true);
+		adicionarItem("TÃ©c. Esportivos", Paths.TECESP, "user16", true);
 
 		adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 
-		adicionarItem("Secretários", Paths.SECRETARIOS, "user16", true);
+		adicionarItem("SecretÃ¡rios", Paths.SECRETARIOS, "user16", true);
 
 		adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", true);
 		model.addElement(submenu);
-		submenu = new DefaultSubMenu("Competição");
+		submenu = new DefaultSubMenu("CompetiÃ§Ã£o");
 
 		adicionarItem("Modalidades", Paths.MODALIDADES, "user16", true);
 
 		adicionarItem("Times", Paths.TIMES, "user16", true);
 
-		adicionarItem("Delegações", Paths.DELEGACOES, "attach16", true);
+		adicionarItem("DelegaÃ§Ãµes", Paths.DELEGACOES, "attach16", true);
 
 		adicionarItem("Chaves", Paths.CHAVES, "attach16", true);
 

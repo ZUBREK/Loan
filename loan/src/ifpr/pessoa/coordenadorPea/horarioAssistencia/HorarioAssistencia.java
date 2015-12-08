@@ -5,6 +5,7 @@ import ifpr.pessoa.estudante.Estudante;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class HorarioAssistencia {
 	private Arquivo fotoAssinatura;
 
 	@JoinColumn(name = "id_estudante", referencedColumnName = "id_pessoa")
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Estudante estudante;
 
 	@Temporal(TemporalType.DATE)

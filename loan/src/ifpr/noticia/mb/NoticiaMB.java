@@ -50,6 +50,8 @@ public class NoticiaMB {
 
 	private Pessoa pessoaLogada;
 
+	private byte[] arquivoByte;
+
 	public NoticiaMB() {
 
 		noticiaFiltered = new ArrayList<Noticia>();
@@ -68,10 +70,11 @@ public class NoticiaMB {
 
 	public void remover() {
 		try {
+			File file = new File(noticia.getFoto().getCaminho());
+			file.delete();
 			noticiaDao.remover(noticia);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemFaces("ERRO!", "Não foi possível remover a notícia!");
 		}
 	}
 
@@ -81,14 +84,21 @@ public class NoticiaMB {
 
 	public void salvar() {
 		if (fotoNoticia == null) {
-			mensagemErroFaces("ERRO!", "Selecione uma foto para a not�cia!");
+			mensagemErroFaces("ERRO!", "Selecione uma foto para a notícia!");
 		} else {
-			if (noticia.getId() != null) {
-				noticia.setData(new Date());
-				noticiaDao.update(noticia);
-			} else {
-				noticia.setData(new Date());
-				noticiaDao.salvar(noticia);
+			try {
+				criarArquivoDisco(arquivoByte, fotoNoticia.getCaminho());
+				if (noticia.getId() != null) {
+					noticia.setData(new Date());
+					noticiaDao.update(noticia);
+					arquivoDao.update(fotoNoticia);
+				} else {
+					arquivoDao.salvar(fotoNoticia);
+					noticia.setFoto(fotoNoticia);
+					noticiaDao.salvar(noticia);
+				}
+			} catch (IOException e) {
+				mensagemErroFaces("ERRO!", "Não foi possível salvar a imagem!");
 			}
 		}
 	}
@@ -96,7 +106,7 @@ public class NoticiaMB {
 	public void handleFileUpload(FileUploadEvent event) {
 		if (fotoNoticia == null) {
 			fotoNoticia = new Arquivo();
-		} 
+		}
 		if (noticia.getData() == null) {
 			noticia.setData(new Date());
 		}
@@ -104,21 +114,11 @@ public class NoticiaMB {
 			SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
 			fotoNoticia.setDataUpload(new Date());
 			String nomeArquivoStreamed = formater.format(noticia.getData()) + event.getFile().getFileName();
-			byte[] arquivoByte = event.getFile().getContents();
-
+			arquivoByte = event.getFile().getContents();
 			String caminho = Paths.PASTA_IMAGEM_NOTICIA + "/" + nomeArquivoStreamed;
-			criarArquivoDisco(arquivoByte, caminho);
 			fotoNoticia.setUploader(pessoaLogada);
 			fotoNoticia.setCaminho(caminho);
 			fotoNoticia.setNome(nomeArquivoStreamed);
-			if (fotoNoticia.getId() != null) {
-				arquivoDao.update(fotoNoticia);
-			} else {
-				arquivoDao.salvar(fotoNoticia);
-				noticia.setFoto(fotoNoticia);
-				noticiaDao.salvar(noticia);
-			}
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -139,6 +139,11 @@ public class NoticiaMB {
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.validationFailed();
+	}
+	
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 	}
 
 	public Noticia getNoticia() {

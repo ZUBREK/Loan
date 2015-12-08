@@ -167,7 +167,7 @@
 			<h:form>
 				<p:commandButton value="Sim"
 					actionListener="#{tecnicoAdmMB.remover()}"
-					oncomplete="PF('tecadmConfirmDialog').hide()" update=":tableForm"
+					oncomplete="PF('tecadmConfirmDialog').hide()" update=":tableForm :msg"
 					icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{tecnicoAdmMB.cancelar()}"

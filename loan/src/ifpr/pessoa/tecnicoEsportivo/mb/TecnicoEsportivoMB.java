@@ -1,18 +1,24 @@
 package ifpr.pessoa.tecnicoEsportivo.mb;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
+import ifpr.arquivo.Arquivo;
+import ifpr.arquivo.dao.ArquivoDao;
 import ifpr.cadastroUsuarios.CadastroUsuarioValidator;
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.criptografia.Criptografia;
 import ifpr.perfilUsuario.HomeMB;
+import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
@@ -22,6 +28,10 @@ import ifpr.pessoa.tecnicoEsportivo.model.TecnicoEsportivoLazyDataModel;
 @ManagedBean(name = "tecEspMB")
 @ViewScoped
 public class TecnicoEsportivoMB {
+
+	@ManagedProperty(value = "#{arquivoDao}")
+	private ArquivoDao arquivoDao;
+	private Arquivo arquivo;
 
 	private TecnicoEsportivo tecnicoEsp;
 
@@ -64,11 +74,24 @@ public class TecnicoEsportivoMB {
 
 	public void remover() {
 		try {
+			removerFotoPerf(tecnicoEsp);
 			tecEspDao.remover(tecnicoEsp);
+			File file = new File(arquivo.getCaminho());
+			file.delete();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			arquivoDao.salvar(arquivo);
+			mensagemFaces("Erro!", "A pessoa é utilizada em outros registros, portanto não pode ser removida!");
 		}
+	}
+
+	private void removerFotoPerf(Pessoa pessoa) throws Exception {
+		arquivo = arquivoDao.pesquisarFotoPerfil(pessoa);
+		arquivoDao.remover(arquivo);
+	}
+
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 	}
 
 	public void cancelar() {
@@ -202,6 +225,22 @@ public class TecnicoEsportivoMB {
 
 	public void setCadastroValidator(CadastroUsuarioValidator cadastroValidator) {
 		this.cadastroValidator = cadastroValidator;
+	}
+
+	public ArquivoDao getArquivoDao() {
+		return arquivoDao;
+	}
+
+	public void setArquivoDao(ArquivoDao arquivoDao) {
+		this.arquivoDao = arquivoDao;
+	}
+
+	public Arquivo getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(Arquivo arquivo) {
+		this.arquivo = arquivo;
 	}
 
 }

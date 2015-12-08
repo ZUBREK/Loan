@@ -166,19 +166,20 @@
 
 					</p:tab>
 
-					<p:tab title="Adicionar Estudantes:" disabled="#{projetoMB.projeto.id == null}">
-					
+					<p:tab title="Adicionar Estudantes:"
+						disabled="#{projetoMB.projeto.id == null}">
+
 						<h:outputLabel id="estudanteLb" value="Estudante:" for="estudante" />
-						
+
 						<p:autoComplete id="estudante"
 							completeMethod="#{projetoMB.pesquisarEstudanteNome}"
 							value="#{projetoMB.estudante}" converter="#{estudanteConverter}"
 							minQueryLength="3" forceSelection="true">
-							
+
 							<p:ajax event="itemSelect" listener="#{projetoMB.onItemSelect}" />
-							
+
 						</p:autoComplete>
-						
+
 						<p:commandButton id="addEstudanteBt" value="Adicionar"
 							icon="apply" actionListener="#{projetoMB.adicionarEstudante()}"
 							update=":projeto_form:tabView:estudantesList" />
@@ -186,25 +187,25 @@
 						<p:dataTable id="estudantesList" var="projetoEstudante"
 							value="#{projetoMB.projeto.projetoEstudante}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
-							
+
 							<p:column headerText="Nome">
 								<h:outputText value="#{projetoEstudante.estudante.nome}" />
 							</p:column>
 
 							<p:column headerText="Ações">
-							
+
 								<p:commandButton id="removeEstudanteBt" value="Remover"
 									icon="remover16"
 									oncomplete="PF('projetoEstConfirmDialog').show()"
 									update=":confirmRmv">
-									
+
 									<f:setPropertyActionListener value="#{projetoEstudante}"
 										target="#{projetoMB.projetoEstudante}" />
-										
+
 								</p:commandButton>
-								
+
 							</p:column>
-							
+
 						</p:dataTable>
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
@@ -216,9 +217,9 @@
 							icon="cancelar16" oncomplete="PF('projetoDialog').hide()"
 							update=":msg" immediate="true"
 							actionListener="#{projetoMB.cancelar()}">
-							
+
 							<p:resetInput target=":projeto_form" />
-							
+
 						</p:commandButton>
 
 
@@ -266,10 +267,8 @@
 
 				</p:panelGrid>
 				<p:contextMenu for="arquivosList">
-
 					<p:menuitem value="Remover" update=":visProjeto_form:arquivosList"
-						icon="remover16" actionListener="#{projetoMB.apagarArquivo()}" />
-
+						icon="remover16" actionListener="#{projetoMB.apagarRelatorio()}" />
 				</p:contextMenu>
 
 
@@ -289,7 +288,7 @@
 						</p:dialog>
 
 						<p:commandLink id="arquivo" value="#{relatorio.nome}" ajax="false"
-							onclick="PrimeFaces.monitorDownload(start, stop)">
+							onclick="PrimeFaces.monitorDownload(start, stop)" update=":msg">
 							<f:setPropertyActionListener value="#{relatorio}"
 								target="#{projetoMB.relatorio}" />>
 						<p:fileDownload value="#{eventoMB.arqStreamed}" />
@@ -330,8 +329,8 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{projetoMB.remover()}"
-					oncomplete="PF('projetoConfirmDialog').hide()" update=":tableForm"
-					icon="ok16" />
+					oncomplete="PF('projetoConfirmDialog').hide()"
+					update=":tableForm :msg" icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{projetoMB.cancelar()}"
 					oncomplete="PF('projetoConfirmDialog').hide()" icon="cancelar16" />
@@ -348,7 +347,7 @@
 				<p:commandButton value="Sim"
 					actionListener="#{projetoMB.removerEstudante()}"
 					oncomplete="PF('projetoEstConfirmDialog').hide()"
-					update=":projeto_form:tabView:estudantesList" icon="ok16" />
+					update=":projeto_form:tabView:estudantesList :msg" icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{projetoMB.cancelar()}"
 					oncomplete="PF('projetoEstConfirmDialog').hide()" icon="cancelar16" />

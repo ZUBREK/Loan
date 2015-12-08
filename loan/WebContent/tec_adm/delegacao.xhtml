@@ -138,8 +138,9 @@
 
 
 						<p:panelGrid columns="3">
-						
-							<h:outputLabel id="pessoasLb" value="Nome da Pessoa: " for="pessoa" />
+
+							<h:outputLabel id="pessoasLb" value="Nome da Pessoa: "
+								for="pessoa" />
 
 							<p:autoComplete id="pessoa"
 								completeMethod="#{delegacaoMB.pesquisarPessoaNome}"
@@ -158,9 +159,9 @@
 							<p:outputLabel value="Chefe da delegação: " for="chefe" />
 
 							<p:selectOneMenu id="chefe" label="Chefe da Delegação"
-								value="#{delegacaoMB.chefeDelegacao}" converter="#{pessoaConverter}">
-
-								<p:ajax event="itemSelect" listener="#{delegacaoMB.marcarChefe}" />
+								required="true" requiredMessage="Marque o chefe de delegação!"
+								value="#{delegacaoMB.chefeDelegacao}"
+								converter="#{pessoaConverter}">
 
 								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
@@ -169,11 +170,11 @@
 									itemValue="#{delegPessoa.pessoa}" />
 
 							</p:selectOneMenu>
-							
+
 							<p:spacer />
-							
+
 						</p:panelGrid>
-						
+
 						<p:dataTable id="pessoasList" var="delegacaoPessoa"
 							value="#{delegacaoMB.delegacao.delegacaoPessoas}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
@@ -235,7 +236,7 @@
 				<p:commandButton value="Sim"
 					actionListener="#{delegacaoMB.remover()}"
 					oncomplete="PF('delegacaoConfirmDialog').hide()"
-					update=":tableForm" icon="ok16" />
+					update=":tableForm :msg" icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{delegacaoMB.cancelar()}"
 					oncomplete="PF('delegacaoConfirmDialog').hide()" icon="cancelar16" />

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -35,6 +36,8 @@ import ifpr.utils.Paths;
 @ManagedBean(name = "estudanteMB")
 @ViewScoped
 public class EstudanteMB {
+
+	private Arquivo arquivo;
 
 	private Estudante estudante;
 
@@ -94,11 +97,24 @@ public class EstudanteMB {
 
 	public void remover() {
 		try {
+			removerFotoPerf(estudante);
 			estudanteDao.remover(estudante);
+			File file = new File(arquivo.getCaminho());
+			file.delete();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			arquivoDao.salvar(arquivo);
+			mensagemFaces("Erro!", "A pessoa é utilizada em outros registros, portanto não pode ser removida!");
 		}
+	}
+
+	private void removerFotoPerf(Pessoa pessoa) throws Exception {
+		arquivo = arquivoDao.pesquisarFotoPerfil(pessoa);
+		arquivoDao.remover(arquivo);
+	}
+
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 	}
 
 	public void cancelar() {

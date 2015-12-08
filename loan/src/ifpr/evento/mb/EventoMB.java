@@ -137,8 +137,6 @@ public class EventoMB {
 	public void mudouPresenca() {
 		eventoPessoaDao.update(eventoPessoa);
 	}
-	
-
 
 	@PostConstruct
 	public void poust() {
@@ -146,8 +144,8 @@ public class EventoMB {
 		listaCampus = campusDao.listarAlfabetica();
 		listaModalidade = modalidadeDao.listarAlfabetica();
 		FacesContext context = FacesContext.getCurrentInstance();
-		loginController = context.getApplication().evaluateExpressionGet(
-				context, "#{loginControllerMB}", LoginControllerMB.class);
+		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
+				LoginControllerMB.class);
 		pessoaLogada = loginController.getPessoaLogada();
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM))
 			isTecAdm = true;
@@ -184,8 +182,7 @@ public class EventoMB {
 		if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
 					"A data final deve ser posterior a inicial!");
 
 			context.addMessage("Aten��o", message);
@@ -226,8 +223,7 @@ public class EventoMB {
 		if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
 					"A data final deve ser posterior a inicial!");
 
 			context.addMessage("Aten��o", message);
@@ -252,8 +248,7 @@ public class EventoMB {
 			if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
 				FacesContext context = FacesContext.getCurrentInstance();
-				FacesMessage message = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
 						"A data final deve ser posterior a inicial!");
 
 				context.addMessage("Aten��o", message);
@@ -277,10 +272,14 @@ public class EventoMB {
 			evento.getEventoPessoas().remove(eventoPessoa);
 			eventoDao.remover(evento);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemAvisoFaces("Erro!", "Impossível remover evento!");
 		}
-		
+
+	}
+
+	public void mensagemAvisoFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_FATAL, titulo, message));
 	}
 
 	public String popularArquivos() {
@@ -290,10 +289,8 @@ public class EventoMB {
 
 	public String procurarArquivo() {
 		try {
-			eventoPessoa = eventoPessoaDao.pesquisarPorEventoPessoa(evento,
-					pessoaLogada);
-			arquivoEvento = arquivoEventoDao
-					.pesquisarPorEventoPessoa(eventoPessoa);
+			eventoPessoa = eventoPessoaDao.pesquisarPorEventoPessoa(evento, pessoaLogada);
+			arquivoEvento = arquivoEventoDao.pesquisarPorEventoPessoa(eventoPessoa);
 		} catch (Exception nr) {
 
 		}
@@ -314,15 +311,10 @@ public class EventoMB {
 		}
 		try {
 			TecnicoAdministrativo tecAdm = (TecnicoAdministrativo) pessoaLogada;
-			String nomeArquivoStreamed = tecAdm.getCampus().toString() + "_"
-					+ event.getFile().getFileName();
+			String nomeArquivoStreamed = tecAdm.getCampus().toString() + "_" + event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.PASTA_ARQUIVO_EVENTO
-					+ "/"
-					+ pessoaLogada.getId()
-					+ nomeArquivoStreamed.substring(
-							nomeArquivoStreamed.lastIndexOf('.'),
-							nomeArquivoStreamed.length());
+			String caminho = Paths.PASTA_ARQUIVO_EVENTO + "/" + pessoaLogada.getId()
+					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
 			criarArquivoDisco(arquivoByte, caminho);
 			arquivoEvento.setEventoPessoa(eventoPessoa);
 			arquivoEvento.setUploader(pessoaLogada);
@@ -348,7 +340,6 @@ public class EventoMB {
 			try {
 				arquivoEventoDao.remover(arquivoEvento);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			arquivoEvento = null;
@@ -356,8 +347,7 @@ public class EventoMB {
 		return;
 	}
 
-	private void criarArquivoDisco(byte[] bytes, String arquivoPath)
-			throws IOException {
+	private void criarArquivoDisco(byte[] bytes, String arquivoPath) throws IOException {
 		File file = new File(Paths.PASTA_ARQUIVO_EVENTO);
 		file.mkdirs();
 		FileOutputStream fos;
@@ -370,8 +360,7 @@ public class EventoMB {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivoEvento.getCaminho());
-			arqStreamed = new DefaultStreamedContent(stream, null,
-					arquivoEvento.getNome());
+			arqStreamed = new DefaultStreamedContent(stream, null, arquivoEvento.getNome());
 		} catch (FileNotFoundException e) {
 			System.out.println("Erro no download do arquivo");
 		}
@@ -383,18 +372,15 @@ public class EventoMB {
 		if (evento != null) {
 			if (evento.getTipo().equals(TipoEvento.MAPAMODALIDADE)) {
 				popularArquivos();
-				RequestContext.getCurrentInstance().execute(
-						"PF('visEventoMapaDialog').show()");
+				RequestContext.getCurrentInstance().execute("PF('visEventoMapaDialog').show()");
 			} else
-				RequestContext.getCurrentInstance().execute(
-						"PF('visEventoDialog').show()");
+				RequestContext.getCurrentInstance().execute("PF('visEventoDialog').show()");
 		}
 	}
 
 	public void abrirEditDialog() {
 
-		RequestContext.getCurrentInstance().execute(
-				"PF('eventoAdmDialog').show()");
+		RequestContext.getCurrentInstance().execute("PF('eventoAdmDialog').show()");
 	}
 
 	public EventoPessoa getEventoPessoa() {

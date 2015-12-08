@@ -1,8 +1,5 @@
 package ifpr.projeto.relatorio;
 
-import ifpr.pessoa.Pessoa;
-import ifpr.projeto.Projeto;
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import ifpr.pessoa.Pessoa;
 
 
 @Entity
@@ -39,10 +38,6 @@ public class RelatorioProjeto {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="data_upload")
 	private Date dataUpload;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_projeto", referencedColumnName = "id_projeto")
-	private Projeto projeto;
 
 	public Integer getId() {
 		return id;
@@ -83,15 +78,4 @@ public class RelatorioProjeto {
 	public void setDataUpload(Date dataUpload) {
 		this.dataUpload = dataUpload;
 	}
-
-	public Projeto getProjeto() {
-		return projeto;
-	}
-
-	public void setProjeto(Projeto projeto) {
-		this.projeto = projeto;
-	}
-	
-	
-
 }

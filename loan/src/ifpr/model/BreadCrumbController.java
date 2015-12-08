@@ -31,26 +31,26 @@ public class BreadCrumbController {
 			adicionarItem("Gerenciar - Campus", Paths.CAMPUS);
 
 		} else if (caminhoView.equals((Paths.NOTICIAS).substring(0, Paths.NOTICIAS.lastIndexOf(".")))) {
-			adicionarItem("Gerenciar - Notícias", Paths.NOTICIAS);
+			adicionarItem("Gerenciar - NotÃ­cias", Paths.NOTICIAS);
 
 		} else if (caminhoView.equals((Paths.PROJETOS).substring(0, Paths.PROJETOS.lastIndexOf(".")))) {
 			adicionarItem("Gerenciar - Projetos PEA", Paths.PROJETOS);
 
 		} else if (caminhoView
 				.equals((Paths.HORARIOASSISTENCIA).substring(0, Paths.HORARIOASSISTENCIA.lastIndexOf(".")))) {
-			adicionarItem("Gerenciar - Horários de Assistências", Paths.HORARIOASSISTENCIA);
+			adicionarItem("Gerenciar - HorÃ¡rios de AssistÃªncias", Paths.HORARIOASSISTENCIA);
 
 		} else if (caminhoView.equals((Paths.TECADM).substring(0, Paths.TECADM.lastIndexOf(".")))) {
-			adicionarItem("Gerenciar - Tec. Administrativos", Paths.TECADM);
+			adicionarItem("Gerenciar - TÃ©c. Administrativos", Paths.TECADM);
 
 		} else if (caminhoView.equals((Paths.TECESP).substring(0, Paths.TECESP.lastIndexOf(".")))) {
-			adicionarItem("Gerenciar - Tec. Esportivos", Paths.TECESP);
+			adicionarItem("Gerenciar - TÃ©c. Esportivos", Paths.TECESP);
 
 		} else if (caminhoView.equals((Paths.COORDENADORES).substring(0, Paths.COORDENADORES.lastIndexOf(".")))) {
 			adicionarItem("Gerenciar - Coordenadores", Paths.COORDENADORES);
 
 		} else if (caminhoView.equals((Paths.SECRETARIOS).substring(0, Paths.SECRETARIOS.lastIndexOf(".")))) {
-			adicionarItem("Gerenciar - Secretários", Paths.SECRETARIOS);
+			adicionarItem("Gerenciar - SecretÃ¡rios", Paths.SECRETARIOS);
 
 		} else if (caminhoView.equals((Paths.ESTUDANTES).substring(0, Paths.ESTUDANTES.lastIndexOf(".")))) {
 			adicionarItem("Gerenciar - Estudantes", Paths.ESTUDANTES);
@@ -62,7 +62,7 @@ public class BreadCrumbController {
 			adicionarItem("Gerenciar - Times", Paths.TIMES);
 
 		} else if (caminhoView.equals((Paths.DELEGACOES).substring(0, Paths.DELEGACOES.lastIndexOf(".")))) {
-			adicionarItem("Gerenciar - Delegações", Paths.DELEGACOES);
+			adicionarItem("Gerenciar - DelegaÃ§Ãµes", Paths.DELEGACOES);
 
 		} else if (caminhoView.equals((Paths.CHAVES).substring(0, Paths.CHAVES.lastIndexOf(".")))) {
 			adicionarItem("Gerenciar - Chaves", Paths.CHAVES);

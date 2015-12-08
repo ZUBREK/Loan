@@ -8,15 +8,15 @@
 
 	<ui:define name="body">
 		<p:panel id="painelPrincipal" header="Gerenciamento de Times">
-		
+
 			<p:growl id="msg" showDetail="true" />
-			
+
 			<h:form>
-			
+
 				<p:commandButton id="novoTime" value="Novo"
 					actionListener="#{timeMB.criar}"
 					oncomplete="PF('timeDialog').show()" update=":timeDlg" />
-					
+
 			</h:form>
 
 			<h:form id="tableForm">
@@ -61,8 +61,8 @@
 					<p:column headerText="Remover" width="47">
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
-							oncomplete="PF('timeConfirmDialog').show()" update=":confirm :msg"
-							styleClass="apenasIcone">
+							oncomplete="PF('timeConfirmDialog').show()"
+							update=":confirm :msg" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{time}"
 								target="#{timeMB.time}" />
 						</p:commandButton>
@@ -157,7 +157,8 @@
 					<p:tab title="Adicionar Estudantes:"
 						disabled="#{timeMB.time.id == null}">
 
-						<h:outputLabel id="estudanteLb" value="Estudante: " for="estudante" />
+						<h:outputLabel id="estudanteLb" value="Estudante: "
+							for="estudante" />
 
 						<p:autoComplete id="estudante"
 							completeMethod="#{timeMB.pesquisarEstudanteNome}"
@@ -171,13 +172,13 @@
 						<p:commandButton id="addEstudanteBt" value="Adicionar"
 							icon="apply" actionListener="#{timeMB.adicionarEstudante()}"
 							update=":time_form:tabView:estudantesList" />
-							
+
 						<p:spacer height="2px" />
-						
+
 						<p:dataTable id="estudantesList" var="timeEstudante"
 							value="#{timeMB.time.timeEstudante}"
 							emptyMessage="Nenhum registro encontrado!" first="0">
-							
+
 							<p:column headerText="Nome">
 
 								<h:outputText value="#{timeEstudante.estudante.nome}" />
@@ -231,8 +232,8 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{timeMB.remover()}"
-					oncomplete="PF('timeConfirmDialog').hide()" update=":tableForm :msg"
-					icon="ok16" />
+					oncomplete="PF('timeConfirmDialog').hide()"
+					update=":tableForm :msg" icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{timeMB.cancelar()}"
 					oncomplete="PF('timeConfirmDialog').hide()" icon="cancelar16" />
 			</h:form>
@@ -245,15 +246,16 @@
 				estudante: #{timeMB.timeEstudante.estudante.nome}">
 
 			<h:form>
-			
+
 				<p:commandButton value="Sim"
 					actionListener="#{timeMB.removerEstudante()}"
 					oncomplete="PF('timeEstConfirmDialog').hide()"
 					update=":time_form:tabView:estudantesList" icon="ok16" />
-					
-				<p:commandButton value="Não" actionListener="#{timeMB.cancelarEstudante()}"
+
+				<p:commandButton value="Não"
+					actionListener="#{timeMB.cancelarEstudante()}"
 					oncomplete="PF('timeEstConfirmDialog').hide()" icon="cancelar16" />
-					
+
 			</h:form>
 		</p:confirmDialog>
 	</ui:define>

@@ -1,11 +1,11 @@
 package ifpr.pessoa.dao;
 
+import java.util.List;
+
 import ifpr.dao.Dao;
 import ifpr.delegacao.Delegacao;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
-
-import java.util.List;
 
 public interface PessoaDao extends Dao<Pessoa> {
 	

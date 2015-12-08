@@ -629,7 +629,7 @@
 
 				<p:commandButton value="Sim"
 					actionListener="#{eventoMB.removerPessoa()}"
-					oncomplete="PF('eventoConfirmDialog').hide()" update=":tableForm"
+					oncomplete="PF('eventoConfirmDialog').hide()" update=":tableForm :msg"
 					icon="ok16" />
 
 				<p:commandButton value="Não" actionListener="#{eventoMB.cancelar()}"

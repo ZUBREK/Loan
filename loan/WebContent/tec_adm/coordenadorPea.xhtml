@@ -178,7 +178,7 @@
 			<h:form>
 				<p:commandButton value="Sim"
 					actionListener="#{coordenadorMB.remover()}"
-					oncomplete="PF('coordConfirmDialog').hide()" update=":tableForm"
+					oncomplete="PF('coordConfirmDialog').hide()" update=":tableForm :msg"
 					icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{coordenadorMB.cancelar()}"

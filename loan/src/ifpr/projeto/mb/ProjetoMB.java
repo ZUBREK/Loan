@@ -1,24 +1,5 @@
 package ifpr.projeto.mb;
 
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.modalidade.Modalidade;
-import ifpr.modalidade.dao.ModalidadeDao;
-import ifpr.model.LoginControllerMB;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.coordenadorPea.CoordenadorPea;
-import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.estudante.dao.EstudanteDao;
-import ifpr.projeto.Projeto;
-import ifpr.projeto.dao.ProjetoDao;
-import ifpr.projeto.model.ProjetoLazyDataModel;
-import ifpr.projeto.projetoEstudante.ProjetoEstudante;
-import ifpr.projeto.projetoEstudante.dao.ProjetoEstudanteDao;
-import ifpr.projeto.relatorio.RelatorioProjeto;
-import ifpr.projeto.relatorio.dao.RelatorioProjetoDao;
-import ifpr.utils.Paths;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -39,6 +21,26 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.modalidade.Modalidade;
+import ifpr.modalidade.dao.ModalidadeDao;
+import ifpr.model.LoginControllerMB;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.coordenadorPea.CoordenadorPea;
+import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.projeto.Projeto;
+import ifpr.projeto.dao.ProjetoDao;
+import ifpr.projeto.model.ProjetoLazyDataModel;
+import ifpr.projeto.projetoEstudante.ProjetoEstudante;
+import ifpr.projeto.projetoEstudante.dao.ProjetoEstudanteDao;
+import ifpr.projeto.relatorio.RelatorioProjeto;
+import ifpr.projeto.relatorio.dao.RelatorioProjetoDao;
+import ifpr.utils.Paths;
 
 @ManagedBean(name = "projetoMB")
 @ViewScoped
@@ -56,6 +58,9 @@ public class ProjetoMB {
 
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
+
+	@ManagedProperty(value = "#{pessoaDao}")
+	private PessoaDao pessoaDao;
 
 	private List<Campus> listaCampus;
 
@@ -110,6 +115,9 @@ public class ProjetoMB {
 
 	public void criar() {
 		projeto = new Projeto();
+		campus = null;
+		modalidade = null;
+		coordenador = null;
 		isUpdate = false;
 	}
 
@@ -118,16 +126,20 @@ public class ProjetoMB {
 		listaCampus = campusDao.listarAlfabetica();
 		listaModalidade = modalidadeDao.listarAlfabetica();
 		FacesContext context = FacesContext.getCurrentInstance();
-		loginController = context.getApplication().evaluateExpressionGet(
-				context, "#{loginControllerMB}", LoginControllerMB.class);
+		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
+				LoginControllerMB.class);
 		pessoaLogada = loginController.getPessoaLogada();
 	}
 
 	public void remover() {
 		try {
+			for (RelatorioProjeto relProj : projeto.getRelatoriosProjeto()) {
+				apagarArquivo(relProj);
+			}
+			projetoDao.findById(projeto.getId());
 			projetoDao.remover(projeto);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			mensagemAvisoFaces("Erro!", "Não foi possível apagar o projeto!");
 			e.printStackTrace();
 		}
 	}
@@ -142,19 +154,19 @@ public class ProjetoMB {
 	}
 
 	public void salvar() {
+		projeto.setCampus(campus);
+		projeto.setModalidade(modalidade);
+		Pessoa pessoa = (Pessoa) coordenador;
+		projeto.setCoordenador(pessoa);
 		if (projeto.getId() != null) {
 			projetoDao.update(projeto);
 		} else {
-			projeto.setCampus(campus);
-			projeto.setModalidade(modalidade);
-			Pessoa pessoa = (Pessoa) coordenador;
-			projeto.setCoordenador(pessoa);
 			projetoDao.salvar(projeto);
 		}
 	}
 
 	public void adicionarEstudante() {
-		if (estudante.getId() != null) {
+		if (estudante != null && estudante.getId() != null) {
 			ProjetoEstudante projetoEstd = new ProjetoEstudante();
 			projetoEstd.setEstudante(estudante);
 			projetoEstd.setProjeto(projeto);
@@ -169,20 +181,20 @@ public class ProjetoMB {
 			projetoEstudanteDao.remover(projetoEstudante);
 			projeto.getProjetoEstudante().remove(projetoEstudante);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			mensagemAvisoFaces("Erro!", "Não foi possível remover o estudante!");
 			e.printStackTrace();
 		}
 
 	}
 
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
-		listaEstudante = estudanteDao
-				.pesquisarEstudanteNomeCampusProjeto(nome, campus,projeto);
+		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusProjeto(nome, campus, projeto);
 		return listaEstudante;
 	}
 
 	public void procurarRelatorios() {
-		relatorios = relatorioProjetoDao.pesquisarPorProjeto(projeto);
+		projeto = projetoDao.findById(projeto.getId());
+		relatorios = projeto.getRelatoriosProjeto();
 	}
 
 	public void onItemSelect(SelectEvent event) {
@@ -194,10 +206,9 @@ public class ProjetoMB {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(relatorio.getCaminho());
-			arqStreamed = new DefaultStreamedContent(stream, null,
-					relatorio.getNome());
+			arqStreamed = new DefaultStreamedContent(stream, null, relatorio.getNome());
 		} catch (FileNotFoundException e) {
-			System.out.println("Erro no download do arquivo");
+			mensagemAvisoFaces("Erro!", "Não foi possível achar o arquivo!");
 		}
 
 		return arqStreamed;
@@ -208,18 +219,14 @@ public class ProjetoMB {
 		try {
 			String nomeArquivoStreamed = event.getFile().getFileName();
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.PASTA_ARQUIVO_RELATORIO
-					+ "/"
-					+ pessoaLogada.getId()
-					+ nomeArquivoStreamed.substring(
-							nomeArquivoStreamed.lastIndexOf('.'),
-							nomeArquivoStreamed.length());
+			String caminho = Paths.PASTA_ARQUIVO_RELATORIO + "/" + pessoaLogada.getId()
+					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
 			criarArquivoDisco(arquivoByte, caminho);
 			relatorio.setUploader(pessoaLogada);
 			relatorio.setCaminho(caminho);
 			relatorio.setNome(nomeArquivoStreamed);
 			relatorio.setDataUpload(new Date());
-			relatorio.setProjeto(projeto);
+			projeto.getRelatoriosProjeto().add(relatorio);
 
 			relatorioProjetoDao.salvar(relatorio);
 			procurarRelatorios();
@@ -229,32 +236,38 @@ public class ProjetoMB {
 		return;
 	}
 
-	public void apagarArquivo() {
+	public void apagarRelatorio() {
+		apagarArquivo(relatorio);
+	}
 
+	public void apagarArquivo(RelatorioProjeto relProj) {
 		try {
-			if (relatorio != null) {
-				File file = new File(relatorio.getCaminho());
+			if (relProj != null) {
+				File file = new File(relProj.getCaminho());
 				file.delete();
-				relatorioProjetoDao.remover(relatorio);
-				relatorio = null;
+				relatorioProjetoDao.remover(relProj);
+				relProj = null;
 				procurarRelatorios();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemAvisoFaces("Erro!", "Não foi possível apagar o arquivo!");
 		}
 
 		return;
 	}
 
-	private void criarArquivoDisco(byte[] bytes, String arquivoPath)
-			throws IOException {
+	private void criarArquivoDisco(byte[] bytes, String arquivoPath) throws IOException {
 		File file = new File(Paths.PASTA_ARQUIVO_RELATORIO);
 		file.mkdirs();
 		FileOutputStream fos;
 		fos = new FileOutputStream(arquivoPath);
 		fos.write(bytes);
 		fos.close();
+	}
+
+	public void mensagemAvisoFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_WARN, titulo, message));
 	}
 
 	public ProjetoEstudanteDao getProjetoEstudanteDao() {
@@ -278,6 +291,9 @@ public class ProjetoMB {
 	}
 
 	public void setProjeto(Projeto projeto) {
+		campus = projeto.getCampus();
+		modalidade = projeto.getModalidade();
+		coordenador = (CoordenadorPea) projeto.getCoordenador();
 		this.projeto = projeto;
 	}
 
@@ -293,8 +309,7 @@ public class ProjetoMB {
 		return projetoLazyDataModel;
 	}
 
-	public void setProjetoLazyDataModel(
-			ProjetoLazyDataModel projetoLazyDataModel) {
+	public void setProjetoLazyDataModel(ProjetoLazyDataModel projetoLazyDataModel) {
 		this.projetoLazyDataModel = projetoLazyDataModel;
 	}
 
@@ -327,6 +342,7 @@ public class ProjetoMB {
 	}
 
 	public void setCampus(Campus campus) {
+		listaCoordenador = coordenadorDao.listarPessoaByCampusEmAlfabetica(campus);
 		this.campus = campus;
 	}
 
@@ -342,22 +358,13 @@ public class ProjetoMB {
 		return listaModalidade;
 	}
 
-	public CoordenadorPea getCoordenador() {
-		return coordenador;
-	}
-
 	public void setCoordenador(CoordenadorPea coordenador) {
 		this.coordenador = coordenador;
 	}
 
 	public List<CoordenadorPea> getListaCoordenador() {
-		listaCoordenador = coordenadorDao
-				.listarPessoaByCampusEmAlfabetica(campus);
+		listaCoordenador = coordenadorDao.listarPessoaByCampusEmAlfabetica(campus);
 		return listaCoordenador;
-	}
-
-	public void setListaCoordenador(List<CoordenadorPea> listaCoordenador) {
-		this.listaCoordenador = listaCoordenador;
 	}
 
 	public CoordenadorDao getCoordenadorDao() {
@@ -386,6 +393,10 @@ public class ProjetoMB {
 
 	public void setListaEstudante(List<Estudante> listaEstudante) {
 		this.listaEstudante = listaEstudante;
+	}
+
+	public void setListaCoordenador(List<CoordenadorPea> listaCoordenador) {
+		this.listaCoordenador = listaCoordenador;
 	}
 
 	public Estudante getEstudante() {
@@ -452,4 +463,19 @@ public class ProjetoMB {
 		this.pessoaLogada = pessoaLogada;
 	}
 
+	public PessoaDao getPessoaDao() {
+		return pessoaDao;
+	}
+
+	public void setPessoaDao(PessoaDao pessoaDao) {
+		this.pessoaDao = pessoaDao;
+	}
+
+	public Pessoa getCoordenador() {
+		return coordenador;
+	}
+
+	public void setArqStreamed(StreamedContent arqStreamed) {
+		this.arqStreamed = arqStreamed;
+	}
 }

@@ -1,12 +1,23 @@
 package ifpr.delegacao.mb;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
+
 import ifpr.campus.Campus;
 import ifpr.campus.dao.CampusDao;
 import ifpr.delegacao.Delegacao;
 import ifpr.delegacao.dao.DelegacaoDao;
 import ifpr.delegacao.delegacaoPessoa.DelegacaoPessoa;
 import ifpr.delegacao.delegacaoPessoa.dao.DelegacaoPessoaDao;
-import ifpr.delegacao.delegacaoPessoa.mb.DelegacaoPessoaMB;
 import ifpr.delegacao.model.DelegacaoLazyDataModel;
 import ifpr.geradorPdf.CrachasPdf;
 import ifpr.geradorPdf.DeclaracoesPdf;
@@ -17,16 +28,6 @@ import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.tecnicoAdministrativo.TecnicoAdministrativo;
 import ifpr.pessoa.tecnicoEsportivo.TecnicoEsportivo;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-
-import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "delegacaoMB")
 @ViewScoped
@@ -57,13 +58,12 @@ public class DelegacaoMB {
 	private Pessoa pessoa;
 
 	private Pessoa chefeDelegacao;
+	private Pessoa oldChefeDelegacao;
 
 	@ManagedProperty(value = "#{delegacaoPessoaDao}")
 	private DelegacaoPessoaDao delegacaoPessoaDao;
 
 	private DelegacaoPessoa delegacaoPessoa;
-
-	private DelegacaoPessoaMB delegacaoPessoaMb;
 
 	private boolean isUpdate;
 
@@ -98,11 +98,15 @@ public class DelegacaoMB {
 			}
 			delegacaoDao.remover(delegacao);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mensagemFaces("Erro!", "Não foi possível remover a delegação!");
 		}
 	}
 
+	public void mensagemFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+	}
+	
 	public void cancelar() {
 		if (isUpdate == true) {
 			delegacao = null;
@@ -124,6 +128,9 @@ public class DelegacaoMB {
 			delegacao.setCampus(campus);
 			delegacaoDao.salvar(delegacao);
 		}
+		if (chefeDelegacao != null && !chefeDelegacao.equals(oldChefeDelegacao)) {
+			marcarChefe();
+		}
 		campus = null;
 	}
 
@@ -142,7 +149,6 @@ public class DelegacaoMB {
 		try {
 			delegacaoPessoaDao.remover(delegacaoPessoa);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		delegacao.getDelegacaoPessoas().remove(delegacaoPessoa);
@@ -152,8 +158,7 @@ public class DelegacaoMB {
 
 		List<Pessoa> listaPessoaNome;
 		listaPessoa = new ArrayList<Pessoa>();
-		listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome,
-				delegacao);
+		listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome, delegacao);
 		Pessoa pessoaVerifica = new Pessoa();
 		for (int i = 0; i < listaPessoaNome.size(); i++) {
 			pessoaVerifica = (Pessoa) listaPessoaNome.get(i);
@@ -201,16 +206,13 @@ public class DelegacaoMB {
 	}
 
 	public void marcarChefe() {
-		if (chefeDelegacao != null) {
-			for (DelegacaoPessoa dlg : delegacao.getDelegacaoPessoas()) {
-
-				if (dlg.getPessoa().getId() == chefeDelegacao.getId()) {
-					dlg.setChefe(true);
-					delegacaoPessoaDao.update(dlg);
-				} else if (dlg.isChefe()) {
-					dlg.setChefe(false);
-					delegacaoPessoaDao.update(dlg);
-				}
+		for (DelegacaoPessoa dlg : delegacao.getDelegacaoPessoas()) {
+			if (dlg.getPessoa().getId() == chefeDelegacao.getId()) {
+				dlg.setChefe(true);
+				delegacaoPessoaDao.update(dlg);
+			} else if (dlg.isChefe()) {
+				dlg.setChefe(false);
+				delegacaoPessoaDao.update(dlg);
 			}
 		}
 	}
@@ -221,6 +223,12 @@ public class DelegacaoMB {
 
 	public void setDelegacao(Delegacao delegacao) {
 		campus = delegacao.getCampus();
+		for (DelegacaoPessoa delegacaoPessoa : delegacao.getDelegacaoPessoas()) {
+			if (delegacaoPessoa.isChefe()) {
+				chefeDelegacao = delegacaoPessoa.getPessoa();
+				oldChefeDelegacao = chefeDelegacao;
+			}
+		}
 		this.delegacao = delegacao;
 	}
 
@@ -236,8 +244,7 @@ public class DelegacaoMB {
 		return delegacaoLazyDataModel;
 	}
 
-	public void setDelegacaoLazyDataModel(
-			DelegacaoLazyDataModel delegacaoLazyDataModel) {
+	public void setDelegacaoLazyDataModel(DelegacaoLazyDataModel delegacaoLazyDataModel) {
 		this.delegacaoLazyDataModel = delegacaoLazyDataModel;
 	}
 
@@ -319,14 +326,6 @@ public class DelegacaoMB {
 
 	public void setUpdate(boolean isUpdate) {
 		this.isUpdate = isUpdate;
-	}
-
-	public DelegacaoPessoaMB getDelegacaoPessoaMb() {
-		return delegacaoPessoaMb;
-	}
-
-	public void setDelegacaoPessoaMb(DelegacaoPessoaMB delegacaoPessoaMb) {
-		this.delegacaoPessoaMb = delegacaoPessoaMb;
 	}
 
 	public CrachasPdf getCrachasPdf() {

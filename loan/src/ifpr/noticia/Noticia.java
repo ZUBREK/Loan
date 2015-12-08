@@ -3,6 +3,7 @@ package ifpr.noticia;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +40,7 @@ public class Noticia {
 	private String titulo;
 
 	@JoinColumn(name = "id_arquivo", referencedColumnName = "id_arquivo")
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Arquivo foto;
 
 	@Transient

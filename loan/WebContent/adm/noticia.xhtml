@@ -131,7 +131,7 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{noticiaMB.remover()}"
-					oncomplete="PF('noticiaConfirmDialog').hide()" update=":tableForm"
+					oncomplete="PF('noticiaConfirmDialog').hide()" update=":tableForm :msg"
 					icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{noticiaMB.cancelar()}"

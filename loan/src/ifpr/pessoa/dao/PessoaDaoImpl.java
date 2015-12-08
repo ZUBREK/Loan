@@ -6,6 +6,7 @@ import ifpr.delegacao.Delegacao;
 import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -28,8 +29,7 @@ public class PessoaDaoImpl extends GenericDao<Pessoa> implements PessoaDao {
 	@Override
 	public List<Pessoa> pesquisarPorNome(String nome) {
 		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%')");
+		Query q = em.createQuery("select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%')");
 		q.setParameter("nome", nome);
 		q.setMaxResults(50);
 
@@ -38,8 +38,7 @@ public class PessoaDaoImpl extends GenericDao<Pessoa> implements PessoaDao {
 
 	public Pessoa findByLogin(String login) throws NoResultException {
 		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from Pessoa u where lower(u.login) = :login ");
+		Query q = em.createQuery("select u from Pessoa u where lower(u.login) = :login ");
 		q.setParameter("login", login);
 
 		return (Pessoa) q.getSingleResult();
@@ -51,8 +50,7 @@ public class PessoaDaoImpl extends GenericDao<Pessoa> implements PessoaDao {
 	public List<Pessoa> findByRole(TipoPessoa tipo) {
 
 		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from Pessoa u where authority = :role");
+		Query q = em.createQuery("select u from Pessoa u where authority = :role");
 		q.setParameter("role", tipo.toString());
 
 		return q.getResultList();
@@ -60,24 +58,50 @@ public class PessoaDaoImpl extends GenericDao<Pessoa> implements PessoaDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Pessoa> listarPessoaByCampusEmAlfabetica(Campus campus) {
+	public List<Pessoa> listarTecEspByCampusEmAlfabetica(Campus campus) {
+		List<Pessoa> pessoas = new ArrayList<>();
 		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from Pessoa u where campus = :campus and authority = :role1 or authority = :role2 order by u.nome");
-		q.setParameter("campus", campus);
-		q.setParameter("role1", TipoPessoa.ROLE_TEC_ESP.toString());
-		q.setParameter("role2", TipoPessoa.ROLE_TEC_COORD.toString());
-		q.setMaxResults(10);
-		return q.getResultList();
+		Query q1 = em.createQuery(
+				"select u from Pessoa u where campus = :campus and authority = :role1");
+		q1.setParameter("campus", campus);
+		q1.setParameter("role1", TipoPessoa.ROLE_TEC_ESP.toString());
+		q1.setMaxResults(10);
+		pessoas.addAll(q1.getResultList()); 
+		Query q2 = em.createQuery(
+				"select u from Pessoa u where campus = :campus and authority = :role2");
+		q2.setParameter("campus", campus);
+		q2.setParameter("role2", TipoPessoa.ROLE_TEC_COORD.toString());
+		q2.setMaxResults(10);
+		pessoas.addAll(q2.getResultList()); 
+		return pessoas;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Pessoa> pesquisarPorNomeParaDelegacao(String nome,
-			Delegacao delegacao) {
+	public List<Pessoa> listarCoordByCampusEmAlfabetica(Campus campus) {
+		List<Pessoa> pessoas = new ArrayList<>();
 		EntityManager em = emf.createEntityManager();
-		Query q = em
-				.createQuery("select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') AND u NOT IN (select dp.pessoa from DelegacaoPessoa dp where  dp.delegacao = :delegacao)");
+		Query q1 = em.createQuery(
+				"select u from Pessoa u where campus = :campus and authority = :role1");
+		q1.setParameter("campus", campus);
+		q1.setParameter("role1", TipoPessoa.ROLE_COORDENADOR.toString());
+		q1.setMaxResults(10);
+		pessoas.addAll(q1.getResultList()); 
+		Query q2 = em.createQuery(
+				"select u from Pessoa u where campus = :campus and authority = :role2");
+		q2.setParameter("campus", campus);
+		q2.setParameter("role2", TipoPessoa.ROLE_TEC_COORD.toString());
+		q2.setMaxResults(10);
+		pessoas.addAll(q2.getResultList()); 
+		return pessoas;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Pessoa> pesquisarPorNomeParaDelegacao(String nome, Delegacao delegacao) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery(
+				"select u from Pessoa u where lower(u.nome) like concat('%', :nome, '%') AND u NOT IN (select dp.pessoa from DelegacaoPessoa dp where  dp.delegacao = :delegacao)");
 		q.setParameter("nome", nome);
 		q.setParameter("delegacao", delegacao);
 		q.setMaxResults(50);

@@ -94,7 +94,7 @@ public class HomeMB {
 	public void criarArqFotoPerfil(Pessoa pessoa) {
 		arquivo.setFotoPerfil(true);
 		arquivo.setCaminho(Paths.FOTO_DEFAULT);
-		arquivo.setNome("fotoPerfil" + pessoa.getId());
+		arquivo.setNome("default.png");
 		arquivo.setDataUpload(new Date());
 		arquivo.setUploader(pessoa);
 		salvarArquivo();
@@ -200,7 +200,7 @@ public class HomeMB {
 			atributos.add("CPF: " + estudante.getCpf());
 			atributos.add(
 					"Data de Nascimento: " + new SimpleDateFormat("dd/MM/yyyy").format(estudante.getDataNascimento()));
-			atributos.add("Câmpus: " + estudante.getCampus());
+			atributos.add("Cï¿½mpus: " + estudante.getCampus());
 
 		}
 

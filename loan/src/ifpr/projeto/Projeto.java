@@ -1,13 +1,9 @@
 package ifpr.projeto;
 
-import ifpr.campus.Campus;
-import ifpr.modalidade.Modalidade;
-import ifpr.pessoa.Pessoa;
-import ifpr.projeto.projetoEstudante.ProjetoEstudante;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import ifpr.campus.Campus;
+import ifpr.modalidade.Modalidade;
+import ifpr.pessoa.Pessoa;
+import ifpr.projeto.projetoEstudante.ProjetoEstudante;
+import ifpr.projeto.relatorio.RelatorioProjeto;
 
 @Entity
 @Table(name = "tbProjeto")
@@ -41,15 +43,20 @@ public class Projeto {
 	@JoinColumn(name = "id_campus", referencedColumnName = "id_campus")
 	@ManyToOne()
 	private Campus campus;
-	
+
 	@JoinColumn(name = "id_projeto", referencedColumnName = "id_projeto")
 	@OneToMany()
 	private List<ProjetoEstudante> projetoEstudante;
 
-	public Projeto(){
+	@OneToMany(cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "id_projeto", referencedColumnName = "id_projeto")
+	private List<RelatorioProjeto> relatoriosProjeto;
+
+	public Projeto() {
 		projetoEstudante = new ArrayList<ProjetoEstudante>();
+		relatoriosProjeto = new ArrayList<>();
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -97,6 +104,13 @@ public class Projeto {
 	public void setProjetoEstudante(List<ProjetoEstudante> projetoEstudante) {
 		this.projetoEstudante = projetoEstudante;
 	}
-	
+
+	public List<RelatorioProjeto> getRelatoriosProjeto() {
+		return relatoriosProjeto;
+	}
+
+	public void setRelatoriosProjeto(List<RelatorioProjeto> relatoriosProjeto) {
+		this.relatoriosProjeto = relatoriosProjeto;
+	}
 
 }

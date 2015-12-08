@@ -57,6 +57,7 @@ public class DelegacaoMB {
 	private Pessoa pessoa;
 
 	private Pessoa chefeDelegacao;
+	private Pessoa oldChefeDelegacao;
 
 	@ManagedProperty(value = "#{delegacaoPessoaDao}")
 	private DelegacaoPessoaDao delegacaoPessoaDao;
@@ -124,6 +125,9 @@ public class DelegacaoMB {
 			delegacao.setCampus(campus);
 			delegacaoDao.salvar(delegacao);
 		}
+		if (chefeDelegacao != null && !chefeDelegacao.equals(oldChefeDelegacao)) {
+			marcarChefe();
+		}
 		campus = null;
 	}
 
@@ -152,8 +156,7 @@ public class DelegacaoMB {
 
 		List<Pessoa> listaPessoaNome;
 		listaPessoa = new ArrayList<Pessoa>();
-		listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome,
-				delegacao);
+		listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome, delegacao);
 		Pessoa pessoaVerifica = new Pessoa();
 		for (int i = 0; i < listaPessoaNome.size(); i++) {
 			pessoaVerifica = (Pessoa) listaPessoaNome.get(i);
@@ -201,16 +204,13 @@ public class DelegacaoMB {
 	}
 
 	public void marcarChefe() {
-		if (chefeDelegacao != null) {
-			for (DelegacaoPessoa dlg : delegacao.getDelegacaoPessoas()) {
-
-				if (dlg.getPessoa().getId() == chefeDelegacao.getId()) {
-					dlg.setChefe(true);
-					delegacaoPessoaDao.update(dlg);
-				} else if (dlg.isChefe()) {
-					dlg.setChefe(false);
-					delegacaoPessoaDao.update(dlg);
-				}
+		for (DelegacaoPessoa dlg : delegacao.getDelegacaoPessoas()) {
+			if (dlg.getPessoa().getId() == chefeDelegacao.getId()) {
+				dlg.setChefe(true);
+				delegacaoPessoaDao.update(dlg);
+			} else if (dlg.isChefe()) {
+				dlg.setChefe(false);
+				delegacaoPessoaDao.update(dlg);
 			}
 		}
 	}
@@ -221,6 +221,12 @@ public class DelegacaoMB {
 
 	public void setDelegacao(Delegacao delegacao) {
 		campus = delegacao.getCampus();
+		for (DelegacaoPessoa delegacaoPessoa : delegacao.getDelegacaoPessoas()) {
+			if (delegacaoPessoa.isChefe()) {
+				chefeDelegacao = delegacaoPessoa.getPessoa();
+				oldChefeDelegacao = chefeDelegacao;
+			}
+		}
 		this.delegacao = delegacao;
 	}
 
@@ -236,8 +242,7 @@ public class DelegacaoMB {
 		return delegacaoLazyDataModel;
 	}
 
-	public void setDelegacaoLazyDataModel(
-			DelegacaoLazyDataModel delegacaoLazyDataModel) {
+	public void setDelegacaoLazyDataModel(DelegacaoLazyDataModel delegacaoLazyDataModel) {
 		this.delegacaoLazyDataModel = delegacaoLazyDataModel;
 	}
 

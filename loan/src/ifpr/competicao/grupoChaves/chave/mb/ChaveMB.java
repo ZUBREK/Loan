@@ -336,8 +336,7 @@ public class ChaveMB {
 
 			grupoChavesDao.remover(grupoChaves);
 		} catch (Exception e) {
-			//TODO: arrumar a msg
-			// facesmessage bagaca
+			mensagemAvisoFaces("Erro!", "Não foi possível remover a chave!");
 		}
 
 	}
@@ -608,7 +607,7 @@ public class ChaveMB {
 				} else if (ptpAdversario.getPlacar() == -1) {
 					partidaTimeDao.update(partidaTime);
 				} else if (chave.getTipo().equals(TipoCompeticao.MATA_MATA)) {
-					mensagemErroFaces("PLACAR INVÃ�LIDO!", "NÃ£o pode haver empate no tipo MATA-MATA!");
+					mensagemErroFaces("PLACAR INVÁLIDO!", "NÃO pode haver empate no tipo MATA-MATA!");
 				}
 				chave = chaveDao.findById(chave.getId());
 				iniciarTreeNode();

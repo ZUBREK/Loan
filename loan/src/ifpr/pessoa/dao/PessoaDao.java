@@ -1,5 +1,6 @@
 package ifpr.pessoa.dao;
 
+import ifpr.campus.Campus;
 import ifpr.dao.Dao;
 import ifpr.delegacao.Delegacao;
 import ifpr.pessoa.Pessoa;
@@ -16,6 +17,10 @@ public interface PessoaDao extends Dao<Pessoa> {
 	public List<Pessoa> findByRole(TipoPessoa tipo);
 
 	public List<Pessoa> pesquisarPorNomeParaDelegacao(String nome, Delegacao delegacao);
+
+	List<Pessoa> listarTecEspByCampusEmAlfabetica(Campus campus);
+	
+	List<Pessoa> listarCoordByCampusEmAlfabetica(Campus campus);
 	
 	
 }

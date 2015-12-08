@@ -100,10 +100,9 @@ public class TimeMB {
 			timeDao.remover(time);
 		} catch (Exception ex) {
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
-					"Time em competiÁ„o n„o pode ser apagado!");
-			context.addMessage("AtenÁ„o", message);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
+					"Time em competi√ß√£o n√£o pode ser apagado!");
+			context.addMessage("Aten√ß√£o", message);
 
 		}
 		time = null;
@@ -142,7 +141,7 @@ public class TimeMB {
 	}
 
 	public void adicionarEstudante() {
-		if (estudante.getId() != null) {
+		if (estudante != null && estudante.getId() != null) {
 			TimeEstudante timeEstd = new TimeEstudante();
 			timeEstd.setEstudante(estudante);
 			timeEstd.setTime(time);
@@ -164,8 +163,7 @@ public class TimeMB {
 	}
 
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
-		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome,
-				campus, time);
+		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome, campus, time);
 		return listaEstudante;
 	}
 
@@ -246,7 +244,7 @@ public class TimeMB {
 	}
 
 	public List<Pessoa> getListaTecEsportivo() {
-		listaTecEsportivo = pessoaDao.listarPessoaByCampusEmAlfabetica(campus);
+		listaTecEsportivo = pessoaDao.listarTecEspByCampusEmAlfabetica(campus);
 		return listaTecEsportivo;
 	}
 

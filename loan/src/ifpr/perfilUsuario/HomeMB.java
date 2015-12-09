@@ -73,10 +73,6 @@ public class HomeMB {
 
 	}
 
-	public void gerarRelatorio() {
-		relatorioFinal.gerarRelatorio();
-	}
-
 	public void handleFileUpload(FileUploadEvent event) {
 		try {
 			String nomeArquivoStreamed = pessoaLogada.getId() + "_" + event.getFile().getFileName();

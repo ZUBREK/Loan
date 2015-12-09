@@ -20,8 +20,9 @@
 					oncomplete="PF('eventoDialog').show()" update=":eventoDlg" />
 
 				<p:commandButton id="novoEventoRefAdm"
-					value="Novo evento de Refeição" actionListener="#{eventoMB.criar}"
-					style="float:left;" rendered="#{!eventoMB.tecAdm and eventoMB.adm}"
+					value="Novo evento de RefeiÃ§Ã£o"
+					actionListener="#{eventoMB.criar}" style="float:left;"
+					rendered="#{!eventoMB.tecAdm and eventoMB.adm}"
 					oncomplete="PF('eventoAdmDialog').show()" update=":eventoAdmDlg" />
 
 				<p:spacer width="10px" />
@@ -33,57 +34,13 @@
 					oncomplete="PF('eventoArqDialog').show()" update=":eventoArqDlg" />
 
 			</h:form>
-
+			<p:spacer height="1px" />
 			<h:form id="tableForm">
-
-				<p:contextMenu id="contextMenuTecEsp" for="eventoTable"
-					rendered="#{eventoMB.tecEsp}">
-
-					<p:menuitem value="Visualizar" update=":visEventoDlg"
-						icon="ui-icon-search" oncomplete="PF('visEventoDialog').show()" />
-
-					<p:menuitem value="Editar" update=":eventoDlg :confirm"
-						icon="editar16" oncomplete="PF('eventoDialog').show()">
-					</p:menuitem>
-
-					<p:menuitem value="Remover" update="eventoTable :confirm"
-						icon="remover16" oncomplete="PF('eventoConfirmDialog').show()" />
-
-				</p:contextMenu>
-
-				<p:contextMenu id="contextMenuAdm" for="eventoTable"
-					rendered="#{eventoMB.adm}">
-
-					<p:menuitem value="Visualizar"
-						update=":visEventoDlg :visEventoMapaDlg"
-						action="#{eventoMB.popularArquivos()}" icon="ui-icon-search"
-						actionListener="#{eventoMB.abrirDialog()}" />
-
-					<p:menuitem value="Editar" update="eventoAdmDlg :confirm"
-						action="#{eventoMB.popularArquivos()}" icon="editar16"
-						actionListener="#{eventoMB.abrirEditDialog()}">
-					</p:menuitem>
-
-					<p:menuitem value="Remover" update="eventoTable :confirm"
-						icon="remover16" oncomplete="PF('eventoConfirmDialog').show()" />
-
-				</p:contextMenu>
-
-				<p:contextMenu id="contextMenuTecAdm" for="eventoTable"
-					rendered="#{eventoMB.tecAdm}">
-
-					<p:menuitem value="Visualizar" update=":visEventoTecAdmDlg"
-						icon="ui-icon-search" action="#{eventoMB.procurarArquivo()}"
-						oncomplete="PF('visEventoTecAdmDialog').show()" />
-
-				</p:contextMenu>
-
 
 				<p:dataTable id="eventoTable" style="clear:both;"
 					value="#{eventoMB.eventoLazyDataModel}" var="evento"
 					emptyMessage="Nenhum registro encontrado!" rows="15"
 					rowKey="#{evento.id}" paginator="true" lazy="true"
-					selection="#{eventoMB.evento}" selectionMode="single"
 					filteredValue="#{eventoMB.eventoFiltered}">
 
 					<f:facet name="header">
@@ -113,10 +70,48 @@
 						<p:outputLabel value="#{evento.tipo.label}" />
 					</p:column>
 
+					<p:column headerText="AÃ§Ãµes">
+
+
+
+						<p:commandButton id="visualizarTR" value=" " icon="ui-icon-search"
+							style="margin-left: 3px; margin-right: 3px;"
+							update=":visEventoTecAdmDlg :visEventoDlg :visEventoMapaDlg"
+							action="#{eventoMB.abrirVisDialog()}" styleClass="apenasIcone">
+
+							<f:setPropertyActionListener value="#{evento}"
+								target="#{eventoMB.evento}" />
+
+						</p:commandButton>
+
+						<p:commandButton id="editarTR" value=" " icon="editar16"
+							update=":eventoAdmDlg :eventoDlg" disabled="#{eventoMB.tecAdm}"
+							style="margin-left: 3px; margin-right: 3px; float:center;"
+							action="#{eventoMB.abrirEditDialog()}" styleClass="apenasIcone">
+
+							<f:setPropertyActionListener value="#{evento}"
+								target="#{eventoMB.evento}" />
+
+						</p:commandButton>
+
+						<p:commandButton id="removerTR" value="" icon="remover16"
+							style="margin-left: 3px;" disabled="#{eventoMB.tecAdm}"
+							oncomplete="PF('eventoConfirmDialog').show()" update=":confirm"
+							styleClass="apenasIcone">
+
+							<f:setPropertyActionListener value="#{evento}"
+								target="#{eventoMB.evento}" />
+
+						</p:commandButton>
+
+					</p:column>
+
+
+
 				</p:dataTable>
 
 			</h:form>
-			
+
 		</p:panel>
 
 		<p:dialog id="eventoDlg" widgetVar="eventoDialog"
@@ -131,22 +126,23 @@
 
 					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
 						maxlength="60" required="true"
-						requiredMessage="Nome é obrigatório!" />
+						requiredMessage="Nome Ã© obrigatÃ³rio!" />
 
-					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+					<h:outputLabel id="descricaoLb" value="DescriÃ§Ã£o:"
+						for="descricao" />
 
 					<p:inputText id="descricao" value="#{eventoMB.evento.descricao}"
 						size="60" maxlength="255" required="true"
-						requiredMessage="Descrição é obrigatório!" />
+						requiredMessage="DescriÃ§Ã£o Ã© obrigatÃ³rio!" />
 
-					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+					<p:outputLabel id="dataInicioLb" value="Data de InÃ­cio:"
 						for="dataInicio" />
 
 					<p:calendar id="dataInicio"
 						value="#{eventoMB.evento.dataHoraInicio}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
 						maxdate="31/12/2050" yearRange="2015:2020" required="true"
-						requiredMessage="Data de início é obrigatória" mask="true" />
+						requiredMessage="Data de inÃ­cio Ã© obrigatÃ³ria" mask="true" />
 
 
 					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
@@ -156,9 +152,9 @@
 						locale="pt" mask="true" navigator="true"
 						pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980" maxdate="31/12/2020"
 						yearRange="2015:2020" required="true"
-						requiredMessage="Data de encerramento é obrigatória" />
+						requiredMessage="Data de encerramento Ã© obrigatÃ³ria" />
 
-					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
+					<p:outputLabel id="campusLb" value="CÃ¢mpus:" for="campus" />
 
 					<p:selectOneMenu id="campus" value="#{eventoMB.campus}"
 						filter="true" filterMatchMode="startsWith"
@@ -231,9 +227,14 @@
 
 					<p:column>
 
-						<p:commandButton value="Remover"
-							update=":evento_form:estudantesList :confirmRmv" icon="remover16"
-							oncomplete="PF('eventoEstConfirmDialog').show()" />
+						<p:commandButton value="Remover" update=" :confirmRmv"
+							icon="remover16" oncomplete="PF('eventoEstConfirmDialog').show()">
+
+
+							<f:setPropertyActionListener value="#{eventoPessoa}"
+								target="#{eventoMB.eventoPessoa}" />
+
+						</p:commandButton>
 
 					</p:column>
 
@@ -256,7 +257,7 @@
 
 
 			<f:facet name="footer">
-				Esse evento é do tipo treino.
+				Esse evento Ã© do tipo treino.
 			</f:facet>
 
 		</p:dialog>
@@ -273,13 +274,14 @@
 
 					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
 						maxlength="60" required="true"
-						requiredMessage="Nome é obrigatório!" />
+						requiredMessage="Nome Ã© obrigatÃ³rio!" />
 
-					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+					<h:outputLabel id="descricaoLb" value="DescriÃ§Ã£o:"
+						for="descricao" />
 
 					<p:inputText id="descricao" value="#{eventoMB.evento.descricao}"
 						size="60" required="true" maxlength="255"
-						requiredMessage="Descrição é obrigatório!" />
+						requiredMessage="DescriÃ§Ã£o Ã© obrigatÃ³rio!" />
 
 
 					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
@@ -289,7 +291,7 @@
 						locale="pt" mask="true" navigator="true" pattern="dd/mm/yyyy"
 						mindate="01/01/2015" maxdate="31/12/2020" yearRange="2015:2020"
 						required="true"
-						requiredMessage="Data de encerramento é obrigatória" />
+						requiredMessage="Data de encerramento Ã© obrigatÃ³ria" />
 
 
 				</p:panelGrid>
@@ -310,7 +312,7 @@
 			</h:form>
 
 			<f:facet name="footer">
-				Esse evento é do Entrega de Mapa de Modalidades.
+				Esse evento Ã© do Entrega de Mapa de Modalidades.
 			</f:facet>
 
 		</p:dialog>
@@ -327,22 +329,23 @@
 
 					<p:inputText id="nome" value="#{eventoMB.evento.nome}" size="60"
 						maxlength="60" required="true"
-						requiredMessage="Nome é obrigatório!" />
+						requiredMessage="Nome Ã© obrigatÃ³rio!" />
 
-					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+					<h:outputLabel id="descricaoLb" value="DescriÃ§Ã£o:"
+						for="descricao" />
 
 					<p:inputText id="descricao" value="#{eventoMB.evento.descricao}"
 						size="60" required="true" maxlength="255"
-						requiredMessage="Descrição é obrigatório!" />
+						requiredMessage="DescriÃ§Ã£o Ã© obrigatÃ³rio!" />
 
-					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+					<p:outputLabel id="dataInicioLb" value="Data de InÃ­cio:"
 						for="dataInicio" />
 
 					<p:calendar id="dataInicio"
 						value="#{eventoMB.evento.dataHoraInicio}" locale="pt"
 						navigator="true" pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980"
 						maxdate="31/12/2050" yearRange="2015:2020" required="true"
-						requiredMessage="Data de início é obrigatória" mask="true" />
+						requiredMessage="Data de inÃ­cio Ã© obrigatÃ³ria" mask="true" />
 
 					<p:outputLabel id="dataFimLb" value="Data de Encerramento:"
 						for="dataFim" />
@@ -351,7 +354,7 @@
 						locale="pt" mask="true" navigator="true"
 						pattern="dd/mm/yyyy HH:mm" mindate="1/1/1980" maxdate="31/12/2020"
 						yearRange="2015:2020" required="true"
-						requiredMessage="Data de encerramento é obrigatória" />
+						requiredMessage="Data de encerramento Ã© obrigatÃ³ria" />
 
 				</p:panelGrid>
 
@@ -371,7 +374,7 @@
 			</h:form>
 
 			<f:facet name="footer">
-				Esse evento é de refeição.
+				Esse evento Ã© de refeiÃ§Ã£o.
 			</f:facet>
 
 		</p:dialog>
@@ -388,7 +391,8 @@
 
 					<p:outputLabel id="nome" value="#{eventoMB.evento.nome}" />
 
-					<p:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+					<p:outputLabel id="descricaoLb" value="DescriÃ§Ã£o:"
+						for="descricao" />
 
 					<p:outputLabel id="descricao" value="#{eventoMB.evento.descricao}" />
 
@@ -396,7 +400,7 @@
 
 					<p:outputLabel value="#{eventoMB.evento.tipo.label}" />
 
-					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+					<p:outputLabel id="dataInicioLb" value="Data de InÃ­cio:"
 						for="dataInicio" />
 					<p:outputLabel id="dataInicio"
 						value="#{eventoMB.evento.dataHoraInicio}">
@@ -434,17 +438,20 @@
 					<p:column headerText="Presente">
 
 						<p:outputLabel
-							value="#{eventoPessoa.wasPresente  ? 'Compareceu' : 'Presença não registrada'}" />
+							value="#{eventoPessoa.wasPresente  ? 'Compareceu' : 'PresenÃ§a nÃ£o registrada'}" />
 
 					</p:column>
 
 
-					<p:column headerText="Marcar Presença">
+					<p:column headerText="Marcar PresenÃ§a">
 
-						<p:commandButton value="Marcar presença"
-							actionListener="#{eventoMB.mudouPresenca}"
+						<p:commandButton value="Marcar presenÃ§a"
+							action="#{eventoMB.mudouPresenca()}"
 							disabled="#{eventoPessoa.wasPresente}"
-							update="evento_form:estudantesList">
+							update=":visEvento_form:estudantesList">
+
+							<f:setPropertyActionListener value="#{eventoPessoa}"
+								target="#{eventoMB.eventoPessoa}" />
 
 						</p:commandButton>
 
@@ -467,7 +474,8 @@
 
 					<p:outputLabel id="nome" value="#{eventoMB.evento.nome}" />
 
-					<p:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+					<p:outputLabel id="descricaoLb" value="DescriÃ§Ã£o:"
+						for="descricao" />
 
 					<p:outputLabel id="descricao" value="#{eventoMB.evento.descricao}" />
 
@@ -475,7 +483,7 @@
 
 					<p:outputLabel value="#{eventoMB.evento.tipo.label}" />
 
-					<p:outputLabel id="dataInicioLb" value="Data de Início:"
+					<p:outputLabel id="dataInicioLb" value="Data de InÃ­cio:"
 						for="dataInicio" />
 					<p:outputLabel id="dataInicio"
 						value="#{eventoMB.evento.dataHoraInicio}" />
@@ -540,7 +548,7 @@
 		</p:dialog>
 
 		<p:dialog id="visEventoTecAdmDlg" widgetVar="visEventoTecAdmDialog"
-			header="Informações sobre o evento" width="750" height="300"
+			header="InformaÃ§Ãµes sobre o evento" width="750" height="300"
 			modal="true">
 
 			<h:form id="visEventoTecAdm_form">
@@ -551,7 +559,8 @@
 
 					<p:outputLabel id="nome" value="#{eventoMB.evento.nome}" />
 
-					<h:outputLabel id="descricaoLb" value="Descrição:" for="descricao" />
+					<h:outputLabel id="descricaoLb" value="DescriÃ§Ã£o:"
+						for="descricao" />
 
 					<p:outputLabel id="descricao" value="#{eventoMB.evento.descricao}" />
 
@@ -617,8 +626,8 @@
 
 
 		<p:confirmDialog id="confirm" widgetVar="eventoConfirmDialog"
-			global="true" header="Confirma exclusão do evento?" showEffect="fade"
-			hideEffect="fade" severity="alert"
+			global="true" header="Confirma exclusão do evento?"
+			showEffect="fade" hideEffect="fade" severity="alert"
 			message="Deseja realmente excluir o
 				evento: #{eventoMB.evento.nome}?">
 
@@ -628,11 +637,12 @@
 			<h:form>
 
 				<p:commandButton value="Sim"
-					actionListener="#{eventoMB.removerPessoa()}"
-					oncomplete="PF('eventoConfirmDialog').hide()" update=":tableForm :msg"
-					icon="ok16" />
+					actionListener="#{eventoMB.removerEvento()}"
+					oncomplete="PF('eventoConfirmDialog').hide()"
+					update=":tableForm :msg" icon="ok16" />
 
-				<p:commandButton value="Não" actionListener="#{eventoMB.cancelar()}"
+				<p:commandButton value="Não"
+					actionListener="#{eventoMB.cancelar()}"
 					oncomplete="PF('eventoConfirmDialog').hide()" icon="cancelar16" />
 
 			</h:form>
@@ -652,7 +662,7 @@
 					oncomplete="PF('eventoEstConfirmDialog').hide()"
 					update=":evento_form:estudantesList" icon="ok16" />
 
-				<p:commandButton value="Não" actionListener="#{eventoMB.cancelar()}"
+				<p:commandButton value="Não"
 					oncomplete="PF('eventoEstConfirmDialog').hide()" icon="cancelar16" />
 
 			</h:form>

@@ -3,7 +3,7 @@ package ifpr.evento;
 
 public enum TipoEvento {
 
-	REFEICAO("Refeição", 1), TREINO("Treino Esportivo", 2), MAPAMODALIDADE(
+	REFEICAO("RefeiÃ§Ã£o", 1), TREINO("Treino Esportivo", 2), MAPAMODALIDADE(
 			"Mapa de Modalidades", 3);
 
 	private String label;

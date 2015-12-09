@@ -90,9 +90,9 @@ public class CrachasPdf {
 				} else {
 					addLinhaCracha(writer, pessoa.getNome(), 585, false);
 				}
-				addLinhaCracha(writer, "Função:", 565, true);
+				addLinhaCracha(writer, "FunÃ§Ã£o:", 565, true);
 				addLinhaCracha(writer, pessoa.getTipo().getLabel(), 545, false);
-				addLinhaCracha(writer, "Câmpus:", 525, true);
+				addLinhaCracha(writer, "CÃ¢mpus:", 525, true);
 				addLinhaCracha(writer, retornaCampus(pessoa), 505, false);
 				addMoldura(2);
 				String codeText = "id-" + pessoa.getId() + "-nome-" + pessoa.getNome();
@@ -116,9 +116,9 @@ public class CrachasPdf {
 					} else {
 						addLinhaCracha(writer, pessoa2.getNome(), 215, false);
 					}
-					addLinhaCracha(writer, "Função:", 195, true);
+					addLinhaCracha(writer, "FunÃ§Ã£o:", 195, true);
 					addLinhaCracha(writer, pessoa2.getTipo().getLabel(), 175, false);
-					addLinhaCracha(writer, "Câmpus:", 155, true);
+					addLinhaCracha(writer, "CÃ¢mpus:", 155, true);
 					addLinhaCracha(writer, retornaCampus(pessoa2), 135, false);
 					addMoldura(4);
 					String codeText2 = "id-" + pessoa2.getId() + "-nome-" + pessoa2.getNome();
@@ -158,7 +158,7 @@ public class CrachasPdf {
 				} else {
 					addLinhaCracha(writer, secretario.getNome(), 585, false);
 				}
-				addLinhaCracha(writer, "Função:", 565, true);
+				addLinhaCracha(writer, "FunÃ§Ã£o:", 565, true);
 				addLinhaCracha(writer, secretario.getTipo().getLabel(), 545, false);
 				addMoldura(2);
 				String codeText = "id-" + secretario.getId() + "-nome-" + secretario.getNome();
@@ -181,7 +181,7 @@ public class CrachasPdf {
 					} else {
 						addLinhaCracha(writer, secretario2.getNome(), 215, false);
 					}
-					addLinhaCracha(writer, "Função:", 195, true);
+					addLinhaCracha(writer, "FunÃ§Ã£o:", 195, true);
 					addLinhaCracha(writer, secretario2.getTipo().getLabel(), 175, false);
 					addMoldura(4);
 					String codeText2 = "id-" + secretario2.getId() + "-nome-" + secretario2.getNome();

@@ -134,8 +134,13 @@ public class EventoMB {
 
 	}
 
-	public void mudouPresenca() {
+	public String mudouPresenca() {
+
+		eventoPessoa.setWasPresente(true);
 		eventoPessoaDao.update(eventoPessoa);
+		eventoPessoa = null;
+		return "";
+
 	}
 
 	@PostConstruct
@@ -162,7 +167,7 @@ public class EventoMB {
 			modalidade = null;
 			campus = null;
 		} else {
-			removerPessoa();
+			removerEvento();
 			modalidade = null;
 			campus = null;
 			isUpdate = true;
@@ -182,10 +187,10 @@ public class EventoMB {
 		if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problema na Data!",
 					"A data final deve ser posterior a inicial!");
 
-			context.addMessage("Aten��o", message);
+			context.addMessage("Atenção", message);
 			context.validationFailed();
 
 			return;
@@ -223,10 +228,10 @@ public class EventoMB {
 		if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problema na Data!",
 					"A data final deve ser posterior a inicial!");
 
-			context.addMessage("Aten��o", message);
+			context.addMessage("Atenção", message);
 			context.validationFailed();
 
 			return;
@@ -248,10 +253,10 @@ public class EventoMB {
 			if (evento.getDataHoraInicio().after(evento.getDataHoraFinal())) {
 
 				FacesContext context = FacesContext.getCurrentInstance();
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas inv�lidas!",
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problema na Data!",
 						"A data final deve ser posterior a inicial!");
 
-				context.addMessage("Aten��o", message);
+				context.addMessage("Atenção", message);
 				context.validationFailed();
 
 				return;
@@ -266,15 +271,32 @@ public class EventoMB {
 		}
 	}
 
+	public void removerEvento() {
+		try {
+			if (evento.getEventoPessoas() != null) {
+				for (EventoPessoa evp : evento.getEventoPessoas()) {
+					eventoPessoaDao.remover(evp);
+				}
+			}
+			eventoPessoa = null;
+			evento.setEventoPessoas(null);
+			eventoDao.remover(evento);
+			evento = null;
+		} catch (Exception e) {
+			mensagemAvisoFaces("Erro!", "Impossível remover evento!");
+
+		}
+
+	}
+
 	public void removerPessoa() {
 		try {
 			eventoPessoaDao.remover(eventoPessoa);
 			evento.getEventoPessoas().remove(eventoPessoa);
-			eventoDao.remover(evento);
+			eventoPessoa = null;
 		} catch (Exception e) {
-			mensagemAvisoFaces("Erro!", "Impossível remover evento!");
+			mensagemAvisoFaces("Erro!", "Erro ao remover!");
 		}
-
 	}
 
 	public void mensagemAvisoFaces(String titulo, String message) {
@@ -368,19 +390,23 @@ public class EventoMB {
 		return arqStreamed;
 	}
 
-	public void abrirDialog() {
-		if (evento != null) {
-			if (evento.getTipo().equals(TipoEvento.MAPAMODALIDADE)) {
-				popularArquivos();
-				RequestContext.getCurrentInstance().execute("PF('visEventoMapaDialog').show()");
-			} else
-				RequestContext.getCurrentInstance().execute("PF('visEventoDialog').show()");
-		}
+	public void abrirVisDialog() {
+
+		if (evento.getTipo().equals(TipoEvento.MAPAMODALIDADE)) {
+			popularArquivos();
+			RequestContext.getCurrentInstance().execute("PF('visEventoMapaDialog').show()");
+		} else
+			RequestContext.getCurrentInstance().execute("PF('visEventoDialog').show()");
+
 	}
 
 	public void abrirEditDialog() {
-
-		RequestContext.getCurrentInstance().execute("PF('eventoAdmDialog').show()");
+		if (isAdm) {
+			popularArquivos();
+			RequestContext.getCurrentInstance().execute("PF('eventoAdmDialog').show()");
+		} else if (isTecEsp) {
+			RequestContext.getCurrentInstance().execute("PF('eventoDialog').show()");
+		}
 	}
 
 	public EventoPessoa getEventoPessoa() {

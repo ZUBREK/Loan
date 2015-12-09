@@ -3,12 +3,12 @@ package ifpr.pessoa;
 public enum TipoPessoa {
 
 	ROLE_ADMIN("Administrador", 1), 
-	ROLE_TEC_ADM("Técnico Administrativo", 2), 
-	ROLE_SECRETARIO("Secretário", 3), 
-	ROLE_TEC_ESP("Técnico Esportivo", 4), 
+	ROLE_TEC_ADM("TÃ©cnico Administrativo", 2), 
+	ROLE_SECRETARIO("Secretï¿½rio", 3), 
+	ROLE_TEC_ESP("TÃ©cnico Esportivo", 4), 
 	ROLE_COORDENADOR("Coordenador PEA", 5), 
 	ROLE_ESTUDANTE("Estudante", 6),
-	ROLE_TEC_COORD("Técnico Esportivo & Coordenador",7);
+	ROLE_TEC_COORD("TÃ©cnico Esportivo & Coordenador",7);
 
 	private String label;
 

@@ -7,7 +7,7 @@
 	template="/layout/templates/templateGerenciamento.xhtml">
 
 	<ui:define name="body">
-
+		<p:growl id="msg" showDetail="true" />
 		<h:form>
 			<p:commandButton id="novoCampus" value="Novo"
 				actionListener="#{campusMB.criar}"

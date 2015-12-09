@@ -54,7 +54,7 @@ public class JogosMB {
 
 	private List<Evento> eventoList;
 
-	@ManagedProperty(value = "#{eventoDao}")
+	@ManagedProperty(value = "#{jogosDao}")
 	private EventoDao eventoDao;
 
 	@ManagedProperty(value = "#{pessoaDao}")

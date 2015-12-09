@@ -1,5 +1,6 @@
 package ifpr.competicao.time.dao;
 
+import ifpr.campus.Campus;
 import ifpr.competicao.time.Time;
 import ifpr.dao.Dao;
 import ifpr.modalidade.Modalidade;
@@ -14,5 +15,8 @@ public interface TimeDao extends Dao<Time> {
 	public List<Time> pesquisarPorModalidade(Modalidade modalidade);
 	
 	public List<Estudante> listarEstudantes(Time time);
+	
+	public List<Time> listarTimesPorCampusModalidade(Campus campus,
+			Modalidade modalidade);
 	
 }

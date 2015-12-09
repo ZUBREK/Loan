@@ -73,6 +73,8 @@ public class TimeMB {
 
 	private TimeEstudante timeEstudante;
 
+	private int anoOld;
+
 	private boolean isUpdate;
 
 	public TimeMB() {
@@ -130,7 +132,12 @@ public class TimeMB {
 
 	public void salvar() {
 		if (time.getId() != null) {
-			timeDao.update(time);
+			if (anoOld != time.getAno()) {
+				time.setId(null);
+				timeDao.salvar(time);
+			} else {
+				timeDao.update(time);
+			}
 		} else {
 			time.setCampus(campus);
 			time.setModalidade(modalidade);
@@ -180,6 +187,7 @@ public class TimeMB {
 		campus = time.getCampus();
 		modalidade = time.getModalidade();
 		tecEsportivo = time.getTecnico();
+		anoOld = time.getAno();
 		this.time = time;
 	}
 
@@ -244,8 +252,9 @@ public class TimeMB {
 	}
 
 	public List<Pessoa> getListaTecEsportivo() {
-		//TODO
-		//MEXER AKI listaTecEsportivo = pessoaDao.listarTecEspByCampusEmAlfabetica(campus);
+		// TODO
+		// MEXER AKI listaTecEsportivo =
+		// pessoaDao.listarTecEspByCampusEmAlfabetica(campus);
 		return listaTecEsportivo;
 	}
 

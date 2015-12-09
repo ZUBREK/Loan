@@ -31,6 +31,10 @@ import ifpr.competicao.grupoChaves.chave.TipoCompeticao;
 import ifpr.competicao.grupoChaves.chave.dao.ChaveDao;
 import ifpr.competicao.grupoChaves.dao.GrupoChavesDao;
 import ifpr.competicao.grupoChaves.model.GrupoChavesLazyDataModel;
+import ifpr.competicao.jogos.Jogos;
+import ifpr.competicao.jogos.dao.JogosDao;
+import ifpr.competicao.jogos.jogosModalidade.JogosModalidade;
+import ifpr.competicao.jogos.jogosTime.JogosTime;
 import ifpr.competicao.partida.Partida;
 import ifpr.competicao.partida.dao.PartidaDao;
 import ifpr.competicao.partida.local.Local;
@@ -48,6 +52,12 @@ import ifpr.pessoa.TipoPessoa;
 @ManagedBean(name = "chaveMB")
 @ViewScoped
 public class ChaveMB {
+
+	private Jogos jogos;
+
+	private List<Modalidade> listaModalidades;
+
+	private List<Jogos> listaJogos;
 
 	private Chave chave;
 
@@ -81,6 +91,9 @@ public class ChaveMB {
 
 	@ManagedProperty(value = "#{localDao}")
 	private LocalDao localDao;
+
+	@ManagedProperty(value = "#{jogosDao}")
+	private JogosDao jogosDao;
 
 	private TipoChaveamento tipo;
 
@@ -124,12 +137,14 @@ public class ChaveMB {
 	private Integer placar;
 
 	public ChaveMB() {
+		listaModalidades = new ArrayList<>();
 	}
 
 	@PostConstruct
 	public void init() {
 		try {
-			listaLocais = localDao.listAsc();
+			listaLocais = localDao.listDesc();
+			listaJogos = jogosDao.listDesc();
 		} catch (Exception e) {
 			// nao tem local
 		}
@@ -389,6 +404,8 @@ public class ChaveMB {
 			adicionarEmGrupoChaves();
 			grupoChavesDao.salvar(grupoChaves);
 		}
+		jogos.getGrupoChaves().add(grupoChaves);
+		jogosDao.update(jogos);
 		timesModalidade = null;
 		modalidade = null;
 		tipo = null;
@@ -864,10 +881,17 @@ public class ChaveMB {
 		iniciarTreeNode();
 	}
 
+	public void jogosSelectionChanged(final AjaxBehaviorEvent event) {
+		listaModalidades.clear();
+		for (JogosModalidade jogosMod : jogos.getJogosModalidades()) {
+			listaModalidades.add(jogosMod.getModalidade());
+		}
+	}
+
 	public void modalidadeSelectionChanged(final AjaxBehaviorEvent event) throws ValidationException {
 		tipos = TipoChaveamento.values();
 		if (!grupoChavesDao.hasChave(modalidade)) {
-			timesModalidade = timeDao.pesquisarPorModalidade(modalidade);
+			timesModalidade = pegarTimesJogos();
 			if (timesModalidade.size() < 2) {
 				mensagemErroFaces("Erro na Quantidade de Times!", "Quantidade de times insuficiente!");
 				ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
@@ -896,6 +920,14 @@ public class ChaveMB {
 			TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);
 			tipos = tiposNew;
 		}
+	}
+
+	private List<Time> pegarTimesJogos() {
+		List<Time> timesJogos = new ArrayList<>();
+		for (JogosTime jogosTime : jogos.getJogosTimes()) {
+			timesJogos.add(jogosTime.getTime());
+		}
+		return timesJogos;
 	}
 
 	public boolean isPossivelGrupos() {
@@ -1134,4 +1166,35 @@ public class ChaveMB {
 		this.placar = placar;
 	}
 
+	public Jogos getJogos() {
+		return jogos;
+	}
+
+	public void setJogos(Jogos jogos) {
+		this.jogos = jogos;
+	}
+
+	public List<Modalidade> getListaModalidades() {
+		return listaModalidades;
+	}
+
+	public void setListaModalidades(List<Modalidade> listaModalidades) {
+		this.listaModalidades = listaModalidades;
+	}
+
+	public List<Jogos> getListaJogos() {
+		return listaJogos;
+	}
+
+	public void setListaJogos(List<Jogos> listaJogos) {
+		this.listaJogos = listaJogos;
+	}
+
+	public JogosDao getJogosDao() {
+		return jogosDao;
+	}
+
+	public void setJogosDao(JogosDao jogosDao) {
+		this.jogosDao = jogosDao;
+	}
 }

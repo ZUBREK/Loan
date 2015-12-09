@@ -110,5 +110,20 @@ public class Jogos {
 	public void setJogosTimes(List<JogosTime> jogosTimes) {
 		this.jogosTimes = jogosTimes;
 	}
+	
+	@Override
+	public String toString() {
+		return Integer.toString(ano);
+	}
+
+	public boolean equals(Object other) {
+		return other instanceof Jogos && (id != null) ? id
+				.equals(((Jogos) other).getId()) : (other == this);
+	}
+
+	public int hashCode() {
+		return id != null ? this.getClass().hashCode() + id.hashCode() : super
+				.hashCode();
+	}
 
 }

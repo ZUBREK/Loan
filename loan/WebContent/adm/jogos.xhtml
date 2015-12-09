@@ -51,7 +51,7 @@
 					</p:column>
 					<p:column headerText="Remover" width="47">
 						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;" oncomplete="PF('jogosDialog').show()"
+							style="margin-left: 10px;" oncomplete="PF('jogosConfirmDialog').show()"
 							update=":confirm :msg" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{jogos}"
 								target="#{jogosMB.jogos}" />

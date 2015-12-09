@@ -32,4 +32,14 @@ public class JogosDaoImpl extends GenericDao<Jogos> implements JogosDao {
 		}
 	}
 
+	@Override
+	public Jogos pegarJogosAno(int ano) {
+		EntityManager em = emf.createEntityManager();
+		Query query = em.createQuery("SELECT a from Jogos a where a.ano = :ano");
+		query.setParameter("ano", ano);
+
+		return (Jogos) query.getSingleResult();
+
+	}
+
 }

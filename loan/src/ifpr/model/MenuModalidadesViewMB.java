@@ -1,8 +1,5 @@
 package ifpr.model;
 
-import ifpr.modalidade.Modalidade;
-import ifpr.modalidade.dao.ModalidadeDao;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -15,43 +12,59 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
+import ifpr.competicao.jogos.Jogos;
+import ifpr.competicao.jogos.dao.JogosDao;
+import ifpr.modalidade.Modalidade;
+import ifpr.modalidade.dao.ModalidadeDao;
+
 @ManagedBean(name = "menuModalidadeMB")
 @ViewScoped
 public class MenuModalidadesViewMB {
 	private MenuModel model;
-	
+
 	@ManagedProperty(value = "#{modalidadeDao}")
 	private ModalidadeDao modalidadeDao;
+
+	@ManagedProperty(value = "#{jogosDao}")
+	private JogosDao jogosDao;
+
 	@PostConstruct
-    public void init() {
-        model = new DefaultMenuModel();
-         
-        //First submenu
-        DefaultSubMenu submenu = new DefaultSubMenu("Modalidades");
-        List<Modalidade> modalidades = modalidadeDao.listarAlfabetica();
-        if(!modalidades.isEmpty()){
-        for (Modalidade modalidade : modalidades) {
-        	DefaultMenuItem item = new DefaultMenuItem(modalidade.getNome());
-            item.setUrl("#");
-            submenu.addElement(item);
+	public void init() {
+		model = new DefaultMenuModel();
+
+		DefaultSubMenu submenu = new DefaultSubMenu("Modalidades");
+		List<Modalidade> modalidades = modalidadeDao.listarAlfabetica();
+		List<Jogos> edicoesJogos = jogosDao.listDesc();
+		if (!modalidades.isEmpty()) {
+			for (Modalidade modalidade : modalidades) {
+				DefaultMenuItem item = new DefaultMenuItem(modalidade.getNome());
+				item.setUrl("#");
+				submenu.addElement(item);
+			}
+		} else {
+			DefaultMenuItem item = new DefaultMenuItem("Não há modalidades cadastradas");
+			item.setUrl("#");
+			submenu.addElement(item);
 		}
-        }
-        else{
-        	DefaultMenuItem item = new DefaultMenuItem("N�o h� modalidades cadastradas");
-            item.setUrl("#");
-            submenu.addElement(item);
-        }
-        DefaultMenuItem item = new DefaultMenuItem("Regulamento dos Jogos 2014");
-        item.setUrl(" http://reitoria.ifpr.edu.br/wp-content/uploads/2014/10/REGULAMENTO_JIFPR_2014.pdf");
-        submenu.addElement(item);
-       
-        model.addElement(submenu);
-     
-    }
- 
-    public MenuModel getModel() {
-        return model;
-    }
+		if (!modalidades.isEmpty()) {
+			for (Jogos jogos : edicoesJogos) {
+				DefaultMenuItem item = new DefaultMenuItem("Regulamento dos Jogos " + jogos.getAno());
+				item.setUrl(jogos.getLink());
+				submenu.addElement(item);
+			}
+		} else {
+			DefaultMenuItem item = new DefaultMenuItem("Não há edições de jogos cadastradas!");
+			item.setUrl("#");
+			submenu.addElement(item);
+		}
+
+		model.addElement(submenu);
+
+	}
+
+	public MenuModel getModel() {
+		return model;
+	}
 
 	public ModalidadeDao getModalidadeDao() {
 		return modalidadeDao;
@@ -63,7 +76,13 @@ public class MenuModalidadesViewMB {
 
 	public void setModel(MenuModel model) {
 		this.model = model;
-	}   
-    
-    
+	}
+
+	public JogosDao getJogosDao() {
+		return jogosDao;
+	}
+
+	public void setJogosDao(JogosDao jogosDao) {
+		this.jogosDao = jogosDao;
+	}
 }

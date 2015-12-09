@@ -154,7 +154,8 @@
 									value="Clique para adicionar o placar do #{node}"
 									showEffect="fade" hideEffect="fade" />
 							</p:treeNode>
-							<p:ajax event="select" listener="#{chaveMB.onNodeSelect}" update=":part_form"/>
+							<p:ajax event="select" listener="#{chaveMB.onNodeSelect}"
+								update=":part_form" />
 
 						</p:tree>
 						<p:spacer height="10px" />
@@ -182,9 +183,9 @@
 					<p:outputLabel id="dataInicioLb" value="Data de Início da Partida:"
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
-						pattern="dd/MM/yyyy HH:mm" readonlyInput="true"
-						yearRange="c:c" required="true"
-						requiredMessage="Data de início é obrigatória" mask="true">
+						pattern="dd/MM/yyyy HH:mm" readonlyInput="true" yearRange="c:c"
+						required="true" requiredMessage="Data de início é obrigatória"
+						mask="true">
 						<p:ajax event="dateSelect" listener="#{chaveMB.checarData}"
 							update=":msg" />
 					</p:calendar>
@@ -263,7 +264,7 @@
 							oncomplete="if(!args.validationFailed) PF('editarChavDialog').show()">
 							<p:resetInput target=":classifc_form" />
 						</p:commandButton>
-						
+
 						<p:commandButton id="cancelarClassificacaoTimeBt" value="Cancelar"
 							icon="cancelar16" onsuccess="PF('classificatorioDialog').hide()"
 							update="editarChavDialog"
@@ -286,20 +287,34 @@
 					<p:inputText id="nome" value="#{chaveMB.grupoChaves.nome}"
 						size="20" required="true" requiredMessage="Nome é obrigatório!" />
 
+					<p:outputLabel id="jogosLb" value="Jogos:" for="jogos" />
+					<p:selectOneMenu id="jogos" value="#{chaveMB.jogos}" filter="true"
+						filterMatchMode="startsWith" required="true"
+						requiredMessage="Jogos é obrigatório!"
+						converter="#{jogosConverter}">
+						<p:ajax event="change" update=":chave_form:modalidade :msg"
+							listener="#{chaveMB.jogosSelectionChanged}" />
+						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
+
+						<f:selectItems value="#{chaveMB.listaJogos}" var="jogos"
+							itemLabel="#{jogos.ano}" itemValue="#{jogos}" />
+					</p:selectOneMenu>
+
 					<p:outputLabel id="modalidadeLb" value="Modalidade:"
 						for="modalidade" />
 					<p:selectOneMenu id="modalidade" value="#{chaveMB.modalidade}"
 						filter="true" filterMatchMode="startsWith" required="true"
 						requiredMessage="Modalidade é obrigatória!"
+						disabled="#{empty chaveMB.jogos}"
 						converter="#{modalidadeConverter}">
 						<p:ajax event="change" update=":chave_form:tipo :msg"
 							listener="#{chaveMB.modalidadeSelectionChanged}" />
 						<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
-						<f:selectItems value="#{timeMB.listaModalidade}" var="modalidd"
+						<f:selectItems value="#{chaveMB.listaModalidades}" var="modalidd"
 							itemLabel="#{modalidd.nome}" itemValue="#{modalidd}" />
 					</p:selectOneMenu>
-					
+
 					<p:outputLabel id="tipoLb" value="Tipo da chaveamento:" for="tipo" />
 					<p:selectOneMenu id="tipo" value="#{chaveMB.tipo}" label=""
 						disabled="#{empty chaveMB.modalidade}" required="true"
@@ -321,7 +336,7 @@
 					</p:selectOneMenu>
 
 					<p:spacer height="10px" />
-					
+
 					<f:facet name="footer">
 						<p:dialog modal="true" widgetVar="statusDialog"
 							header="Carregando" draggable="false" closable="false"

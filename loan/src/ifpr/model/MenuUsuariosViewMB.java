@@ -43,7 +43,7 @@ public class MenuUsuariosViewMB {
 		adicionarItem("Página Principal", Paths.INDEX, "home16", false);
 		adicionarItem("Meu Perfil", Paths.HOME, "home16", false);
 		if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ADMIN)) {
-			
+
 			adicionarItem("Eventos", Paths.EVENTOS, "teacher16", false);
 			adicionarItem("Arquivos", Paths.ARQUIVOS, "download16", false);
 			adicionarItem("Campus", Paths.CAMPUS, "escola16", false);
@@ -53,27 +53,27 @@ public class MenuUsuariosViewMB {
 			adicionarItensAdm();
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ESP)) {
-			
+
 			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
 			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
-		
+
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_COORDENADOR)) {
-		
+
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
-		
+
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_SECRETARIO)) {
-		
+
 			adicionarItem("Chaves", Paths.CHAVES, "attach16", false);
-		
+
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_ESTUDANTE)) {
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_ADM)) {
-	
+
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
-			
+
 			submenu = new DefaultSubMenu("Usuários");
 			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
@@ -84,9 +84,8 @@ public class MenuUsuariosViewMB {
 			adicionarItem("Delegações", Paths.DELEGACOES, "attach16", true);
 			model.addElement(submenu);
 
-		
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
-		
+
 			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
@@ -119,6 +118,8 @@ public class MenuUsuariosViewMB {
 		adicionarItem("Chaves", Paths.CHAVES, "attach16", true);
 
 		adicionarItem("Locais", Paths.LOCAIS, "attach16", true);
+
+		adicionarItem("Jogos", Paths.JOGOS, "atendimento16", true);
 
 		model.addElement(submenu);
 	}

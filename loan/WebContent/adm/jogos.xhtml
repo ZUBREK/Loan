@@ -65,7 +65,7 @@
 		</p:panel>
 
 		<p:dialog id="jogosDlg" widgetVar="jogosDialog"
-			header="Dados dos jogos" width="800" height="400" modal="true"
+			header="Dados dos jogos" width="800" height="600" modal="true"
 			closable="false">
 
 			<h:form id="jogos_form">
@@ -94,7 +94,7 @@
 
 					<p:commandButton id="addModalidadeBt" value="Adicionar modalidades"
 						icon="apply" actionListener="#{jogosMB.adicionarModalidade()}"
-						update=":jogos_form:modalidadesList" />
+						update=":jogos_form:modalidadesList :jogos_form:addGrid" />
 
 				</h:panelGrid>
 
@@ -109,7 +109,7 @@
 
 					<p:column>
 						<p:commandButton value="Remover"
-							update=":jogos_form:modalidadesList :confirmRmv" icon="remover16"
+							update=":jogos_form:modalidadesList :confirmRmvModalidade" icon="remover16"
 							oncomplete="PF('jogosModalidadeConfirmDialog').show()">
 							<f:setPropertyActionListener value="#{jogosModalidades}"
 								target="#{jogosMB.jogosModalidade}" />
@@ -117,12 +117,14 @@
 					</p:column>
 				</p:dataTable>
 
+				<p:spacer height="5px" />
+
 				<h:panelGrid id="addGridCampus" columns="3" cellpadding="5">
 
 					<h:outputLabel for="menuCampus" value="Campus:" />
 
 					<p:selectCheckboxMenu id="menuCampus"
-						value="#{jogosMB.campusSelecionados}" label="times" filter="true"
+						value="#{jogosMB.campusSelecionados}" label="Campus" filter="true"
 						filterMatchMode="startsWith" panelStyle="width:250px"
 						converter="#{campusConverter}">
 
@@ -132,7 +134,7 @@
 
 					<p:commandButton id="addCampusBt" value="Adicionar campus"
 						icon="apply" actionListener="#{jogosMB.adicionarCampus()}"
-						update=":jogos_form:campusList" />
+						update=":jogos_form:campusList :jogos_form:addGrid" />
 
 				</h:panelGrid>
 				<p:dataTable id="campusList" var="jogosCampus"
@@ -146,30 +148,30 @@
 
 					<p:column>
 						<p:commandButton value="Remover"
-							update=":jogos_form:campusList :confirmRmv" icon="remover16"
+							update=":jogos_form:campusList :confirmRmvCampus" icon="remover16"
 							oncomplete="PF('jogosCampusConfirmDialog').show()">
 							<f:setPropertyActionListener value="#{jogosCampus}"
 								target="#{jogosMB.jogosCampus}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
-
+				<p:spacer height="5px" />
 				<h:panelGrid id="addGrid" columns="3" cellpadding="5">
 
 					<h:outputLabel for="menu" value="times:" />
 
 					<p:selectCheckboxMenu id="menu"
-						disabled="#{jogosMB.isSelecionavel}"
+						disabled="#{not jogosMB.isSelecionavel}"
 						value="#{jogosMB.timesSelecionados}" label="times" filter="true"
 						filterMatchMode="startsWith" panelStyle="width:250px"
-						converter="#{estudanteConverter}">
+						converter="#{timeConverter}">
 
 						<f:selectItems value="#{jogosMB.times}" />
 
 					</p:selectCheckboxMenu>
 
 					<p:commandButton id="addTimeBt" value="Adicionar times"
-						disabled="#{jogosMB.isSelecionavel}" icon="apply"
+						disabled="#{not jogosMB.isSelecionavel}" icon="apply"
 						actionListener="#{jogosMB.adicionarTime()}"
 						update=":jogos_form:timesList" />
 
@@ -188,7 +190,7 @@
 					<p:column>
 
 						<p:commandButton value="Remover"
-							update=":jogos_form:timesList :confirmRmv" icon="remover16"
+							update=":jogos_form:timesList :confirmRmvTime" icon="remover16"
 							oncomplete="PF('jogosTimeConfirmDialog').show()">
 							<f:setPropertyActionListener value="#{jogosTimes}"
 								target="#{jogosMB.jogosTime}" />
@@ -197,7 +199,7 @@
 					</p:column>
 
 				</p:dataTable>
-
+				<p:spacer height="5px" />
 				<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 					update=":jogos_form :msg :tableForm"
 					actionListener="#{jogosMB.salvarJogos}" />
@@ -237,9 +239,9 @@
 
 		</p:confirmDialog>
 
-		<p:confirmDialog id="confirmRmv" widgetVar="jogosTimeConfirmDialog"
-			global="true" header="Remover time dos Jogos?" showEffect="fade"
-			hideEffect="fade"
+		<p:confirmDialog id="confirmRmvTime"
+			widgetVar="jogosTimeConfirmDialog" global="true"
+			header="Remover time dos Jogos?" showEffect="fade" hideEffect="fade"
 			message="Deseja realmente excluir o time dos Jogos?">
 
 			<h:form>
@@ -257,8 +259,9 @@
 
 		</p:confirmDialog>
 
-		<p:confirmDialog id="confirmRmv" widgetVar="jogosCampusConfirmDialog"
-			global="true" header="Remover Campus dos Jogos?" showEffect="fade"
+		<p:confirmDialog id="confirmRmvCampus"
+			widgetVar="jogosCampusConfirmDialog" global="true"
+			header="Remover Campus dos Jogos?" showEffect="fade"
 			hideEffect="fade"
 			message="Deseja realmente excluir o Campus dos Jogos?">
 
@@ -277,7 +280,7 @@
 
 		</p:confirmDialog>
 
-		<p:confirmDialog id="confirmRmv"
+		<p:confirmDialog id="confirmRmvModalidade"
 			widgetVar="jogosModalidadeConfirmDialog" global="true"
 			header="Remover modalidade dos Jogos?" showEffect="fade"
 			hideEffect="fade"

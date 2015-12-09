@@ -109,7 +109,6 @@ public class JogosMB {
 		JogosTime jogosTime;
 		for (Time time : timesSelecionados) {
 			jogosTime = new JogosTime();
-			jogosTime.setJogos(jogos);
 			jogosTime.setTime(time);
 			jogosTimeDao.salvar(jogosTime);
 			jogos.getJogosTimes().add(jogosTime);
@@ -122,7 +121,6 @@ public class JogosMB {
 		JogosCampus jogosCampus;
 		for (Campus campus : campusSelecionados) {
 			jogosCampus = new JogosCampus();
-			jogosCampus.setJogos(jogos);
 			jogosCampus.setCampus(campus);
 			jogosCampusDao.salvar(jogosCampus);
 			jogos.getJogosCampus().add(jogosCampus);
@@ -135,7 +133,6 @@ public class JogosMB {
 		JogosModalidade jogosModalidade;
 		for (Modalidade modalidade : modalidadesSelecionadas) {
 			jogosModalidade = new JogosModalidade();
-			jogosModalidade.setJogos(jogos);
 			jogosModalidade.setModalidade(modalidade);
 			jogosModalidadeDao.salvar(jogosModalidade);
 			jogos.getJogosModalidades().add(jogosModalidade);
@@ -147,6 +144,7 @@ public class JogosMB {
 
 		if (jogos.getId() != null) {
 			jogosDao.update(jogos);
+			RequestContext.getCurrentInstance().execute("PF('jogosDialog').hide()");
 		} else {
 			if (!jogosDao.existeJogosAno(jogos.getAno())) {
 				jogosDao.salvar(jogos);
@@ -310,13 +308,14 @@ public class JogosMB {
 	}
 
 	public List<Time> getTimes() {
-		if (isSelecionavel()) {
+		if (getIsSelecionavel()) {
 			if (times == null) {
 				times = new ArrayList<>();
 			}
+			times.clear();
 			for (JogosModalidade modalidade : jogos.getJogosModalidades()) {
 				for (JogosCampus campus2 : jogos.getJogosCampus()) {
-					times.addAll(timeDao.listarPorCampusModalidade(campus2.getCampus(), modalidade.getModalidade()));
+					times.addAll(timeDao.listarTimesPorCampusModalidade(campus2.getCampus(), modalidade.getModalidade()));
 				}
 			}
 		}
@@ -359,8 +358,8 @@ public class JogosMB {
 		this.jogosCampusDao = jogosCampusDao;
 	}
 
-	public boolean isSelecionavel() {
-		if (!jogos.getJogosModalidades().isEmpty() && !jogos.getJogosCampus().isEmpty()) {
+	public boolean getIsSelecionavel() {
+		if (jogos != null && (!jogos.getJogosModalidades().isEmpty() && !jogos.getJogosCampus().isEmpty())) {
 			return true;
 		}
 		return false;

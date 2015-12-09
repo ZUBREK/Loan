@@ -89,6 +89,10 @@
 							<p:inputText id="nome" value="#{timeMB.time.nome}" size="50"
 								required="true" requiredMessage="Nome é obrigatório!" />
 
+							<h:outputLabel id="anoLb" value="Ano:" for="ano" />
+							<p:inputMask id="ano" value="#{timeMB.time.ano}" mask="9999"
+								required="true" requiredMessage="Ano é obrigatório!" />
+
 							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 
 							<p:selectOneMenu id="campus" value="#{timeMB.campus}"

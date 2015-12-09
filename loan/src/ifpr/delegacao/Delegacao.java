@@ -36,10 +36,13 @@ public class Delegacao {
 	@JoinColumn(name = "id_delegacao", referencedColumnName = "id_delegacao")
 	private List<DelegacaoPessoa> delegacaoPessoas;
 
-	public Delegacao(){
+	@Column(name = "ano_delegacao")
+	private int ano;
+
+	public Delegacao() {
 		delegacaoPessoas = new ArrayList<DelegacaoPessoa>();
 	}
-		
+
 	public Integer getId() {
 		return id;
 	}
@@ -72,4 +75,11 @@ public class Delegacao {
 		this.delegacaoPessoas = delegacaoPessoas;
 	}
 
+	public int getAno() {
+		return ano;
+	}
+
+	public void setAno(int ano) {
+		this.ano = ano;
+	}
 }

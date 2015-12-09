@@ -53,6 +53,9 @@ public class Time {
 	@JoinColumn(name = "id_pontos_time", referencedColumnName = "id_pontos_time")
 	private PontosTime pontosTime;
 	
+	@Column(name = "ano_time")
+	private int ano;
+	
 	public Time() {
 		timeEstudante = new ArrayList<TimeEstudante>();
 		pontosTime = new PontosTime();
@@ -125,5 +128,13 @@ public class Time {
 
 	public int hashCode() {
 		return id != null ? this.getClass().hashCode() + id.hashCode() : super.hashCode();
+	}
+
+	public int getAno() {
+		return ano;
+	}
+
+	public void setAno(int ano) {
+		this.ano = ano;
 	}
 }

@@ -39,6 +39,16 @@
 						<h:outputText value="#{jogos.ano}" />
 
 					</p:column>
+					
+					<p:column headerText="Relatório Final" width="43">
+
+						<p:commandButton id="gerarRealatorio" icon="pdf16" value=" "
+							style="margin-left: 3px;" ajax="false"
+							actionListener="#{jogosMB.gerarRelatorio(jogos)}"
+							styleClass="apenasIcone">
+							<p:fileDownload id="download" value="#{relatorioFinal.arqStreamed}" />
+						</p:commandButton>
+					</p:column>
 
 					<p:column headerText="Editar" width="35">
 						<p:commandButton id="editarTR" value=" " icon="editar16"
@@ -77,6 +87,11 @@
 					<p:inputMask id="ano" value="#{jogosMB.jogos.ano}" mask="9999"
 						required="true" requiredMessage="Ano é obrigatório!" />
 				</p:panelGrid>
+				
+				<h:outputLabel id="linkkLb" value="Link regulamento dos jogos:" for="link" />
+
+							<p:inputText id="link" value="#{jogosMB.jogos.link}"
+								size="50" required="true" requiredMessage="Link é obrigatório!" />
 
 
 				<h:panelGrid id="addGridModalidades" columns="3" cellpadding="5">

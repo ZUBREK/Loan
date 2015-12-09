@@ -4,7 +4,7 @@ public enum TipoChaveamento {
 
 	MATA_MATA("Mata-Mata"),
 	PONTOS_CORRIDOS("Pontos Corridos"),
-	CLASSIFICATORIO("Classificatório"),
+	CLASSIFICATORIO("ClassificatÃ³rio"),
 	GRUPOS("Grupos");
 
 	private String label;

@@ -31,6 +31,16 @@ public class DelegacaoDaoImpl extends GenericDao<Delegacao> implements Delegacao
 
 		return q.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Delegacao> pesquisarPorAno(int ano) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select u from Delegacao u where ano = :ano");
+		q.setParameter("ano", ano);
+		q.setMaxResults(50);
+		return q.getResultList();
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Pessoa> listarPessoas(Delegacao delegacao) {

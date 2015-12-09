@@ -25,6 +25,7 @@ import ifpr.competicao.jogos.jogosTime.dao.JogosTimeDao;
 import ifpr.competicao.jogos.model.JogosLazyDataModel;
 import ifpr.competicao.time.Time;
 import ifpr.competicao.time.dao.TimeDao;
+import ifpr.geradorPdf.RelatorioFinal;
 import ifpr.modalidade.Modalidade;
 import ifpr.modalidade.dao.ModalidadeDao;
 
@@ -79,6 +80,9 @@ public class JogosMB {
 	private JogosModalidade jogosModalidade;
 
 	private JogosTime jogosTime;
+	
+	@ManagedProperty(value = "#{relatorioFinal}")
+	public RelatorioFinal relatorioFinal;
 
 	public JogosMB() {
 		jogosFiltered = new ArrayList<Jogos>();
@@ -213,6 +217,10 @@ public class JogosMB {
 	public void mensagemAvisoFaces(String titulo, String message) {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_FATAL, titulo, message));
+	}
+	
+	public void gerarRelatorio(Jogos jogos) {
+		relatorioFinal.gerarRelatorio(jogos);
 	}
 
 	public List<Campus> getListaCampus() {
@@ -405,4 +413,12 @@ public class JogosMB {
 		this.jogosTime = jogosTime;
 	}
 
+	public RelatorioFinal getRelatorioFinal() {
+		return relatorioFinal;
+	}
+
+	public void setRelatorioFinal(RelatorioFinal relatorioFinal) {
+		this.relatorioFinal = relatorioFinal;
+	}
+	
 }

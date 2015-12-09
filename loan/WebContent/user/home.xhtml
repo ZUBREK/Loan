@@ -33,14 +33,6 @@
 					<p:commandButton id="novoEmail" value="Mudar Email"
 						oncomplete="PF('novoEmailDialog').show()" update="emailDlg" />
 
-					<p:commandButton id="gerarRelatorioFinal" rendered="#{homeMB.adm}"
-						icon="pdf16" value="Gerar Relatório" ajax="false"
-						actionListener="#{homeMB.gerarRelatorio()}">
-
-						<p:fileDownload id="download"
-							value="#{relatorioFinal.arqStreamed}" />
-
-					</p:commandButton>
 				</p:panelGrid>
 
 				<p:dataTable styleClass="tabelaAtribs" var="atrib"

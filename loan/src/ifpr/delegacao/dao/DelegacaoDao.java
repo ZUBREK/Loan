@@ -12,4 +12,6 @@ public interface DelegacaoDao extends Dao<Delegacao> {
 
 	public List<Pessoa> listarPessoas(Delegacao delegacao);
 
+	List<Delegacao> pesquisarPorAno(int ano);
+
 }

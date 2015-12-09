@@ -43,6 +43,10 @@ import ifpr.competicao.grupoChaves.chave.Chave;
 import ifpr.competicao.grupoChaves.chave.TipoCompeticao;
 import ifpr.competicao.grupoChaves.chave.dao.ChaveDao;
 import ifpr.competicao.grupoChaves.dao.GrupoChavesDao;
+import ifpr.competicao.jogos.Jogos;
+import ifpr.competicao.jogos.jogosCampus.JogosCampus;
+import ifpr.competicao.jogos.jogosModalidade.JogosModalidade;
+import ifpr.competicao.jogos.jogosTime.JogosTime;
 import ifpr.competicao.partida.Partida;
 import ifpr.competicao.partidaTime.PartidaTime;
 import ifpr.competicao.time.Time;
@@ -71,14 +75,18 @@ public class RelatorioFinal {
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
 	private List<Campus> listaCampus;
+	private List<JogosCampus> listaJogosCampus;
 
 	@ManagedProperty(value = "#{modalidadeDao}")
 	private ModalidadeDao modalidadeDao;
 	private List<Modalidade> listaModalidade;
+	private List<JogosModalidade> listaJogosModalidade;
 
 	@ManagedProperty(value = "#{timeDao}")
 	private TimeDao timeDao;
 	private List<Time> listaTime;
+	private List<JogosTime> listaJogosTime;
+
 
 	@ManagedProperty(value = "#{delegacaoDao}")
 	private DelegacaoDao delegacaoDao;
@@ -101,15 +109,16 @@ public class RelatorioFinal {
 	private Chave chave;
 	private Partida partida;
 	private GrupoChaves grupoChaves;
+	private Jogos jogos;
 
 	public RelatorioFinal() throws BadElementException, MalformedURLException, IOException {
 		doc = new Document();
 		arquivo = new File(Paths.PASTA_RELATORIO);
 		arquivo.mkdirs();
-		header = Image.getInstance(Paths.LOGO_JOGOS);
 	}
 
-	public void gerarRelatorio() {
+	public void gerarRelatorio(Jogos jogosRecebido) {
+		jogos = jogosRecebido;
 		File caminho = new File(Paths.CAMINHO_RELATORIO);
 		if (caminho.exists()) {
 			caminho.delete();
@@ -136,7 +145,7 @@ public class RelatorioFinal {
 	}
 
 	private void addChaves() throws DocumentException {
-		listaGrupoChaves = grupoDao.listAsc();
+		listaGrupoChaves = jogos.getGrupoChaves();
 		String titulo = "CHAVES";
 		addTitulo(titulo);
 		for (int l = 0; l < listaGrupoChaves.size(); l++) {
@@ -215,8 +224,8 @@ public class RelatorioFinal {
 				return t1.getPontosTime().getClassificacao() - t2.getPontosTime().getClassificacao();
 			}
 		});
-		addTitulo("CLASSIFICAÇÃO FINAL");
-		addCelula("POSIÇÃO", true);
+		addTitulo("CLASSIFICAï¿½ï¿½O FINAL");
+		addCelula("POSIÃ‡ÃƒO", true);
 		add3Linha("TIME");
 		addCelula("PONTOS", true);
 		for (int i = 0; i < listaTime2.size(); i++) {
@@ -234,8 +243,8 @@ public class RelatorioFinal {
 				return t1.getPontosTime().getClassificacao() - t2.getPontosTime().getClassificacao();
 			}
 		});
-		addTitulo("CLASSIFICAÇÃO FINAL");
-		addCelula("POSIÇÃO", true);
+		addTitulo("CLASSIFICAÃ‡ÃƒO FINAL");
+		addCelula("POSIÃ‡ÃƒO", true);
 		add4Linha("TIME");
 		for (int i = 0; i < listaTime2.size(); i++) {
 			time = listaTime2.get(i);
@@ -279,9 +288,9 @@ public class RelatorioFinal {
 			}
 		}
 		addLinha("VENCEDOR: " + timeVencedor.getNome(), false);
-		addLinha("2° LUGAR: " + timeSegundo.getNome(), false);
-		addLinha("3° LUGAR: " + timeTerceiro.get(0).getNome(), false);
-		addLinha("3° LUGAR: " + timeTerceiro.get(1).getNome(), false);
+		addLinha("2Â° LUGAR: " + timeSegundo.getNome(), false);
+		addLinha("3Â° LUGAR: " + timeTerceiro.get(0).getNome(), false);
+		addLinha("3Â° LUGAR: " + timeTerceiro.get(1).getNome(), false);
 	}
 
 	private void addVencedores(List<Time> listaTime) {
@@ -302,10 +311,10 @@ public class RelatorioFinal {
 			addLinha("VENCEDOR: " + timeVencedor.getNome(), false);
 		}
 		if(timeSegundo != null){
-			addLinha("2° LUGAR: " + timeSegundo.getNome(), false);
+			addLinha("2Â° LUGAR: " + timeSegundo.getNome(), false);
 		}
 		if(timeTerceiro != null){
-			addLinha("3° LUGAR: " + timeTerceiro.getNome(), false);
+			addLinha("3Â° LUGAR: " + timeTerceiro.getNome(), false);
 		}
 	}
 
@@ -343,13 +352,13 @@ public class RelatorioFinal {
 	}
 
 	private void addDelegacoes() throws DocumentException {
-		listaDelegacao = delegacaoDao.listDesc();
-		String titulo = "DELEGAÇÕES";
+		listaDelegacao = delegacaoDao.pesquisarPorAno(jogos.getAno());
+		String titulo = "DELEGAÃ‡Ã•ES";
 		addTitulo(titulo);
 		for (int i = 0; i < listaDelegacao.size(); i++) {
 			delegacao = listaDelegacao.get(i);
 			addLinha(delegacao.getNome() + "/" + delegacao.getCampus().getCidade(), true);
-			add2Titulo("NOME:", "FUNÇÃO:");
+			add2Titulo("NOME:", "FUNÃ‡ÃƒO:");
 			List<Pessoa> listaPessoa = delegacaoDao.listarPessoas(delegacao);
 			Pessoa pessoa = new Pessoa();
 			for (int j = 0; j < listaPessoa.size(); j++) {
@@ -361,8 +370,13 @@ public class RelatorioFinal {
 	}
 
 	private void addCampus() throws DocumentException {
-		listaCampus = campusDao.listarAlfabetica();
-		String titulo = "CÂMPUS";
+		listaJogosCampus = jogos.getJogosCampus();
+		listaCampus = new ArrayList<>();
+		for (int j = 0; j < listaJogosCampus.size(); j++) {
+			JogosCampus jogosCampus = listaJogosCampus.get(j);
+			listaCampus.add(jogosCampus.getCampus());
+		}
+		String titulo = "CÃ‚MPUS";
 		addTitulo(titulo);
 		for (int i = 0; i < listaCampus.size(); i++) {
 			campus = listaCampus.get(i);
@@ -379,7 +393,12 @@ public class RelatorioFinal {
 	}
 
 	private void addModalidades() throws DocumentException {
-		listaModalidade = modalidadeDao.listarAlfabetica();
+		listaJogosModalidade = jogos.getJogosModalidades();
+		listaModalidade = new ArrayList<>();
+		for (int j = 0; j < listaJogosModalidade.size(); j++) {
+			JogosModalidade jogosModalidade = listaJogosModalidade.get(j);
+			listaModalidade.add(jogosModalidade.getModalidade());
+		}
 		String titulo = "MODALIDADES";
 		addTitulo(titulo);
 		for (int i = 0; i < listaModalidade.size(); i++) {
@@ -390,13 +409,18 @@ public class RelatorioFinal {
 	}
 
 	private void addTimes() throws DocumentException {
-		listaTime = timeDao.listDesc();
-		String titulo = "TIMES/CÂMPUS";
+		listaJogosTime = jogos.getJogosTimes();
+		listaTime = new ArrayList<>();
+		for (int j = 0; j < listaJogosTime.size(); j++) {
+			JogosTime jogosTime = listaJogosTime.get(j);
+			listaTime.add(jogosTime.getTime());
+		}
+		String titulo = "TIMES/CÃ‚MPUS";
 		addTitulo(titulo);
 		for (int i = 0; i < listaTime.size(); i++) {
 			time = listaTime.get(i);
 			addLinha(time.getNome() + "/" + time.getCampus().getCidade(), true);
-			add2Titulo("NOME:", "FUNÇÃO:");
+			add2Titulo("NOME:", "FUNï¿½ï¿½O:");
 			add2Linha(time.getTecnico().getNome(), time.getTecnico().getTipo().getLabel());
 			List<Estudante> listaEstudante = timeDao.listarEstudantes(time);
 			Estudante estudante = new Estudante();
@@ -483,6 +507,13 @@ public class RelatorioFinal {
 	}
 
 	private void addHeader() throws DocumentException {
+		try {
+			header = Image.getInstance(Paths.LOGO_JOGOS);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		header.scaleAbsolute(340, 120);
 		PdfPCell cell = new PdfPCell(header);
 		cell.setColspan(TAMANHO_TABELA_PDF);

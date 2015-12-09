@@ -209,6 +209,5 @@ public class GenericDao<T> implements Dao<T>, Serializable {
 		return q.getResultList();
 	}
 
-	
 
 }

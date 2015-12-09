@@ -22,7 +22,7 @@ public class JogosModalidade {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name = "id_modalidade", referencedColumnName = "id_time")
+	@JoinColumn(name = "id_modalidade", referencedColumnName = "id_modalidade")
 	private Modalidade modalidade;
 
 	@ManyToOne

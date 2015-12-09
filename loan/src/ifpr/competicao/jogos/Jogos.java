@@ -14,6 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import ifpr.competicao.grupoChaves.GrupoChaves;
+import ifpr.competicao.jogos.jogosCampus.JogosCampus;
+import ifpr.competicao.jogos.jogosModalidade.JogosModalidade;
+import ifpr.competicao.jogos.jogosTime.JogosTime;
 
 @Entity
 @Table(name = "tbJogos")
@@ -22,21 +25,36 @@ public class Jogos {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_jogos")
 	private Integer id;
-	
+
 	@Column(name = "ano_jogos")
 	private int ano;
-	
+
 	@Column(name = "link_regulamento")
 	private String link;
-	
+
 	@JoinColumn(name = "id_jogos", referencedColumnName = "id_jogos")
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<GrupoChaves> grupoChaves;
 
-	public Jogos(){
+	@JoinColumn(name = "id_jogos", referencedColumnName = "id_jogos")
+	@OneToMany(cascade = CascadeType.REMOVE)
+	private List<JogosCampus> jogosCampus;
+
+	@JoinColumn(name = "id_jogos", referencedColumnName = "id_jogos")
+	@OneToMany(cascade = CascadeType.REMOVE)
+	private List<JogosModalidade> jogosModalidades;
+
+	@JoinColumn(name = "id_jogos", referencedColumnName = "id_jogos")
+	@OneToMany(cascade = CascadeType.REMOVE)
+	private List<JogosTime> jogosTimes;
+
+	public Jogos() {
 		grupoChaves = new ArrayList<>();
+		jogosTimes = new ArrayList<>();
+		jogosModalidades = new ArrayList<>();
+		jogosCampus = new ArrayList<>();
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -68,5 +86,29 @@ public class Jogos {
 	public void setGrupoChaves(List<GrupoChaves> grupoChaves) {
 		this.grupoChaves = grupoChaves;
 	}
-	
+
+	public List<JogosCampus> getJogosCampus() {
+		return jogosCampus;
+	}
+
+	public void setJogosCampus(List<JogosCampus> jogosCampus) {
+		this.jogosCampus = jogosCampus;
+	}
+
+	public List<JogosModalidade> getJogosModalidades() {
+		return jogosModalidades;
+	}
+
+	public void setJogosModalidades(List<JogosModalidade> jogosModalidades) {
+		this.jogosModalidades = jogosModalidades;
+	}
+
+	public List<JogosTime> getJogosTimes() {
+		return jogosTimes;
+	}
+
+	public void setJogosTimes(List<JogosTime> jogosTimes) {
+		this.jogosTimes = jogosTimes;
+	}
+
 }

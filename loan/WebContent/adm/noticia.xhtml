@@ -32,7 +32,6 @@
 					<p:column headerText="Título" filterBy="#{notic.titulo}"
 						filterMatchMode="contains">
 						<h:outputText value="#{notic.titulo}" />
-
 					</p:column>
 
 					<p:column headerText="Data de publicação">
@@ -81,20 +80,6 @@
 
 					<p:inputText id="titulo" value="#{noticiaMB.noticia.titulo}"
 						size="50" required="true" requiredMessage="Título é obrigatório!" />
-
-					<p:spacer height="2px" />
-					<p:spacer height="2px" />
-
-					<p:outputLabel id="enviarImagemNoticiaLb"
-						title="Enviar Imagem para notícia"
-						value="Enviar Imagem para notícia:" />
-
-					<p:fileUpload id="imagemNoticiaUpload"
-						styleClass="fileupload-boleidous"
-						fileUploadListener="#{noticiaMB.handleFileUpload}"
-						label="selecionar" auto="true" multiple="false" mode="advanced"
-						cache="false" />
-
 					<h:outputLabel id="textoLb" value="Texto da notícia:" for="texto" />
 
 					<h:form>
@@ -103,7 +88,17 @@
 						<p:commandButton value="Limpar" type="button"
 							onclick="PF('editorWidget').clear();" icon="ui-icon-close" />
 					</h:form>
-					<p:spacer height="2px" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<p:fileUpload id="imagemNoticiaUpload"
+						styleClass="fileupload-boleidous" update="imagem"
+						fileUploadListener="#{noticiaMB.handleFileUpload}"
+						label="Enviar Imagem para notícia" auto="true" multiple="false"
+						mode="advanced" cache="false" />
+					<p:graphicImage value="http://localhost:8080/loan/noticia/#{noticiaMB.fotoNoticia.nome}" title="Foto de Perfil"
+						width="250" height="200" id="imagem" cache="false" />
+
+
 					<p:spacer height="2px" />
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
@@ -131,8 +126,8 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{noticiaMB.remover()}"
-					oncomplete="PF('noticiaConfirmDialog').hide()" update=":tableForm :msg"
-					icon="ok16" />
+					oncomplete="PF('noticiaConfirmDialog').hide()"
+					update=":tableForm :msg" icon="ok16" />
 				<p:commandButton value="Não"
 					actionListener="#{noticiaMB.cancelar()}"
 					oncomplete="PF('noticiaConfirmDialog').hide()" icon="cancelar16" />

@@ -197,6 +197,22 @@ public class CoordenadorMB {
 		return listaCampus;
 	}
 
+	public ArquivoDao getArquivoDao() {
+		return arquivoDao;
+	}
+
+	public void setArquivoDao(ArquivoDao arquivoDao) {
+		this.arquivoDao = arquivoDao;
+	}
+
+	public Arquivo getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(Arquivo arquivo) {
+		this.arquivo = arquivo;
+	}
+
 	public void setListaCampus(List<Campus> listaCampus) {
 		this.listaCampus = listaCampus;
 	}

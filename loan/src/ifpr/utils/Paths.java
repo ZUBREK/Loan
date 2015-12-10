@@ -9,7 +9,7 @@ public abstract class Paths {
 	public static final String TECADM = "/adm/tec_adm.ifpr";
 	public static final String TECESP = "/tec_adm/tec_esp.ifpr";
 	public static final String COORDENADORES = "/tec_adm/coordenadorPea.ifpr";
-	public static final String SECRETARIOS = "/tec_adm/secretario.ifpr";
+	public static final String SECRETARIOS = "/adm/secretario.ifpr";
 	public static final String CAMPUS = "/adm/campus.ifpr";
 	public static final String NOTICIAS = "/adm/noticia.ifpr";
 	public static final String MODALIDADES = "/adm/modalidade.ifpr";

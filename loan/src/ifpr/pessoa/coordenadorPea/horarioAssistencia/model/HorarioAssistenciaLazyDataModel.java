@@ -42,9 +42,9 @@ public class HorarioAssistenciaLazyDataModel extends LazyDataModel<HorarioAssist
 			Map<String, Object> filters) {
 		List<HorarioAssistencia> source = null;
 
-		if (filters.containsKey("nome")) {
-			String nomePesquisa = filters.get("nome").toString();
-			source = horarioAssistenciaDao.findByNome(nomePesquisa);
+		if (filters.containsKey("materia")) {
+			String nomePesquisa = filters.get("materia").toString();
+			source = horarioAssistenciaDao.findByMateria(nomePesquisa);
 		} else {
 			source = horarioAssistenciaDao.list(first, pageSize);
 		}

@@ -1,19 +1,5 @@
 package ifpr.competicao.time.mb;
 
-import ifpr.campus.Campus;
-import ifpr.campus.dao.CampusDao;
-import ifpr.competicao.time.Time;
-import ifpr.competicao.time.dao.TimeDao;
-import ifpr.competicao.time.estudante.TimeEstudante;
-import ifpr.competicao.time.estudante.dao.TimeEstudanteDao;
-import ifpr.competicao.time.model.TimeLazyDataModel;
-import ifpr.modalidade.Modalidade;
-import ifpr.modalidade.dao.ModalidadeDao;
-import ifpr.pessoa.Pessoa;
-import ifpr.pessoa.dao.PessoaDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.pessoa.estudante.dao.EstudanteDao;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +12,21 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.event.SelectEvent;
 
+import ifpr.campus.Campus;
+import ifpr.campus.dao.CampusDao;
+import ifpr.competicao.time.Time;
+import ifpr.competicao.time.dao.TimeDao;
+import ifpr.competicao.time.estudante.TimeEstudante;
+import ifpr.competicao.time.estudante.dao.TimeEstudanteDao;
+import ifpr.competicao.time.model.TimeLazyDataModel;
+import ifpr.competicao.time.pontos.dao.PontosTimeDao;
+import ifpr.modalidade.Modalidade;
+import ifpr.modalidade.dao.ModalidadeDao;
+import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.dao.PessoaDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.pessoa.estudante.dao.EstudanteDao;
+
 @ManagedBean(name = "timeMB")
 @ViewScoped
 public class TimeMB {
@@ -37,6 +38,9 @@ public class TimeMB {
 
 	@ManagedProperty(value = "#{pessoaDao}")
 	private PessoaDao pessoaDao;
+
+	@ManagedProperty(value = "#{pontosTimeDao}")
+	private PontosTimeDao pontosTimeDao;
 
 	@ManagedProperty(value = "#{timeLazyDataModel}")
 	private TimeLazyDataModel timeLazyDataModel;
@@ -72,6 +76,8 @@ public class TimeMB {
 	private TimeEstudanteDao timeEstudanteDao;
 
 	private TimeEstudante timeEstudante;
+
+	private Time novoTime;
 
 	private int anoOld;
 
@@ -133,7 +139,13 @@ public class TimeMB {
 	public void salvar() {
 		if (time.getId() != null) {
 			if (anoOld != time.getAno()) {
-				time.setId(null);
+				novoTime = new Time();
+				novoTime.setAno(time.getAno());
+				novoTime.setCampus(time.getCampus());
+				novoTime.setModalidade(time.getModalidade());
+				novoTime.setNome(time.getNome());
+				novoTime.setTecnico(time.getTecnico());
+				resalvarEstudantesTime(time.getTimeEstudante());
 				timeDao.salvar(time);
 			} else {
 				timeDao.update(time);
@@ -145,6 +157,15 @@ public class TimeMB {
 			timeDao.salvar(time);
 		}
 
+	}
+
+	private void resalvarEstudantesTime(List<TimeEstudante> timeEstudantes) {
+		for (TimeEstudante timeEstudante : timeEstudantes) {
+			TimeEstudante novoTimeEstud = new TimeEstudante();
+			novoTimeEstud.setEstudante(timeEstudante.getEstudante());
+			timeEstudanteDao.salvar(novoTimeEstud);
+			novoTime.getTimeEstudante().add(novoTimeEstud);
+		}
 	}
 
 	public void adicionarEstudante() {
@@ -336,5 +357,21 @@ public class TimeMB {
 
 	public void setPessoaDao(PessoaDao pessoaDao) {
 		this.pessoaDao = pessoaDao;
+	}
+
+	public PontosTimeDao getPontosTimeDao() {
+		return pontosTimeDao;
+	}
+
+	public void setPontosTimeDao(PontosTimeDao pontosTimeDao) {
+		this.pontosTimeDao = pontosTimeDao;
+	}
+
+	public int getAnoOld() {
+		return anoOld;
+	}
+
+	public void setAnoOld(int anoOld) {
+		this.anoOld = anoOld;
 	}
 }

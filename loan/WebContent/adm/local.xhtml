@@ -39,16 +39,14 @@
 
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Ações">
 						<p:commandButton id="editarTR" value=" " style="margin-left: 3px;"
 							icon="editar16" update=":lcl_form"
 							oncomplete="PF('lclDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{lcl}"
 								target="#{localMB.local}" />
 						</p:commandButton>
-					</p:column>
-
-					<p:column headerText="Remover" width="47">
+						
 						<p:commandButton id="removerTR" value=""
 							style="margin-left: 10px;" icon="remover16"
 							oncomplete="PF('confirmDialog').show()" update=":confirm"
@@ -56,7 +54,9 @@
 							<f:setPropertyActionListener value="#{lcl}"
 								target="#{localMB.local}" />
 						</p:commandButton>
+						
 					</p:column>
+
 				</p:dataTable>
 
 			</h:form>

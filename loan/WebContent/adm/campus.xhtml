@@ -27,22 +27,25 @@
 
 				</p:column>
 
-				<p:column headerText="Editar" width="35">
+				<p:column headerText="Ações">
 
 					<p:commandButton id="editarTR" value=" " icon="editar16"
 						style="margin-left: 3px;" update=":camp_form"
 						oncomplete="PF('campDialog').show()" styleClass="apenasIcone">
+						
 						<f:setPropertyActionListener value="#{camp}"
 							target="#{campusMB.campus}" />
 
 					</p:commandButton>
-				</p:column>
-				<p:column headerText="Remover" width="47">
+
+
 					<p:commandButton id="removerTR" value="" icon="remover16"
 						style="margin-left: 10px;" oncomplete="PF('confirmDialog').show()"
 						update=":confirm" styleClass="apenasIcone">
+						
 						<f:setPropertyActionListener value="#{camp}"
 							target="#{campusMB.campus}" />
+							
 					</p:commandButton>
 				</p:column>
 

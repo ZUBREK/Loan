@@ -48,30 +48,30 @@
 						<p:outputLabel value="#{time.tecnico.nome}" />
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Ações">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":time_form"
 							oncomplete="PF('timeDialog').show()" styleClass="apenasIcone">
-							
+
 							<f:setPropertyActionListener value="#{time}"
 								target="#{timeMB.time}" />
 
 						</p:commandButton>
-					</p:column>
-					
-					<p:column headerText="Remover" width="47">
-					
+
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
 							oncomplete="PF('timeConfirmDialog').show()"
 							update=":confirm :msg" styleClass="apenasIcone">
-							
+
 							<f:setPropertyActionListener value="#{time}"
 								target="#{timeMB.time}" />
-								
+
 						</p:commandButton>
+
 					</p:column>
+
+
 
 				</p:dataTable>
 
@@ -110,7 +110,8 @@
 								<f:selectItems value="#{timeMB.listaCampus}" var="camp"
 									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 
-								<p:ajax listener="#{timeMB.preencherListaTec}" update=":time_form:tabView:tecEsportiv" />
+								<p:ajax listener="#{timeMB.preencherListaTec}"
+									update=":time_form:tabView:tecEsportiv" />
 
 							</p:selectOneMenu>
 
@@ -249,8 +250,8 @@
 		</p:confirmDialog>
 
 		<p:confirmDialog id="confirmRmv" widgetVar="timeEstConfirmDialog"
-			global="true" header="Deseja remover estudante do time?" showEffect="fade"
-			hideEffect="fade"
+			global="true" header="Deseja remover estudante do time?"
+			showEffect="fade" hideEffect="fade"
 			message="Deseja realmente excluir o
 				estudante: #{timeMB.timeEstudante.estudante.nome}">
 

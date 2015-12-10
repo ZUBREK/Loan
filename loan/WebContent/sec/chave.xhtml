@@ -34,17 +34,17 @@
 						<h:outputText value="#{chav.tipo.label}" />
 					</p:column>
 
-					<p:column headerText="Ver" width="35">
-						<p:commandButton id="editarTR" value=" " style="margin-left: 3px;"
+					<p:column headerText="Ações" width="35">
+						<p:commandButton id="visTR" value=" " style="margin-left: 3px;"
 							update=":editarChavDialog" icon="ui-icon-search"
 							action="#{chaveMB.iniciarTreeNode()}"
 							oncomplete="PF('editarChavDialog').show()"
 							styleClass="apenasIcone">
+							
 							<f:setPropertyActionListener value="#{chav}"
 								target="#{chaveMB.grupoChaves}" />
 						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
+						
 						<p:commandButton id="removerTR" value=""
 							style="margin-left: 10px;" update=":confirm" icon="remover16"
 							oncomplete="PF('confirmDialog').show()"
@@ -52,6 +52,7 @@
 							<f:setPropertyActionListener value="#{chav}"
 								target="#{chaveMB.grupoChaves}" />
 						</p:commandButton>
+						
 					</p:column>
 
 				</p:dataTable>

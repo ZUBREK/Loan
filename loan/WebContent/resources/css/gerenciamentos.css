@@ -6,7 +6,6 @@ div#menubar {
 }
 
 div#sidemenu {
-
 	float: left;
 	width: 160.5px;
 	height: 100%;
@@ -42,12 +41,14 @@ div#painelPrincipal {
 	padding: 5px 5px 7px 5px;
 }
 
-.ui-menu .ui-menuitem-link{
+.ui-menu .ui-menuitem-link {
 	border-bottom: 1px solid black !important;
 }
 
-.menuItemAtual{
-	background: #68727B url("/loan/javax.faces.resource/images/default.png.ifpr?ln=primefaces-home") repeat-x scroll 50% 50% !important;
+.menuItemAtual {
+	background: #68727B
+		url("/loan/javax.faces.resource/images/default.png.ifpr?ln=primefaces-home")
+		repeat-x scroll 50% 50% !important;
 	color: #FFF !important;
 }
 
@@ -55,10 +56,10 @@ div#painelPrincipal {
 	height: 500px;
 }
 
-.apenasIcone{
+.apenasIcone {
 	width: 30px;
-    height: 20px;
-    
+	height: 20px;
+	
 }
 
 .meio {

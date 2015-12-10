@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import ifpr.campus.Campus;
@@ -23,9 +24,11 @@ import ifpr.competicao.time.pontos.dao.PontosTimeDao;
 import ifpr.modalidade.Modalidade;
 import ifpr.modalidade.dao.ModalidadeDao;
 import ifpr.pessoa.Pessoa;
+import ifpr.pessoa.coordenadorPea.dao.CoordenadorDao;
 import ifpr.pessoa.dao.PessoaDao;
 import ifpr.pessoa.estudante.Estudante;
 import ifpr.pessoa.estudante.dao.EstudanteDao;
+import ifpr.pessoa.tecnicoEsportivo.dao.TecnicoEsportivoDao;
 
 @ManagedBean(name = "timeMB")
 @ViewScoped
@@ -49,6 +52,12 @@ public class TimeMB {
 
 	@ManagedProperty(value = "#{campusDao}")
 	private CampusDao campusDao;
+
+	@ManagedProperty(value = "#{tecnicoEsportivoDao}")
+	private TecnicoEsportivoDao tecEspDao;
+
+	@ManagedProperty(value = "#{coordenadorDao}")
+	private CoordenadorDao coordDao;
 
 	private List<Campus> listaCampus;
 
@@ -79,7 +88,7 @@ public class TimeMB {
 
 	private Time novoTime;
 
-	private int anoOld;
+	private Integer anoOld;
 
 	private boolean isUpdate;
 
@@ -108,7 +117,8 @@ public class TimeMB {
 			timeDao.remover(time);
 		} catch (Exception ex) {
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Erro!",
 					"Time em competição não pode ser apagado!");
 			context.addMessage("Atenção", message);
 
@@ -190,8 +200,22 @@ public class TimeMB {
 		timeEstudante = null;
 	}
 
+	public void preencherListaTec() {
+
+		listaTecEsportivo = tecEspDao.pesquisarPorCampus(campus);
+		listaTecEsportivo.addAll(coordDao.pesquisarTecCoordPorCampus(campus));
+
+	}
+
+	public String confirmaExclusao() {
+		RequestContext.getCurrentInstance().execute(
+				"PF('timeEstConfirmDialog').show()");
+		return "";
+	}
+
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
-		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome, campus, time);
+		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome,
+				campus, time);
 		return listaEstudante;
 	}
 
@@ -273,9 +297,6 @@ public class TimeMB {
 	}
 
 	public List<Pessoa> getListaTecEsportivo() {
-		// TODO
-		// MEXER AKI listaTecEsportivo =
-		// pessoaDao.listarTecEspByCampusEmAlfabetica(campus);
 		return listaTecEsportivo;
 	}
 
@@ -374,4 +395,21 @@ public class TimeMB {
 	public void setAnoOld(int anoOld) {
 		this.anoOld = anoOld;
 	}
+
+	public TecnicoEsportivoDao getTecEspDao() {
+		return tecEspDao;
+	}
+
+	public void setTecEspDao(TecnicoEsportivoDao tecEspDao) {
+		this.tecEspDao = tecEspDao;
+	}
+
+	public CoordenadorDao getCoordDao() {
+		return coordDao;
+	}
+
+	public void setCoordDao(CoordenadorDao coordDao) {
+		this.coordDao = coordDao;
+	}
+
 }

@@ -7,6 +7,37 @@
 	template="/layout/templates/templateGerenciamento.xhtml">
 
 	<ui:define name="body">
+
+		<script type="text/javascript">
+
+			PrimeFaces.locales['pt'] = {  
+			                closeText: 'Fechar',  
+			                prevText: 'Anterior',  
+			                nextText: 'Próximo',  
+			                currentText: 'Começo',  
+			                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],  
+			                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun', 'Jul','Ago','Set','Out','Nov','Dez'],  
+			                dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],  
+			                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],  
+			                dayNamesMin: ['D','S','T','Q','Q','S','S'],  
+			                weekHeader: 'Semana',  
+			                firstDay: 1,  
+			                isRTL: false,  
+			                showMonthAfterYear: false,  
+			                yearSuffix: '',  
+			                timeOnlyTitle: 'Só Horas',  
+			                timeText: 'Tempo',  
+			                hourText: 'Hora',  
+			                minuteText: 'Minuto',  
+			                secondText: 'Segundo',  
+			                currentText: 'Data Atual',  
+			                ampm: false,  
+			                month: 'Mês',  
+			                week: 'Semana',  
+			                day: 'Dia',  
+			                allDayText : 'Todo Dia'  
+			            };					
+		</script>
 		<p:panel id="painelPrincipal" header="Gerenciamento de Estudantes">
 
 			<p:growl id="msg" showDetail="true" />
@@ -111,10 +142,10 @@
 							<h:outputLabel id="dataNascLb" value="Data de Nascimento:"
 								for="dataNasc" />
 
-							<p:calendar id="dataNasc" size="60"
+							<p:calendar id="dataNasc" size="60" mask="true"
 								value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
-								navigator="true" pattern="dd/mm/yyyy" mindate="1/1/1980"
-								maxdate="31/12/2005" yearRange="1980:2005" required="true"
+								navigator="true" pattern="dd/MM/yyyy" mindate="1/1/1980"
+								maxdate="31/12/2015" yearRange="1980:2015" required="true"
 								requiredMessage="Data de nascimento é obrigatória!">
 
 								<p:watermark value="00/00/0000" for="dataNasc" />
@@ -237,7 +268,7 @@
 
 					</p:tab>
 
-					<p:tab title="Foto" disabled = "true">
+					<p:tab title="Foto" disabled="true">
 						<h:panelGrid columns="2">
 							<p:outputLabel id="fotoPerfilLb"
 								title="Selecionar foto do estudante"

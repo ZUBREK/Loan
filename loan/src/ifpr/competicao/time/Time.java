@@ -54,7 +54,7 @@ public class Time {
 	private PontosTime pontosTime;
 	
 	@Column(name = "ano_time")
-	private int ano;
+	private Integer ano;
 	
 	public Time() {
 		timeEstudante = new ArrayList<TimeEstudante>();
@@ -130,11 +130,11 @@ public class Time {
 		return id != null ? this.getClass().hashCode() + id.hashCode() : super.hashCode();
 	}
 
-	public int getAno() {
+	public Integer getAno() {
 		return ano;
 	}
 
-	public void setAno(int ano) {
+	public void setAno(Integer ano) {
 		this.ano = ano;
 	}
 }

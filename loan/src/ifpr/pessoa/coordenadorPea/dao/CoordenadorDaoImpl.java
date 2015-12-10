@@ -2,7 +2,9 @@ package ifpr.pessoa.coordenadorPea.dao;
 
 import java.util.List;
 
+import ifpr.campus.Campus;
 import ifpr.dao.GenericDao;
+import ifpr.pessoa.Pessoa;
 import ifpr.pessoa.TipoPessoa;
 import ifpr.pessoa.coordenadorPea.CoordenadorPea;
 
@@ -51,6 +53,18 @@ public class CoordenadorDaoImpl extends GenericDao<CoordenadorPea> implements Co
 		q.setMaxResults(10);
 
 		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Pessoa> pesquisarTecCoordPorCampus(Campus campus) {
+		EntityManager em = emf.createEntityManager();
+		Query q = em.createQuery("select u from " + classe.getSimpleName()
+				+ " u where campus = :campus and authority = :role1");
+		q.setParameter("campus", campus);
+		q.setParameter("role1", TipoPessoa.ROLE_TEC_COORD.toString());
+		q.setMaxResults(20);
+		return (List<Pessoa>) q.getResultList();
 	}
 
 }

@@ -145,7 +145,7 @@
 							<h:outputLabel id="pessoasLb" value="Nome da Pessoa: "
 								for="pessoa" />
 
-							<p:autoComplete id="pessoa"
+							<p:autoComplete id="pessoa" placeholder="Digite o nome"
 								completeMethod="#{delegacaoMB.pesquisarPessoaNome}"
 								value="#{delegacaoMB.pessoa}" converter="#{pessoaConverter}"
 								minQueryLength="3" forceSelection="true">

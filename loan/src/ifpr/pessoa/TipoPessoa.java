@@ -4,7 +4,7 @@ public enum TipoPessoa {
 
 	ROLE_ADMIN("Administrador", 1), 
 	ROLE_TEC_ADM("Técnico Administrativo", 2), 
-	ROLE_SECRETARIO("Secret�rio", 3), 
+	ROLE_SECRETARIO("Secretário", 3), 
 	ROLE_TEC_ESP("Técnico Esportivo", 4), 
 	ROLE_COORDENADOR("Coordenador PEA", 5), 
 	ROLE_ESTUDANTE("Estudante", 6),

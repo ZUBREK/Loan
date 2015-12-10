@@ -27,38 +27,57 @@ public class MenuModalidadesViewMB {
 
 	@ManagedProperty(value = "#{jogosDao}")
 	private JogosDao jogosDao;
+	
+	private DefaultMenuItem item;
 
 	@PostConstruct
 	public void init() {
 		model = new DefaultMenuModel();
 
 		DefaultSubMenu submenu = new DefaultSubMenu("Modalidades");
+		DefaultSubMenu jogosSubMenu = new DefaultSubMenu("Regulamento dos Jogos");
 		List<Modalidade> modalidades = modalidadeDao.listarAlfabetica();
 		List<Jogos> edicoesJogos = jogosDao.listDesc();
 		if (!modalidades.isEmpty()) {
 			for (Modalidade modalidade : modalidades) {
-				DefaultMenuItem item = new DefaultMenuItem(modalidade.getNome());
+				item = new DefaultMenuItem(modalidade.getNome());
 				item.setUrl("#");
 				submenu.addElement(item);
 			}
 		} else {
-			DefaultMenuItem item = new DefaultMenuItem("Não há modalidades cadastradas");
+			item = new DefaultMenuItem(
+					"Não há modalidades cadastradas");
 			item.setUrl("#");
 			submenu.addElement(item);
 		}
 		if (!modalidades.isEmpty()) {
-			for (Jogos jogos : edicoesJogos) {
-				DefaultMenuItem item = new DefaultMenuItem("Regulamento dos Jogos " + jogos.getAno());
-				item.setUrl(jogos.getLink());
-				submenu.addElement(item);
+			DefaultSubMenu jogosAnteriores = new DefaultSubMenu("Edições Anteriores");
+			Jogos jogos;
+			for (int i = 0; i < edicoesJogos.size(); ++i) {
+				jogos = edicoesJogos.get(i);
+				if (i == 0) {
+					item = new DefaultMenuItem(
+							"Regulamento dos Jogos " + jogos.getAno());
+					item.setUrl(jogos.getLink());
+					jogosSubMenu.addElement(item);
+				}
+				else{
+					 item = new DefaultMenuItem(
+							"Regulamento dos Jogos " + jogos.getAno());
+					item.setUrl(jogos.getLink());
+					jogosAnteriores.addElement(item);
+				}
 			}
+		jogosSubMenu.addElement(jogosAnteriores);
 		} else {
-			DefaultMenuItem item = new DefaultMenuItem("Não há edições de jogos cadastradas!");
+			 item = new DefaultMenuItem(
+					"Não há edições de jogos cadastradas!");
 			item.setUrl("#");
 			submenu.addElement(item);
 		}
 
 		model.addElement(submenu);
+		model.addElement(jogosSubMenu);
 
 	}
 

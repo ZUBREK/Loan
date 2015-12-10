@@ -1,5 +1,7 @@
 package ifpr.competicao.jogos.dao;
 
+import java.util.List;
+
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
@@ -40,6 +42,15 @@ public class JogosDaoImpl extends GenericDao<Jogos> implements JogosDao {
 
 		return (Jogos) query.getSingleResult();
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Jogos> listarJogosMenu() {
+		EntityManager em = emf.createEntityManager();
+		Query query = em.createQuery("SELECT a from Jogos a order by a.ano DESC");
+		query.setMaxResults(5);
+		return  query.getResultList();
 	}
 
 }

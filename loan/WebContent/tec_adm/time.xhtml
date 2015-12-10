@@ -53,18 +53,23 @@
 						<p:commandButton id="editarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":time_form"
 							oncomplete="PF('timeDialog').show()" styleClass="apenasIcone">
+							
 							<f:setPropertyActionListener value="#{time}"
 								target="#{timeMB.time}" />
 
 						</p:commandButton>
 					</p:column>
+					
 					<p:column headerText="Remover" width="47">
+					
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
 							oncomplete="PF('timeConfirmDialog').show()"
 							update=":confirm :msg" styleClass="apenasIcone">
+							
 							<f:setPropertyActionListener value="#{time}"
 								target="#{timeMB.time}" />
+								
 						</p:commandButton>
 					</p:column>
 
@@ -75,7 +80,7 @@
 		</p:panel>
 
 		<p:dialog id="timeDlg" widgetVar="timeDialog" header="Dados do Time"
-			width="600" height="200" modal="true" closable="false">
+			width="600" height="300" modal="true" closable="false">
 
 			<h:form id="time_form">
 				<p:tabView id="tabView" widgetVar="tabBagaca">
@@ -105,7 +110,7 @@
 								<f:selectItems value="#{timeMB.listaCampus}" var="camp"
 									itemLabel="#{camp.cidade}" itemValue="#{camp}" />
 
-								<p:ajax update=":time_form:tabView:tecEsportiv" />
+								<p:ajax listener="#{timeMB.preencherListaTec}" update=":time_form:tabView:tecEsportiv" />
 
 							</p:selectOneMenu>
 
@@ -141,7 +146,7 @@
 							</p:selectOneMenu>
 
 							<p:commandButton id="continuarBt" value="Continuar"
-								icon="salvar16" update=":tableForm :time_form :msg"
+								icon="salvar16" update=" :time_form :msg"
 								actionListener="#{timeMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
@@ -164,7 +169,7 @@
 						<h:outputLabel id="estudanteLb" value="Estudante: "
 							for="estudante" />
 
-						<p:autoComplete id="estudante"
+						<p:autoComplete id="estudante" placeholder="Digite o nome"
 							completeMethod="#{timeMB.pesquisarEstudanteNome}"
 							value="#{timeMB.estudante}" converter="#{estudanteConverter}"
 							minQueryLength="2" forceSelection="true">
@@ -175,7 +180,7 @@
 
 						<p:commandButton id="addEstudanteBt" value="Adicionar"
 							icon="apply" actionListener="#{timeMB.adicionarEstudante()}"
-							update=":time_form:tabView:estudantesList" />
+							update=":time_form:tabView" />
 
 						<p:spacer height="2px" />
 
@@ -244,7 +249,7 @@
 		</p:confirmDialog>
 
 		<p:confirmDialog id="confirmRmv" widgetVar="timeEstConfirmDialog"
-			global="true" header="Remover estudante do time?" showEffect="fade"
+			global="true" header="Deseja remover estudante do time?" showEffect="fade"
 			hideEffect="fade"
 			message="Deseja realmente excluir o
 				estudante: #{timeMB.timeEstudante.estudante.nome}">

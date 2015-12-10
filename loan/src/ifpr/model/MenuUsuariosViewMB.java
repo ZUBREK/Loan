@@ -73,11 +73,15 @@ public class MenuUsuariosViewMB {
 
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
+			
+			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
 
 			submenu = new DefaultSubMenu("Usuários");
 			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
 			model.addElement(submenu);
+			
+			
 			submenu = new DefaultSubMenu("Competição");
 
 			adicionarItem("Times", Paths.TIMES, "user16", true);

@@ -27,7 +27,7 @@ public class MenuModalidadesViewMB {
 
 	@ManagedProperty(value = "#{jogosDao}")
 	private JogosDao jogosDao;
-	
+
 	private DefaultMenuItem item;
 
 	@PostConstruct
@@ -45,33 +45,27 @@ public class MenuModalidadesViewMB {
 				submenu.addElement(item);
 			}
 		} else {
-			item = new DefaultMenuItem(
-					"Não há modalidades cadastradas");
+			item = new DefaultMenuItem("Não há modalidades cadastradas");
 			item.setUrl("#");
 			submenu.addElement(item);
 		}
-		if (!modalidades.isEmpty()) {
+		if (!edicoesJogos.isEmpty()) {
 			DefaultSubMenu jogosAnteriores = new DefaultSubMenu("Edições Anteriores");
 			Jogos jogos;
+			item = new DefaultMenuItem("Regulamento dos Jogos " + edicoesJogos.get(edicoesJogos.size() - 1).getAno());
+			item.setUrl(edicoesJogos.get(edicoesJogos.size() - 1).getLink());
+			jogosSubMenu.addElement(item);
+
 			for (int i = 0; i < edicoesJogos.size(); ++i) {
 				jogos = edicoesJogos.get(i);
-				if (i == 0) {
-					item = new DefaultMenuItem(
-							"Regulamento dos Jogos " + jogos.getAno());
-					item.setUrl(jogos.getLink());
-					jogosSubMenu.addElement(item);
-				}
-				else{
-					 item = new DefaultMenuItem(
-							"Regulamento dos Jogos " + jogos.getAno());
-					item.setUrl(jogos.getLink());
-					jogosAnteriores.addElement(item);
-				}
+				item = new DefaultMenuItem("Regulamento dos Jogos " + jogos.getAno());
+				item.setUrl(jogos.getLink());
+				jogosAnteriores.addElement(item);
+
 			}
-		jogosSubMenu.addElement(jogosAnteriores);
+			jogosSubMenu.addElement(jogosAnteriores);
 		} else {
-			 item = new DefaultMenuItem(
-					"Não há edições de jogos cadastradas!");
+			item = new DefaultMenuItem("Não há edições de jogos cadastradas!");
 			item.setUrl("#");
 			submenu.addElement(item);
 		}

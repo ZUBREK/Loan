@@ -224,7 +224,7 @@ public class RelatorioFinal {
 				return t1.getPontosTime().getClassificacao() - t2.getPontosTime().getClassificacao();
 			}
 		});
-		addTitulo("CLASSIFICA��O FINAL");
+		addTitulo("CLASSIFICAÇÃO FINAL");
 		addCelula("POSIÇÃO", true);
 		add3Linha("TIME");
 		addCelula("PONTOS", true);

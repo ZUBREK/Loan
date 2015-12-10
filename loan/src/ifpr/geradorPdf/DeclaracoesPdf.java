@@ -70,7 +70,7 @@ public class DeclaracoesPdf {
 				Pessoa pessoa = (Pessoa) lista.get(i);
 				String texto = "Declaramos que o(a) " + pessoa.getTipo().getLabel() + " " + 
 						pessoa.getNome() + " participou dos Jogos do Instituto Federal " +
-						"do Paran· (JIFPR), promovido pela PrÛ-Reitoria de Ensino (PROENS)" +
+						"do Paran√° (JIFPR), promovido pela Pr√≥-Reitoria de Ensino (PROENS)" +
 						" e pela Diretoria de Assuntos Estudantis e Atividades Especiais " + 
 						"(DAES) no ano de " + formatador.format(data) + ".";
 				int linha = 373;
@@ -122,7 +122,7 @@ public class DeclaracoesPdf {
 		cb.saveState();
 		cb.beginText();
 		cb.setFontAndSize(bf, 20);
-		cb.showTextAligned(PdfContentByte.ALIGN_CENTER,"DECLARA«√O DE PRESEN«A", 380, 410, 0);
+		cb.showTextAligned(PdfContentByte.ALIGN_CENTER,"DECLARA√á√ÉO DE PRESEN√áA", 380, 410, 0);
 		cb.endText();
 		cb.restoreState();
 	}

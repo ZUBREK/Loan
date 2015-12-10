@@ -9,14 +9,17 @@
 
 	<ui:define name="body">
 		<h:form>
-			<tr>
-				<td align="center" height="50%"><h:outputText
-						value="Você não está cadastrado!" /></td>
-			</tr>
-			<tr>
-				<td align="center" height="50%"><p:commandButton action="index"
-						value="Voltar!" /></td>
-			</tr>
+
+			<p:panel>
+				<tr>
+					<td align="center" height="50%"><h:outputText
+							value="Você não está cadastrado!" /></td>
+				</tr>
+				<tr>
+					<td align="center" height="50%"><p:commandButton
+							action="index" value="Voltar!" /></td>
+				</tr>
+			</p:panel>
 		</h:form>
 	</ui:define>
 </ui:composition>

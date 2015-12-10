@@ -59,7 +59,7 @@
 						</p:commandButton>
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Ações">
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":delegacao_form"
@@ -69,16 +69,18 @@
 								target="#{delegacaoMB.delegacao}" />
 
 						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
+
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
 							oncomplete="PF('delegacaoConfirmDialog').show()"
 							update=":confirm" styleClass="apenasIcone">
+							
 							<f:setPropertyActionListener value="#{delegacao}"
 								target="#{delegacaoMB.delegacao}" />
+								
 						</p:commandButton>
 					</p:column>
+					
 				</p:dataTable>
 
 			</h:form>
@@ -101,8 +103,8 @@
 								size="50" required="true" requiredMessage="Nome é obrigatório!" />
 
 							<h:outputLabel id="anoLb" value="Ano:" for="ano" />
-							<p:inputMask id="ano" value="#{delegacaoMB.delegacao.ano}" mask="9999"
-								required="true" requiredMessage="Ano é obrigatório!" />
+							<p:inputMask id="ano" value="#{delegacaoMB.delegacao.ano}"
+								mask="9999" required="true" requiredMessage="Ano é obrigatório!" />
 
 							<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />
 
@@ -162,7 +164,6 @@
 							<p:outputLabel value="Chefe da delegação: " for="chefe" />
 
 							<p:selectOneMenu id="chefe" label="Chefe da Delegação"
-								
 								value="#{delegacaoMB.chefeDelegacao}"
 								converter="#{pessoaConverter}">
 

@@ -107,12 +107,10 @@
 
 					</p:column>
 
-					<p:column headerText="Ações">
-
-
+					<p:column headerText="Ações" >
 
 						<p:commandButton id="visualizarTR" value=" " icon="ui-icon-search"
-							style="margin-left: 3px; margin-right: 3px;"
+							style="margin-left: 3px;"
 							update=":visEventoTecAdmDlg :visEventoDlg :visEventoMapaDlg"
 							action="#{eventoMB.abrirVisDialog()}" styleClass="apenasIcone">
 
@@ -123,7 +121,7 @@
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
 							update=":eventoAdmDlg :eventoDlg" disabled="#{eventoMB.tecAdm}"
-							style="margin-left: 3px; margin-right: 3px; float:center;"
+							style="margin-left: 3px; margin-right: 3px;"
 							action="#{eventoMB.abrirEditDialog()}" styleClass="apenasIcone">
 
 							<f:setPropertyActionListener value="#{evento}"

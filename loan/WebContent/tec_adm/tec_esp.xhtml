@@ -46,7 +46,7 @@
 						<p:outputLabel value="#{tecEsp.campus.cidade}" />
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Ações" >
 
 						<p:commandButton id="editarTR" value=" " icon="editar16"
 							style="margin-left: 3px;" update=":dados_form"
@@ -55,8 +55,7 @@
 								target="#{tecEspMB.tecnicoEsp}" />
 
 						</p:commandButton>
-					</p:column>
-					<p:column headerText="Remover" width="47">
+						
 						<p:commandButton id="removerTR" value="" icon="remover16"
 							style="margin-left: 10px;"
 							oncomplete="PF('tecEspConfirmDialog').show()" update=":confirm"
@@ -64,6 +63,7 @@
 							<f:setPropertyActionListener value="#{tecEsp}"
 								target="#{tecEspMB.tecnicoEsp}" />
 						</p:commandButton>
+						
 					</p:column>
 
 				</p:dataTable>

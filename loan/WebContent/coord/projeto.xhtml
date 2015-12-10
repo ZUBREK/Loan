@@ -45,16 +45,14 @@
 						<p:outputLabel value="#{projeto.coordenador.nome}" />
 					</p:column>
 
-					<p:column headerText="Editar" width="35">
+					<p:column headerText="Ações" width="35">
 						<p:commandButton id="editarTR" value=" " style="margin-left: 3px;"
 							icon="editar16" update=":projeto_form"
 							oncomplete="PF('projetoDialog').show()" styleClass="apenasIcone">
 							<f:setPropertyActionListener value="#{projeto}"
 								target="#{projetoMB.projeto}" />
 						</p:commandButton>
-					</p:column>
 
-					<p:column headerText="Remover" width="47">
 						<p:commandButton id="removerTR" value=""
 							style="margin-left: 10px;" icon="remover16"
 							oncomplete="PF('projetoConfirmDialog').show()" update=":confirm"
@@ -62,18 +60,24 @@
 							<f:setPropertyActionListener value="#{projeto}"
 								target="#{projetoMB.projeto}" />
 						</p:commandButton>
+
+
 					</p:column>
 
 					<p:column headerText="Relatórios" width="55">
+					
 						<p:commandButton id="visRelatorioTR" value=""
 							style="margin-left: 15px;" update=":visRelatoriosProjetoDlg"
 							icon="ui-icon-search"
 							actionListener="#{projetoMB.procurarRelatorios()}"
 							oncomplete="PF('visRelatoriosProjetoDialog').show()"
 							styleClass="apenasIcone">
+							
 							<f:setPropertyActionListener value="#{projeto}"
 								target="#{projetoMB.projeto}" />
+								
 						</p:commandButton>
+						
 					</p:column>
 
 				</p:dataTable>

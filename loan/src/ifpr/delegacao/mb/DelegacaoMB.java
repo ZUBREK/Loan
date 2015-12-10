@@ -73,6 +73,10 @@ public class DelegacaoMB {
 	@ManagedProperty(value = "#{declaracoesPdf}")
 	public DeclaracoesPdf declaracoesPdf;
 
+	private Delegacao novaDelegacao;
+
+	private int anoOld;
+
 	public DelegacaoMB() {
 
 		delegacaoFiltered = new ArrayList<Delegacao>();
@@ -82,6 +86,7 @@ public class DelegacaoMB {
 
 	public void criar() {
 		delegacao = new Delegacao();
+		campus = null;
 		isUpdate = false;
 	}
 
@@ -106,7 +111,7 @@ public class DelegacaoMB {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 	}
-	
+
 	public void cancelar() {
 		if (isUpdate == true) {
 			delegacao = null;
@@ -123,15 +128,38 @@ public class DelegacaoMB {
 
 	public void salvar() {
 		if (delegacao.getId() != null) {
-			delegacaoDao.update(delegacao);
-		} else {
+
+			if (anoOld != delegacao.getAno()) {
+				novaDelegacao = new Delegacao();
+				novaDelegacao.setCampus(delegacao.getCampus());
+				novaDelegacao.setNome(delegacao.getNome());
+				novaDelegacao.setAno(delegacao.getAno());
+				resalvarPessoasDelegacao(delegacao.getDelegacaoPessoas());
+				delegacaoDao.salvar(novaDelegacao);
+			} else {
+				delegacaoDao.update(delegacao);
+			}
+		}
+
+		else {
 			delegacao.setCampus(campus);
 			delegacaoDao.salvar(delegacao);
 		}
-		if (chefeDelegacao != null && !chefeDelegacao.equals(oldChefeDelegacao)) {
+		if (chefeDelegacao != null && !chefeDelegacao.equals(oldChefeDelegacao))
+
+		{
 			marcarChefe();
 		}
-		campus = null;
+	}
+
+	private void resalvarPessoasDelegacao(List<DelegacaoPessoa> delegacaoPessoas) {
+		for (DelegacaoPessoa delegacaoPessoa : delegacaoPessoas) {
+			DelegacaoPessoa delegacaoPessoaNova = new DelegacaoPessoa();
+			delegacaoPessoaNova.setPessoa(delegacaoPessoa.getPessoa());
+			delegacaoPessoaNova.setChefe(delegacaoPessoa.isChefe());
+			delegacaoPessoaDao.salvar(delegacaoPessoa);
+			novaDelegacao.getDelegacaoPessoas().add(delegacaoPessoa);
+		}
 	}
 
 	public void adicionarPessoa() {
@@ -229,6 +257,7 @@ public class DelegacaoMB {
 				oldChefeDelegacao = chefeDelegacao;
 			}
 		}
+		anoOld = delegacao.getAno();
 		this.delegacao = delegacao;
 	}
 

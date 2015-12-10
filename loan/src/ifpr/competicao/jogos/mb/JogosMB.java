@@ -80,7 +80,7 @@ public class JogosMB {
 	private JogosModalidade jogosModalidade;
 
 	private JogosTime jogosTime;
-	
+
 	@ManagedProperty(value = "#{relatorioFinal}")
 	public RelatorioFinal relatorioFinal;
 
@@ -103,8 +103,31 @@ public class JogosMB {
 	}
 
 	public void cancelar() {
-
+		removerRegistrosRelacionamentos();
 		jogos = null;
+
+	}
+
+	private void removerRegistrosRelacionamentos() {
+		try {
+			for (JogosTime jogosTime : jogos.getJogosTimes()) {
+				if (jogosTime.getJogos() == null) {
+					jogosTimeDao.remover(jogosTime);
+				}
+			}
+			for (JogosCampus jogosCampus : jogos.getJogosCampus()) {
+				if (jogosCampus.getJogos() == null) {
+					jogosCampusDao.remover(jogosCampus);
+				}
+			}
+			for (JogosModalidade jogosModalidade : jogos.getJogosModalidades()) {
+				if (jogosModalidade.getJogos() == null) {
+					jogosModalidadeDao.remover(jogosModalidade);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -112,36 +135,65 @@ public class JogosMB {
 
 		JogosTime jogosTime;
 		for (Time time : timesSelecionados) {
-			jogosTime = new JogosTime();
-			jogosTime.setTime(time);
-			jogosTimeDao.salvar(jogosTime);
-			jogos.getJogosTimes().add(jogosTime);
+			if (jogosTimeExiste(time)) {
+				jogosTime = new JogosTime();
+				jogosTime.setTime(time);
+				jogosTimeDao.salvar(jogosTime);
+				jogos.getJogosTimes().add(jogosTime);
+			}
 		}
-
 	}
 
 	public void adicionarCampus() {
-
 		JogosCampus jogosCampus;
 		for (Campus campus : campusSelecionados) {
-			jogosCampus = new JogosCampus();
-			jogosCampus.setCampus(campus);
-			jogosCampusDao.salvar(jogosCampus);
-			jogos.getJogosCampus().add(jogosCampus);
+			if (jogosCampusExiste(campus)) {
+				jogosCampus = new JogosCampus();
+				jogosCampus.setCampus(campus);
+				jogosCampusDao.salvar(jogosCampus);
+				jogos.getJogosCampus().add(jogosCampus);
+			}
+		}
+	}
+
+	public void adicionarModalidade() {
+		JogosModalidade jogosModalidade;
+		for (Modalidade modalidade : modalidadesSelecionadas) {
+			if (jogosModalidadeExiste(modalidade)) {
+				jogosModalidade = new JogosModalidade();
+				jogosModalidade.setModalidade(modalidade);
+				jogosModalidadeDao.salvar(jogosModalidade);
+				jogos.getJogosModalidades().add(jogosModalidade);
+			}
 		}
 
 	}
 
-	public void adicionarModalidade() {
-
-		JogosModalidade jogosModalidade;
-		for (Modalidade modalidade : modalidadesSelecionadas) {
-			jogosModalidade = new JogosModalidade();
-			jogosModalidade.setModalidade(modalidade);
-			jogosModalidadeDao.salvar(jogosModalidade);
-			jogos.getJogosModalidades().add(jogosModalidade);
+	private boolean jogosTimeExiste(Time time) {
+		for (JogosTime jogosTime : jogos.getJogosTimes()) {
+			if (jogosTime.getTime().equals(time)) {
+				return false;
+			}
 		}
+		return true;
+	}
 
+	private boolean jogosCampusExiste(Campus campus) {
+		for (JogosCampus jogosCampus : jogos.getJogosCampus()) {
+			if (jogosCampus.getCampus().equals(campus)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean jogosModalidadeExiste(Modalidade modalidade) {
+		for (JogosModalidade jogosModalidade : jogos.getJogosModalidades()) {
+			if (jogosModalidade.getModalidade().equals(modalidade)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void salvarJogos() {
@@ -218,7 +270,7 @@ public class JogosMB {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_FATAL, titulo, message));
 	}
-	
+
 	public void gerarRelatorio(Jogos jogos) {
 		relatorioFinal.gerarRelatorio(jogos);
 	}
@@ -323,7 +375,8 @@ public class JogosMB {
 			times.clear();
 			for (JogosModalidade modalidade : jogos.getJogosModalidades()) {
 				for (JogosCampus campus2 : jogos.getJogosCampus()) {
-					times.addAll(timeDao.listarTimesPorCampusModalidade(campus2.getCampus(), modalidade.getModalidade()));
+					times.addAll(
+							timeDao.listarTimesPorCampusModalidade(campus2.getCampus(), modalidade.getModalidade()));
 				}
 			}
 		}
@@ -420,5 +473,5 @@ public class JogosMB {
 	public void setRelatorioFinal(RelatorioFinal relatorioFinal) {
 		this.relatorioFinal = relatorioFinal;
 	}
-	
+
 }

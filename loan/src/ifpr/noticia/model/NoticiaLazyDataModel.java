@@ -1,9 +1,5 @@
 package ifpr.noticia.model;
 
-import ifpr.noticia.Noticia;
-import ifpr.noticia.dao.NoticiaDao;
-import ifpr.pessoa.TipoPessoa;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +10,9 @@ import javax.faces.bean.ViewScoped;
 
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+
+import ifpr.noticia.Noticia;
+import ifpr.noticia.dao.NoticiaDao;
 
 @ManagedBean(name="noticiaLazyDataModel")
 @ViewScoped
@@ -43,10 +42,10 @@ public class NoticiaLazyDataModel extends LazyDataModel<Noticia> {
     {
         List<Noticia> source = null;
         
-        if (filters.containsKey("nome") )
+        if (filters.containsKey("titulo") )
         {
-        	String nomePesquisa = filters.get("nome").toString();
-        	source = noticiaDao.findByNomeRole(nomePesquisa,TipoPessoa.ROLE_SECRETARIO.toString());
+        	String nomePesquisa = filters.get("titulo").toString();
+        	source = noticiaDao.findByTitulo(nomePesquisa);
         }
         else
         {

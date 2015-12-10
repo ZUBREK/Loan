@@ -304,17 +304,23 @@ public class ChaveMB {
 	private boolean verificarData(Date dataSelecionada) {
 		Date dataAtual = new Date();
 		SimpleDateFormat formater = new SimpleDateFormat("yyyy");
-		String anoDataSelecionada = formater.format(dataSelecionada);
-		String anoDataAtual = formater.format(dataAtual);
-		if (dataSelecionada.after(dataAtual)) {
-			mensagemErroFaces("ERRO!", "Data inválida - Data posterior ao dia atual");
+		if (dataSelecionada != null) {
+			String anoDataSelecionada = formater.format(dataSelecionada);
+			String anoDataAtual = formater.format(dataAtual);
+			if (dataSelecionada.after(dataAtual)) {
+				mensagemErroFaces("ERRO!", "Data inválida - Data posterior ao dia atual");
+				return false;
+			} else if (!anoDataSelecionada.equals(anoDataAtual)) {
+				mensagemErroFaces("ERRO!", "Data inválida - Ano anterior ao atual");
+				return false;
+			} else if (partida.getDataHora() != null && !dataSelecionada.equals(partida.getDataHora())) {
+				mensagemAvisoFaces("Tem certeza?", "Você está alterando uma data já cadastrada!");
+			}
+		} else {
+			mensagemErroFaces("ERRO!", "Data inválida - Selecione uma data!");
 			return false;
-		} else if (!anoDataSelecionada.equals(anoDataAtual)) {
-			mensagemErroFaces("ERRO!", "Data inválida - Ano anterior ao atual");
-			return false;
-		} else if (partida.getDataHora() != null && !dataSelecionada.equals(partida.getDataHora())) {
-			mensagemAvisoFaces("Tem certeza?", "Você está alterando uma data já cadastrada!");
 		}
+
 		return true;
 	}
 

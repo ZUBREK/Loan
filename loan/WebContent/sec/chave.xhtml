@@ -184,7 +184,6 @@
 						for="dataInicio" />
 					<p:calendar id="dataInicio" value="#{chaveMB.dataHora}" locale="pt"
 						pattern="dd/MM/yyyy HH:mm" readonlyInput="true" yearRange="c:c"
-						required="true" requiredMessage="Data de início é obrigatória"
 						mask="true">
 						<p:ajax event="dateSelect" listener="#{chaveMB.checarData}"
 							update=":msg" />

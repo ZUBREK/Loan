@@ -80,7 +80,9 @@ public class JogosMB {
 	private JogosModalidade jogosModalidade;
 
 	private JogosTime jogosTime;
-	
+
+	private boolean isUpdate;
+
 	@ManagedProperty(value = "#{relatorioFinal}")
 	public RelatorioFinal relatorioFinal;
 
@@ -89,10 +91,12 @@ public class JogosMB {
 		timesSelecionados = new ArrayList<>();
 		campusSelecionados = new ArrayList<>();
 		modalidadesSelecionadas = new ArrayList<>();
+		isUpdate = true;
 	}
 
 	public void criar() {
 		jogos = new Jogos();
+		isUpdate = false;
 	}
 
 	@PostConstruct
@@ -103,8 +107,28 @@ public class JogosMB {
 	}
 
 	public void cancelar() {
-
+		if (isUpdate == false) {
+			removerRegistrosRelacionamentos();
+			isUpdate = true;
+		}
 		jogos = null;
+
+	}
+
+	private void removerRegistrosRelacionamentos() {
+		try {
+			for (JogosTime jogosTime : jogos.getJogosTimes()) {
+				jogosTimeDao.remover(jogosTime);
+			}
+			for (JogosCampus jogosCampus : jogos.getJogosCampus()) {
+				jogosCampusDao.remover(jogosCampus);
+			}
+			for (JogosModalidade jogosModalidade : jogos.getJogosModalidades()) {
+				jogosModalidadeDao.remover(jogosModalidade);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -218,7 +242,7 @@ public class JogosMB {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_FATAL, titulo, message));
 	}
-	
+
 	public void gerarRelatorio(Jogos jogos) {
 		relatorioFinal.gerarRelatorio(jogos);
 	}
@@ -323,7 +347,8 @@ public class JogosMB {
 			times.clear();
 			for (JogosModalidade modalidade : jogos.getJogosModalidades()) {
 				for (JogosCampus campus2 : jogos.getJogosCampus()) {
-					times.addAll(timeDao.listarTimesPorCampusModalidade(campus2.getCampus(), modalidade.getModalidade()));
+					times.addAll(
+							timeDao.listarTimesPorCampusModalidade(campus2.getCampus(), modalidade.getModalidade()));
 				}
 			}
 		}
@@ -420,5 +445,5 @@ public class JogosMB {
 	public void setRelatorioFinal(RelatorioFinal relatorioFinal) {
 		this.relatorioFinal = relatorioFinal;
 	}
-	
+
 }

@@ -298,8 +298,9 @@ public class CadastroUsuarioValidator {
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent("tabGrande:dados_form:matricula");
-			input.setValid(false);
-
+			if (input != null) {//TODO POG
+				input.setValid(false);
+			}
 			return false;
 		} catch (NoResultException e) {
 			return true;
@@ -409,8 +410,9 @@ public class CadastroUsuarioValidator {
 			context.validationFailed();
 
 			UIInput input = (UIInput) context.getViewRoot().findComponent("tabGrande:dados_form:cpf");
-			input.setValid(false);
-
+			if (input != null) {// TODO POG
+				input.setValid(false);
+			}
 			return false;
 		} catch (NoResultException e) {
 			try {

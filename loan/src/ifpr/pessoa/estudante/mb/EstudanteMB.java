@@ -122,34 +122,44 @@ public class EstudanteMB {
 	}
 
 	public void salvar() {
-		estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
-		if (emailHelper.validarDadosEstudante(estudante)) {
-			if (estudante.getId() != null) {
-				estudanteDao.update(estudante);
-			} else if (validarLoginExistente()) {
-				estudante.setCampus(campus);
-				gerarSenha();
-				enviarEmail();
-				String md5 = criptografia.criptografar(estudante.getSenha());
-				estudante.setSenha(md5);
-				estudanteDao.salvar(estudante);
+		if (fotoPerfil == null) {
+			mensagemErroFaces("ERRO!", "Selecione uma foto para o estudante!");
+		} else {
+			estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
+			if (emailHelper.validarDadosEstudante(estudante)) {//TODO validando cpf existente mesmo se for update!
+				if (estudante.getId() != null) {
+					estudanteDao.update(estudante);
+				} else if (validarLoginExistente()) {
+					estudante.setCampus(campus);
+					gerarSenha();
+					enviarEmail();
+					String md5 = criptografia.criptografar(estudante.getSenha());
+					estudante.setSenha(md5);
+					estudanteDao.salvar(estudante);
+				}
 			}
 		}
-		fotoPerfil = null;
+	}
+
+	public void mensagemErroFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.validationFailed();
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-		fotoPerfil = arquivoDao.pesquisarFotoPerfil(estudante);
 		try {
 			String nomeArquivoStreamed = event.getFile().getFileName();
-			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.CAMINHO_FOTO_PERFIL + "/matricula_" + estudante.getMatricula()
+			String nomeFoto = "matricula_" + estudante.getMatricula()
 					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
+			byte[] arquivoByte = event.getFile().getContents();
+			String caminho = Paths.CAMINHO_FOTO_PERFIL + "/" + nomeFoto;
 			criarArquivoDisco(arquivoByte, caminho);
 
 			fotoPerfil.setUploader(estudante);
 			fotoPerfil.setCaminho(caminho);
-			fotoPerfil.setNome("foto_perfil_estudMatricula_" + estudante.getMatricula());
+			fotoPerfil.setNome(nomeFoto);
 			fotoPerfil.setDataUpload(new Date());
 			fotoPerfil.setFotoPerfil(true);
 			if (fotoPerfil.getId() != null) {
@@ -161,7 +171,6 @@ public class EstudanteMB {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		fotoPerfil = null;
 	}
 
 	private void criarArquivoDisco(byte[] bytes, String arquivo) throws IOException {
@@ -207,6 +216,10 @@ public class EstudanteMB {
 
 	public void setEstudante(Estudante estudante) {
 		fotoPerfil = arquivoDao.pesquisarFotoPerfil(estudante);
+		if (fotoPerfil == null) {
+			fotoPerfil = new Arquivo();
+		}
+
 		campus = estudante.getCampus();
 		this.estudante = estudante;
 	}

@@ -146,14 +146,18 @@
 						disabled="#{empty horarioAssistenciaMB.estudante}"
 						fileUploadListener="#{horarioAssistenciaMB.handleFileUpload}"
 						label="selecionar" auto="true"
-						update=":assistencia_form:arquivo :msg" multiple="false"
+						update=":assistencia_form:arquivo :msg imagem" multiple="false"
 						mode="advanced" cache="false" />
 
 					<p:outputLabel value="Arquivo:" />
 
 					<p:outputLabel id="arquivo"
 						value="#{horarioAssistenciaMB.arquivo.nome}" />
-
+					<p:spacer/>
+					<p:graphicImage
+								value="http://localhost:8080/loan/assinaturas/#{horarioAssistenciaMB.arquivo.nome}"
+								title="Foto da Assinatura" width="250" height="200" id="imagem"
+								cache="false" />
 
 					<f:facet name="footer">
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"

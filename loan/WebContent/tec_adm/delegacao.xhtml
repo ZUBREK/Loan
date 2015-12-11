@@ -123,7 +123,6 @@
 
 							<p:commandButton id="continuarBt" value="Continuar"
 								icon="salvar16" update=":delegacao_form :msg"
-								actionListener="#{delegacaoMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
 							<p:commandButton id="cancelarBt" value="Cancelar"
@@ -159,7 +158,7 @@
 
 							<p:commandButton id="addPessoasBt" value="Adicionar" icon="apply"
 								actionListener="#{delegacaoMB.adicionarPessoa()}"
-								update=":delegacao_form:tabView:pessoasList :delegacao_form:tabView:pessoa" />
+								update=":delegacao_form:tabView:pessoasList :delegacao_form:tabView:pessoa chefe" />
 
 							<p:outputLabel value="Chefe da delegação: " for="chefe" />
 
@@ -169,7 +168,7 @@
 
 								<f:selectItem itemLabel="Selecione Um" itemValue="Selecione Um" />
 
-								<f:selectItems value="#{delegacaoMB.delegacao.delegacaoPessoas}"
+								<f:selectItems value="#{delegacaoMB.delegacaoPessoas}"
 									var="delegPessoa" itemLabel="#{delegPessoa.pessoa.nome}"
 									itemValue="#{delegPessoa.pessoa}" />
 

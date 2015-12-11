@@ -145,7 +145,7 @@
 							<p:calendar id="dataNasc" size="60" mask="true"
 								value="#{estudanteMB.estudante.dataNascimento}" locale="pt"
 								navigator="true" pattern="dd/MM/yyyy" mindate="1/1/1980"
-								maxdate="31/12/2015" yearRange="1980:2015" required="true"
+								maxdate="31/12/2004" yearRange="1980:2004" required="true"
 								requiredMessage="Data de nascimento é obrigatória!">
 
 								<p:watermark value="00/00/0000" for="dataNasc" />
@@ -239,7 +239,6 @@
 								<p:commandButton id="continuarBt" value="Continuar"
 									icon="salvar16" update=":msg :tab_form"
 									onclick="PrimeFaces.monitorDownload(start, stop)"
-									actionListener="#{estudanteMB.salvar}"
 									oncomplete="if(!args.validationFailed) PF('grandeTab').select(1);" />
 
 								<p:commandButton id="cancelarBt1" value="Cancelar"
@@ -269,18 +268,18 @@
 					</p:tab>
 
 					<p:tab title="Foto" disabled="true">
-						<h:panelGrid columns="2">
-							<p:outputLabel id="fotoPerfilLb"
-								title="Selecionar foto do estudante"
-								value="Selecionar foto do estudante:" />
-
+						<h:panelGrid>
 							<p:fileUpload id="fotoUpload" styleClass="fileupload-boleidous"
 								fileUploadListener="#{estudanteMB.handleFileUpload}"
-								label="#{estudanteMB.fotoPerfil == null ? 'Selecionar' : estudanteMB.fotoPerfil.nome}"
-								auto="true" update="nomeFoto" multiple="false" mode="advanced"
+								label="Selecionar foto do estudante"
+								auto="true" update="nomeFoto imagem" multiple="false"
+								mode="advanced" cache="false" />
+							<p:graphicImage
+								value="http://localhost:8080/loan/foto/#{estudanteMB.fotoPerfil.nome}"
+								title="Foto de Perfil" width="250" height="200" id="imagem"
 								cache="false" />
-
-
+						</h:panelGrid>
+						<h:panelGrid columns="2">
 							<p:outputLabel value="Arquivo:" for="nomeFoto" />
 							<p:outputLabel id="nomeFoto"
 								value="#{estudanteMB.fotoPerfil.nome}" />

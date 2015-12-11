@@ -29,5 +29,8 @@ public interface EstudanteDao extends Dao<Estudante> {
 	public List<Estudante> pesquisarEstudanteNomeCampusProjeto(String nome,
 			Campus campus, Projeto projeto);
 
+
+	List<Estudante> pesquisarEstudanteNomeCampus(String nome, Campus campus);
+
 	
 }

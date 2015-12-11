@@ -46,7 +46,7 @@
 							<f:setPropertyActionListener value="#{lcl}"
 								target="#{localMB.local}" />
 						</p:commandButton>
-						
+
 						<p:commandButton id="removerTR" value=""
 							style="margin-left: 10px;" icon="remover16"
 							oncomplete="PF('confirmDialog').show()" update=":confirm"
@@ -54,7 +54,7 @@
 							<f:setPropertyActionListener value="#{lcl}"
 								target="#{localMB.local}" />
 						</p:commandButton>
-						
+
 					</p:column>
 
 				</p:dataTable>
@@ -92,8 +92,8 @@
 
 					<h:outputLabel id="cepLb" value="CEP:" for="cep" />
 
-					<p:inputText id="cep" value="#{localMB.local.cep}" required="true"
-						requiredMessage="CEP é obrigatório!" />
+					<p:inputMask id="ano" value="#{localMB.local.cep}" mask="99999-999"
+						required="true" requiredMessage="CEP é obrigatório!" />
 
 					<h:outputLabel id="numeroLb" value="Número:" for="numero" />
 

@@ -286,6 +286,7 @@
 
 							<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 								update=":tableForm :tab_form :msg"
+								onstart="PF('tabBagaca').select(0);"
 								actionListener="#{estudanteMB.salvar}"
 								onclick="PrimeFaces.monitorDownload(start, stop)"
 								oncomplete="if(!args.validationFailed) PF('estudanteDialog').hide()" />

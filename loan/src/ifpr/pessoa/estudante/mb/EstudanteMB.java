@@ -103,7 +103,7 @@ public class EstudanteMB {
 			file.delete();
 		} catch (Exception e) {
 			arquivoDao.salvar(arquivo);
-			mensagemFaces("Erro!", "A pessoa é utilizada em outros registros, portanto não pode ser removida!");
+			mensagemFaces("Erro!", "A pessoa Ã© utilizada em outros registros, portanto nÃ£o pode ser removida!");
 		}
 	}
 

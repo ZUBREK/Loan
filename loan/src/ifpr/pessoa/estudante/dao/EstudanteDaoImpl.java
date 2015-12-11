@@ -1,17 +1,17 @@
 package ifpr.pessoa.estudante.dao;
 
-import ifpr.campus.Campus;
-import ifpr.competicao.time.Time;
-import ifpr.dao.GenericDao;
-import ifpr.pessoa.estudante.Estudante;
-import ifpr.projeto.Projeto;
-
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+
+import ifpr.campus.Campus;
+import ifpr.competicao.time.Time;
+import ifpr.dao.GenericDao;
+import ifpr.pessoa.estudante.Estudante;
+import ifpr.projeto.Projeto;
 
 @ManagedBean(name = "estudanteDao")
 @ApplicationScoped
@@ -91,7 +91,22 @@ public class EstudanteDaoImpl extends GenericDao<Estudante> implements
 		return (List<Estudante>) q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Estudante> pesquisarEstudanteNomeCampus(String nome,
+			Campus campus) {
 
+		EntityManager em = emf.createEntityManager();
+		Query q = em
+				.createQuery("select u from "
+						+ classe.getSimpleName()
+						+ " u where campus = :campus and lower(u.nome) like concat('%', :nome, '%')");
+		q.setParameter("campus", campus);
+		q.setParameter("nome", nome);
+		q.setMaxResults(10);
+		return (List<Estudante>) q.getResultList();
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Estudante> pesquisarEstudanteNomeCampusProjeto(String nome,

@@ -111,15 +111,18 @@ public class HorarioAssistenciaMB {
 			file.mkdirs();
 
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = Paths.PASTA_ASSISTENCIA + "/" + estudante.getNome() + estudante.getId()
-					+ event.getFile().getFileName();
+			String nomeArquivoStreamed = event.getFile().getFileName();
+			String nomeFoto = "fotoassistenciaestudante_" + estudante.getNome() + "_id_" + estudante.getId()
+					+ nomeArquivoStreamed.substring(nomeArquivoStreamed.lastIndexOf('.'), nomeArquivoStreamed.length());
+			String caminho = Paths.PASTA_ASSISTENCIA + "/" + nomeFoto;
+
 			FileOutputStream fos = new FileOutputStream(caminho);
 			fos.write(arquivoByte);
 			fos.close();
 			arquivo.setCaminho(caminho);
 			arquivo.setDataUpload(new Date());
 			arquivo.setFotoPerfil(false);
-			arquivo.setNome(event.getFile().getFileName());
+			arquivo.setNome(nomeFoto);
 			arquivo.setUploader(estudante);
 			horarioAssistencia.setFotoAssinatura(arquivo);
 			salvarArquivo();
@@ -147,6 +150,7 @@ public class HorarioAssistenciaMB {
 	public void setHorarioAssistencia(HorarioAssistencia horarioAssistencia) {
 		estudante = horarioAssistencia.getEstudante();
 		campus = estudante.getCampus();
+		arquivo = horarioAssistencia.getFotoAssinatura();
 		this.horarioAssistencia = horarioAssistencia;
 	}
 

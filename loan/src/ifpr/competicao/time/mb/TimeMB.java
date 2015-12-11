@@ -90,17 +90,13 @@ public class TimeMB {
 
 	private Integer anoOld;
 
-	private boolean isUpdate;
-
 	public TimeMB() {
 
 		timeFiltered = new ArrayList<Time>();
-		isUpdate = true;
 	}
 
 	public void criar() {
 		time = new Time();
-		isUpdate = false;
 		campus = null;
 		modalidade = null;
 	}
@@ -117,8 +113,7 @@ public class TimeMB {
 			timeDao.remover(time);
 		} catch (Exception ex) {
 			FacesContext context = FacesContext.getCurrentInstance();
-			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Erro!",
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!",
 					"Time em competição não pode ser apagado!");
 			context.addMessage("Atenção", message);
 
@@ -127,19 +122,23 @@ public class TimeMB {
 	}
 
 	public void cancelar() {
-		if (isUpdate == true) {
-			time = null;
-		} else {
-			if (time.getId() != null) {
-				remover();
-			} else {
-				time = null;
-			}
-			isUpdate = true;
-		}
-
+		removerRegistrosRelacionamentos();
+		time = null;
 		campus = null;
 		modalidade = null;
+	}
+
+	private void removerRegistrosRelacionamentos() {
+		try {
+			for (TimeEstudante timeEstudante : time.getTimeEstudante()) {
+				if (timeEstudante.getTime() == null) {
+					timeEstudanteDao.remover(timeEstudante);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void cancelarEstudante() {
@@ -182,7 +181,6 @@ public class TimeMB {
 		if (estudante != null && estudante.getId() != null) {
 			TimeEstudante timeEstd = new TimeEstudante();
 			timeEstd.setEstudante(estudante);
-			timeEstd.setTime(time);
 			timeEstudanteDao.salvar(timeEstd);
 			time.getTimeEstudante().add(timeEstd);
 			estudante = new Estudante();
@@ -201,21 +199,26 @@ public class TimeMB {
 	}
 
 	public void preencherListaTec() {
+		pegarListas(campus);
+	}
 
+	public void pegarListas(Campus campus) {
 		listaTecEsportivo = tecEspDao.pesquisarPorCampus(campus);
 		listaTecEsportivo.addAll(coordDao.pesquisarTecCoordPorCampus(campus));
 
 	}
 
 	public String confirmaExclusao() {
-		RequestContext.getCurrentInstance().execute(
-				"PF('timeEstConfirmDialog').show()");
+		RequestContext.getCurrentInstance().execute("PF('timeEstConfirmDialog').show()");
 		return "";
 	}
 
 	public List<Estudante> pesquisarEstudanteNome(String nome) {
-		listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome,
-				campus, time);
+		if (time.getId() != null) {
+			listaEstudante = estudanteDao.pesquisarEstudanteNomeCampusTime(nome, campus, time);
+		} else {
+			listaEstudante = estudanteDao.pesquisarEstudanteNomeCampus(nome, campus);
+		}
 		return listaEstudante;
 	}
 
@@ -229,6 +232,7 @@ public class TimeMB {
 	}
 
 	public void setTime(Time time) {
+		pegarListas(time.getCampus());
 		campus = time.getCampus();
 		modalidade = time.getModalidade();
 		tecEsportivo = time.getTecnico();
@@ -350,14 +354,6 @@ public class TimeMB {
 
 	public TimeEstudante getTimeEstudante() {
 		return timeEstudante;
-	}
-
-	public boolean isUpdate() {
-		return isUpdate;
-	}
-
-	public void setUpdate(boolean isUpdate) {
-		this.isUpdate = isUpdate;
 	}
 
 	public void setTimeEstudante(TimeEstudante timeEstudante) {

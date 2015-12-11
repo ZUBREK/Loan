@@ -351,6 +351,7 @@
                     <location name="/" handler="welcome-content"/>
                     <location name="/loan/noticia" handler="noticias"/>
                     <location name="/loan/foto" handler="fotoperf"/>
+                    <location name="/loan/assinaturas" handler="assinaturas"/>
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
                 </host>
@@ -363,6 +364,7 @@
                 <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
                 <file name="noticias" path="/temp/loan_docs/noticia" directory-listing="true"/>
                 <file name="fotoperf" path="/temp/loan_docs/foto" directory-listing="true"/>
+                <file name="assinaturas" path="/temp/loan_docs/assinaturas" directory-listing="true"/>
             </handlers>
             <filters>
                 <response-header name="server-header" header-name="Server" header-value="WildFly/8"/>

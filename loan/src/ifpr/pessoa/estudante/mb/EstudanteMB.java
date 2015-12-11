@@ -118,6 +118,7 @@ public class EstudanteMB {
 	}
 
 	public void cancelar() {
+		fotoPerfil = null;
 		estudante = null;
 	}
 
@@ -126,9 +127,13 @@ public class EstudanteMB {
 			mensagemErroFaces("ERRO!", "Selecione uma foto para o estudante!");
 		} else {
 			estudante.setTipo(TipoPessoa.ROLE_ESTUDANTE);
-			if (emailHelper.validarDadosEstudante(estudante)) {//TODO validando cpf existente mesmo se for update!
+			if (emailHelper.validarDadosEstudante(estudante)) {// TODO validando
+																// cpf existente
+																// mesmo se for
+																// update!
 				if (estudante.getId() != null) {
 					estudanteDao.update(estudante);
+					fotoPerfil = null;
 				} else if (validarLoginExistente()) {
 					estudante.setCampus(campus);
 					gerarSenha();
@@ -136,6 +141,7 @@ public class EstudanteMB {
 					String md5 = criptografia.criptografar(estudante.getSenha());
 					estudante.setSenha(md5);
 					estudanteDao.salvar(estudante);
+					fotoPerfil = null;
 				}
 			}
 		}
@@ -149,6 +155,10 @@ public class EstudanteMB {
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
+		if (fotoPerfil == null) {
+			fotoPerfil = new Arquivo();
+		}
+
 		try {
 			String nomeArquivoStreamed = event.getFile().getFileName();
 			String nomeFoto = "matricula_" + estudante.getMatricula()

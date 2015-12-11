@@ -138,7 +138,6 @@ public class TimeMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void cancelarEstudante() {

@@ -65,8 +65,6 @@ public class DelegacaoMB {
 
 	private DelegacaoPessoa delegacaoPessoa;
 
-	private boolean isUpdate;
-
 	@ManagedProperty(value = "#{crachasPdf}")
 	public CrachasPdf crachasPdf;
 
@@ -75,19 +73,19 @@ public class DelegacaoMB {
 
 	private Delegacao novaDelegacao;
 
+	private List<DelegacaoPessoa> delegacaoPessoas;
+
 	private int anoOld;
 
 	public DelegacaoMB() {
-
+		delegacaoPessoas = new ArrayList<>();
 		delegacaoFiltered = new ArrayList<Delegacao>();
 		listaPessoa = new ArrayList<Pessoa>();
-		isUpdate = true;
 	}
 
 	public void criar() {
 		delegacao = new Delegacao();
 		campus = null;
-		isUpdate = false;
 	}
 
 	@PostConstruct
@@ -113,17 +111,21 @@ public class DelegacaoMB {
 	}
 
 	public void cancelar() {
-		if (isUpdate == true) {
-			delegacao = null;
-		} else {
-			if (delegacao.getId() != null) {
-				remover();
-			} else {
-				delegacao = null;
-			}
-			isUpdate = true;
-		}
+		removerRegistrosRelacionamentos();
+		delegacao = null;
 		campus = null;
+	}
+
+	private void removerRegistrosRelacionamentos() {
+		try {
+			for (DelegacaoPessoa delegacaoPessoa : delegacao.getDelegacaoPessoas()) {
+				if (delegacaoPessoa.getDelegacao() == null) {
+					delegacaoPessoaDao.remover(delegacaoPessoa);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void salvar() {
@@ -166,7 +168,6 @@ public class DelegacaoMB {
 		if (pessoa != null) {
 			delegacaoPessoa = new DelegacaoPessoa();
 			delegacaoPessoa.setPessoa(pessoa);
-			delegacaoPessoa.setDelegacao(delegacao);
 			delegacaoPessoaDao.salvar(delegacaoPessoa);
 			delegacao.getDelegacaoPessoas().add(delegacaoPessoa);
 			pessoa = new Pessoa();
@@ -186,14 +187,22 @@ public class DelegacaoMB {
 
 		List<Pessoa> listaPessoaNome;
 		listaPessoa = new ArrayList<Pessoa>();
-		listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome, delegacao);
+		if (delegacao.getId() != null) {
+			listaPessoaNome = pessoaDao.pesquisarPorNomeParaDelegacao(nome, delegacao);
+			verificarCampusListaPessoas(listaPessoaNome);
+		} else {
+			listaPessoaNome = pessoaDao.findByNome(nome);
+			verificarCampusListaPessoas(listaPessoaNome);
+		}
+		return listaPessoa;
+	}
+
+	private void verificarCampusListaPessoas(List<Pessoa> listaPessoaNome) {
 		Pessoa pessoaVerifica = new Pessoa();
 		for (int i = 0; i < listaPessoaNome.size(); i++) {
 			pessoaVerifica = (Pessoa) listaPessoaNome.get(i);
 			verificaPessoa(pessoaVerifica);
 		}
-
-		return listaPessoa;
 	}
 
 	public void verificaPessoa(Pessoa pessoaVerifica) {
@@ -349,14 +358,6 @@ public class DelegacaoMB {
 		this.delegacaoPessoa = delegacaoPessoa;
 	}
 
-	public boolean isUpdate() {
-		return isUpdate;
-	}
-
-	public void setUpdate(boolean isUpdate) {
-		this.isUpdate = isUpdate;
-	}
-
 	public CrachasPdf getCrachasPdf() {
 		return crachasPdf;
 	}
@@ -381,4 +382,44 @@ public class DelegacaoMB {
 		this.chefeDelegacao = chefeDelegacao;
 	}
 
+	public Pessoa getOldChefeDelegacao() {
+		return oldChefeDelegacao;
+	}
+
+	public void setOldChefeDelegacao(Pessoa oldChefeDelegacao) {
+		this.oldChefeDelegacao = oldChefeDelegacao;
+	}
+
+	public Delegacao getNovaDelegacao() {
+		return novaDelegacao;
+	}
+
+	public void setNovaDelegacao(Delegacao novaDelegacao) {
+		this.novaDelegacao = novaDelegacao;
+	}
+
+	public List<DelegacaoPessoa> getDelegacaoPessoas() {
+		delegacaoPessoas.clear();
+		if (delegacao != null) {
+			delegacaoPessoas.addAll(delegacao.getDelegacaoPessoas());
+			for (DelegacaoPessoa delegacaoPess : delegacao.getDelegacaoPessoas()) {
+				if (delegacaoPess.getPessoa().getTipo().equals(TipoPessoa.ROLE_ESTUDANTE)) {
+					delegacaoPessoas.remove(delegacaoPess);
+				}
+			}
+		}
+		return delegacaoPessoas;
+	}
+
+	public void setDelegacaoPessoas(List<DelegacaoPessoa> delegacaoPessoas) {
+		this.delegacaoPessoas = delegacaoPessoas;
+	}
+
+	public int getAnoOld() {
+		return anoOld;
+	}
+
+	public void setAnoOld(int anoOld) {
+		this.anoOld = anoOld;
+	}
 }

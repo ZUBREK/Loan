@@ -56,7 +56,7 @@ public class MenuModalidadesViewMB {
 			item.setUrl(edicoesJogos.get(edicoesJogos.size() - 1).getLink());
 			jogosSubMenu.addElement(item);
 
-			for (int i = 0; i < edicoesJogos.size(); ++i) {
+			for (int i = 0; i < edicoesJogos.size()-1; ++i) {
 				jogos = edicoesJogos.get(i);
 				item = new DefaultMenuItem("Regulamento dos Jogos " + jogos.getAno());
 				item.setUrl(jogos.getLink());

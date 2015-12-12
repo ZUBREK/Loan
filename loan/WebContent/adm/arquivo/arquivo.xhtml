@@ -11,20 +11,16 @@
 		<p:growl id="msg" showDetail="true" />
 		<p:panel id="painelPrincipal" header="Gerenciamento de arquivos">
 
-			<h:form id="uploadForm">
+			<h:form>
 
-				<p:fileUpload id="fileUploadWidget"
-					fileUploadListener="#{arquivoMB.handleFileUpload}"
-					label="Enviar Arquivo..." cancelLabel="Cancelar Envio"
-					uploadLabel="Enviar arquivo selecionado" update=":tableForm @this"
-					fileLimit="1" fileLimitMessage="Apenas um arquivo por vez!" />
-
-
+				<p:commandButton id="novoArq" value="Novo"
+					actionListener="#{arquivoMB.criar}"
+					oncomplete="PF('arquivoDialog').show()" update=":arquivoDlg" />
 			</h:form>
 
 			<h:form id="tableForm">
 				<p:dataTable id="arquivosTable"
-					value="#{arquivoMB.arquivoLazyDataModel}" var="arqv" rows="5"
+					value="#{arquivoMB.arquivoLazyDataModel}" var="arqv" rows="10"
 					rowKey="#{arqv.id}" paginator="true" lazy="true"
 					filteredValue="#{arquivoMB.arquivosFiltered}"
 					emptyMessage="Nenhum registro encontrado">
@@ -32,8 +28,9 @@
 						<h:outputText value="Arquivos cadastradas" />
 					</f:facet>
 					<p:column headerText="Nome">
-						<p:dialog modal="true" widgetVar="statusDialog" header="Carregando"
-							draggable="false" closable="false" resizable="false">
+						<p:dialog modal="true" widgetVar="statusDialog"
+							header="Carregando" draggable="false" closable="false"
+							resizable="false">
 							<p:graphicImage value="/img/64/ajax_loader.gif" />
 						</p:dialog>
 
@@ -67,8 +64,7 @@
 
 					<p:column headerText="Data de Envio">
 						<h:outputText value="#{arqv.dataUpload}" id="dataUpload">
-							<f:convertDateTime
-							 locale="pt_BR" timeZone="America/Sao_Paulo"
+							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo"
 								pattern="dd/MM/yyyy - HH:mm" />
 						</h:outputText>
 					</p:column>
@@ -86,7 +82,62 @@
 			</h:form>
 		</p:panel>
 
+		<p:dialog id="arquivoDlg" widgetVar="arquivoDialog"
+			header="Dados do Arquivo" width="600" height="200" modal="true"
+			closable="false">
 
+			<h:form id="arquivo_form">
+
+				<h:panelGrid columns="2">
+
+					<p:outputLabel id="tipoLb" value="Tipo:" for="tipo" />
+					<p:selectOneMenu id="tipo" value="#{arquivoMB.tipo}" filter="true"
+						filterMatchMode="startsWith" required="true"
+						requiredMessage="Tipo é obrigatório!">
+
+						<f:selectItem itemLabel="Selecione Um" itemValue="#{null}" />
+
+						<f:selectItems value="#{arquivoMB.listaTipo}" var="tip"
+							itemLabel="#{tip.label}" itemValue="#{tip}" />
+
+						<p:ajax update=":arquivo_form:arquivoUpload" />
+
+					</p:selectOneMenu>
+
+					<h:outputLabel id="arquivoLb" value="Arquivo:" />
+
+					<p:fileUpload id="arquivoUpload" styleClass="fileupload-boleidous"
+						disabled="#{empty arquivoMB.tipo}"
+						fileUploadListener="#{arquivoMB.handleFileUpload}"
+						label="selecionar" auto="true" update=":arquivo_form:arquivo :msg"
+						multiple="false" mode="advanced" cache="false" />
+
+					<p:outputLabel value="Arquivo:" />
+
+					<p:outputLabel id="arquivo" value="#{arquivoMB.arquivo.nome}" />
+
+
+					<f:facet name="footer">
+						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
+							update=":tableForm :arquivo_form :msg"
+							actionListener="#{arquivoMB.salvar}"
+							oncomplete="if(!args.validationFailed) PF('arquivoDialog').hide()">
+						</p:commandButton>
+
+						<p:commandButton id="cancelarBt" value="Cancelar"
+							icon="cancelar16" oncomplete="PF('arquivoDialog').hide()"
+							update=":msg" immediate="true"
+							actionListener="#{arquivoMB.cancelar()}">
+							<p:resetInput target=":tableForm" />
+						</p:commandButton>
+
+					</f:facet>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
 
 		<p:confirmDialog id="confirm" widgetVar="arqvConfirmDialog"
 			global="true" header="Confirma exclusão da arquivo?"
@@ -97,8 +148,8 @@
 
 			<h:form>
 				<p:commandButton value="Sim" actionListener="#{arquivoMB.remover}"
-					oncomplete="PF('arqvConfirmDialog').hide()" update=":tableForm :msg"
-					icon="ok16" />
+					oncomplete="PF('arqvConfirmDialog').hide()"
+					update=":tableForm :msg" icon="ok16" />
 				<p:commandButton value="Não" actionListener="#{arquivoMB.cancelar}"
 					oncomplete="PF('arqvConfirmDialog').hide()" icon="cancelar16" />
 			</h:form>

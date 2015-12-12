@@ -241,4 +241,20 @@ public class CoordenadorMB {
 		this.isTecCoord = isTecCoord;
 	}
 
+	public ArquivoDao getArquivoDao() {
+		return arquivoDao;
+	}
+
+	public void setArquivoDao(ArquivoDao arquivoDao) {
+		this.arquivoDao = arquivoDao;
+	}
+
+	public Arquivo getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(Arquivo arquivo) {
+		this.arquivo = arquivo;
+	}
+
 }

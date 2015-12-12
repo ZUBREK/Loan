@@ -2,6 +2,7 @@ package ifpr.pessoa.coordenadorPea.horarioAssistencia.mb;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 
 import ifpr.arquivo.Arquivo;
 import ifpr.arquivo.dao.ArquivoDao;
@@ -59,6 +61,8 @@ public class HorarioAssistenciaMB {
 
 	private Arquivo arquivo;
 
+	private Date dataHora;
+
 	public HorarioAssistenciaMB() {
 		horarioAssistenciaFiltered = new ArrayList<HorarioAssistencia>();
 	}
@@ -92,13 +96,16 @@ public class HorarioAssistenciaMB {
 	}
 
 	public void salvar() {
-		if (horarioAssistencia.getId() != null) {
-			horarioAssistenciaDao.update(horarioAssistencia);
-		} else {
-			horarioAssistencia.setEstudante(estudante);
-			horarioAssistenciaDao.salvar(horarioAssistencia);
+		if (verificarData(dataHora)) {
+			if (horarioAssistencia.getId() != null) {
+				horarioAssistenciaDao.update(horarioAssistencia);
+			} else {
+				horarioAssistencia.setEstudante(estudante);
+				horarioAssistencia.setDataHora(dataHora);
+				horarioAssistenciaDao.salvar(horarioAssistencia);
+			}
+			horarioAssistencia = null;
 		}
-		horarioAssistencia = null;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -139,8 +146,8 @@ public class HorarioAssistenciaMB {
 		} else {
 			arquivoDao.update(arquivo);
 			horarioAssistencia.setFotoAssinatura(arquivo);
+			horarioAssistenciaDao.update(horarioAssistencia);
 		}
-		horarioAssistenciaDao.update(horarioAssistencia);
 	}
 
 	public HorarioAssistencia getHorarioAssistencia() {
@@ -152,6 +159,40 @@ public class HorarioAssistenciaMB {
 		campus = estudante.getCampus();
 		arquivo = horarioAssistencia.getFotoAssinatura();
 		this.horarioAssistencia = horarioAssistencia;
+	}
+
+	public void checarData(SelectEvent event) {
+		Date dataSelecionada = (Date) event.getObject();
+		dataHora = dataSelecionada;
+		verificarData(dataSelecionada);
+	}
+
+	private boolean verificarData(Date dataSelecionada) {
+		Date dataAtual = new Date();
+		SimpleDateFormat formater = new SimpleDateFormat("yyyy");
+		if (dataSelecionada != null) {
+			String anoDataSelecionada = formater.format(dataSelecionada);
+			String anoDataAtual = formater.format(dataAtual);
+			if (dataSelecionada.after(dataAtual)) {
+				mensagemErroFaces("ERRO!", "Data inválida - Data posterior ao dia atual");
+				return false;
+			} else if (!anoDataSelecionada.equals(anoDataAtual)) {
+				mensagemErroFaces("ERRO!", "Data inválida - Ano anterior ao atual");
+				return false;
+			}
+		} else {
+			mensagemErroFaces("ERRO!", "Data inválida - Selecione uma data!");
+			return false;
+		}
+
+		return true;
+	}
+
+	public void mensagemErroFaces(String titulo, String message) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.validationFailed();
 	}
 
 	public HorarioAssistenciaDao getHorarioAssistenciaDao() {
@@ -242,4 +283,13 @@ public class HorarioAssistenciaMB {
 		listaEstudante = estudanteDao.listarPessoaByCampusEmAlfabetica(campus);
 		return listaEstudante;
 	}
+
+	public Date getDataHora() {
+		return dataHora;
+	}
+
+	public void setDataHora(Date dataHora) {
+		this.dataHora = dataHora;
+	}
+
 }

@@ -30,11 +30,11 @@ public class HorarioAssistencia {
 	private String materia;
 
 	@JoinColumn(name = "id_foto_assinatura_professor", referencedColumnName = "id_arquivo")
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Arquivo fotoAssinatura;
 
 	@JoinColumn(name = "id_estudante", referencedColumnName = "id_pessoa")
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne()
 	private Estudante estudante;
 
 	@Temporal(TemporalType.DATE)

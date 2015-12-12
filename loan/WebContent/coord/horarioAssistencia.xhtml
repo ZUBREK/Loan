@@ -66,7 +66,7 @@
 						</p:commandButton>
 
 						<p:commandButton id="removerTR" value="" icon="remover16"
-							style="margin-left: 10px;"
+							style="margin-left: 2px;"
 							oncomplete="PF('assistenciaConfirmDialog').show()"
 							update=":confirm" styleClass="apenasIcone">
 
@@ -85,7 +85,7 @@
 		</p:panel>
 
 		<p:dialog id="assistenciaDlg" widgetVar="assistenciaDialog"
-			header="Dados do Horário de Assistência" width="600" height="200"
+			header="Dados do Horário de Assistência" width="600" height="400"
 			modal="true" closable="false">
 
 			<h:form id="assistencia_form">
@@ -101,10 +101,12 @@
 
 
 					<h:outputLabel id="dataLb" value="Data da Assistência:" for="data" />
-					<p:calendar id="data"
-						value="#{horarioAssistenciaMB.horarioAssistencia.dataHora}"
-						locale="pt" navigator="true" pattern="dd/mm/yyyy"
-						mindate="1/1/2014" />
+					<p:calendar id="dataInicio" value="#{horarioAssistenciaMB.horarioAssistencia.dataHora}" locale="pt"
+						pattern="dd/MM/yyyy HH:mm" readonlyInput="true" yearRange="c:c"
+						mask="true">
+						<p:ajax event="dateSelect" listener="#{horarioAssistenciaMB.checarData}"
+							update=":msg" />
+					</p:calendar>
 
 
 					<p:outputLabel id="campusLb" value="Câmpus:" for="campus" />

@@ -133,6 +133,7 @@ public class TimeMB {
 			for (TimeEstudante timeEstudante : time.getTimeEstudante()) {
 				if (timeEstudante.getTime() == null) {
 					timeEstudanteDao.remover(timeEstudante);
+					time.getTimeEstudante().remove(timeEstudante);
 				}
 			}
 		} catch (Exception e) {
@@ -189,11 +190,11 @@ public class TimeMB {
 	public void removerEstudante() {
 		try {
 			timeEstudanteDao.remover(timeEstudante);
+			time.getTimeEstudante().remove(timeEstudante);
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
-		time.getTimeEstudante().remove(timeEstudante);
 		timeEstudante = null;
 	}
 

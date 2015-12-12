@@ -105,12 +105,9 @@ public class ProjetoMB {
 
 	private StreamedContent arqStreamed;
 
-	private boolean isUpdate;
-
 	public ProjetoMB() {
 
 		projetoFiltered = new ArrayList<Projeto>();
-		isUpdate = true;
 	}
 
 	public void criar() {
@@ -118,7 +115,6 @@ public class ProjetoMB {
 		campus = null;
 		modalidade = null;
 		coordenador = null;
-		isUpdate = false;
 	}
 
 	@PostConstruct
@@ -145,11 +141,20 @@ public class ProjetoMB {
 	}
 
 	public void cancelar() {
-		if (isUpdate == true) {
-			projeto = null;
-		} else {
-			remover();
-			isUpdate = true;
+		removerRegistrosRelacionamentos();
+		projeto = null;
+	}
+
+	private void removerRegistrosRelacionamentos() {
+		try {
+			for (ProjetoEstudante projetoEstudante : projeto.getProjetoEstudante()) {
+				if (projetoEstudante.getProjeto() == null) {
+					projetoEstudanteDao.remover(projetoEstudante);
+					projeto.getProjetoEstudante().remove(projetoEstudante);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -169,7 +174,6 @@ public class ProjetoMB {
 		if (estudante != null && estudante.getId() != null) {
 			ProjetoEstudante projetoEstd = new ProjetoEstudante();
 			projetoEstd.setEstudante(estudante);
-			projetoEstd.setProjeto(projeto);
 			projetoEstudanteDao.salvar(projetoEstd);
 			projeto.getProjetoEstudante().add(projetoEstd);
 			estudante = new Estudante();
@@ -192,8 +196,9 @@ public class ProjetoMB {
 		return listaEstudante;
 	}
 
-	public void procurarRelatorios() {
-		projeto = projetoDao.findById(projeto.getId());
+	public void procurarRelatorios(Projeto projeto2) {
+		projeto2 = projetoDao.findById(projeto2.getId());
+		this.projeto = projeto2;
 		relatorios = projeto.getRelatoriosProjeto();
 	}
 
@@ -226,10 +231,11 @@ public class ProjetoMB {
 			relatorio.setCaminho(caminho);
 			relatorio.setNome(nomeArquivoStreamed);
 			relatorio.setDataUpload(new Date());
-			projeto.getRelatoriosProjeto().add(relatorio);
-
 			relatorioProjetoDao.salvar(relatorio);
-			procurarRelatorios();
+			projeto.getRelatoriosProjeto().add(relatorio);
+			projetoDao.update(projeto);
+
+			procurarRelatorios(projeto);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -246,8 +252,10 @@ public class ProjetoMB {
 				File file = new File(relProj.getCaminho());
 				file.delete();
 				relatorioProjetoDao.remover(relProj);
+				projeto.getRelatoriosProjeto().remove(relProj);
+				projetoDao.update(projeto);
 				relProj = null;
-				procurarRelatorios();
+				procurarRelatorios(projeto);
 			}
 		} catch (Exception e) {
 			mensagemAvisoFaces("Erro!", "Não foi possível apagar o arquivo!");
@@ -291,6 +299,7 @@ public class ProjetoMB {
 	}
 
 	public void setProjeto(Projeto projeto) {
+		procurarRelatorios(projeto);
 		campus = projeto.getCampus();
 		modalidade = projeto.getModalidade();
 		coordenador = (CoordenadorPea) projeto.getCoordenador();
@@ -413,14 +422,6 @@ public class ProjetoMB {
 
 	public void setEstudanteDao(EstudanteDao estudanteDao) {
 		this.estudanteDao = estudanteDao;
-	}
-
-	public boolean isUpdate() {
-		return isUpdate;
-	}
-
-	public void setUpdate(boolean isUpdate) {
-		this.isUpdate = isUpdate;
 	}
 
 	public RelatorioProjetoDao getRelatorioProjetoDao() {

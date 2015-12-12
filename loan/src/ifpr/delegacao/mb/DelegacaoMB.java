@@ -121,6 +121,7 @@ public class DelegacaoMB {
 			for (DelegacaoPessoa delegacaoPessoa : delegacao.getDelegacaoPessoas()) {
 				if (delegacaoPessoa.getDelegacao() == null) {
 					delegacaoPessoaDao.remover(delegacaoPessoa);
+					delegacao.getDelegacaoPessoas().remove(delegacaoPessoa);
 				}
 			}
 		} catch (Exception e) {
@@ -177,10 +178,10 @@ public class DelegacaoMB {
 	public void removerPessoa() {
 		try {
 			delegacaoPessoaDao.remover(delegacaoPessoa);
+			delegacao.getDelegacaoPessoas().remove(delegacaoPessoa);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		delegacao.getDelegacaoPessoas().remove(delegacaoPessoa);
 	}
 
 	public List<Pessoa> pesquisarPessoaNome(String nome) {

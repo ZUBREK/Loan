@@ -65,19 +65,16 @@
 					</p:column>
 
 					<p:column headerText="Relatórios" width="55">
-					
+
 						<p:commandButton id="visRelatorioTR" value=""
 							style="margin-left: 15px;" update=":visRelatoriosProjetoDlg"
 							icon="ui-icon-search"
-							actionListener="#{projetoMB.procurarRelatorios()}"
 							oncomplete="PF('visRelatoriosProjetoDialog').show()"
 							styleClass="apenasIcone">
-							
 							<f:setPropertyActionListener value="#{projeto}"
 								target="#{projetoMB.projeto}" />
-								
 						</p:commandButton>
-						
+
 					</p:column>
 
 				</p:dataTable>
@@ -154,7 +151,6 @@
 
 							<p:commandButton id="continuarBt" value="Continuar"
 								icon="salvar16" update=":projeto_form :msg"
-								actionListener="#{projetoMB.salvar}"
 								oncomplete="if(!args.validationFailed) PF('tabBagaca').select(1);" />
 
 							<p:commandButton id="cancelarBt1" value="Cancelar"
@@ -214,13 +210,14 @@
 
 						<p:commandButton id="salvarBt" value="Salvar" icon="salvar16"
 							update=":tableForm :projeto_form :msg"
+							onstart="PF('tabBagaca').select(0);"
 							actionListener="#{projetoMB.salvar}"
 							oncomplete="if(!args.validationFailed) PF('projetoDialog').hide()" />
 
 						<p:commandButton id="cancelarBt" value="Cancelar"
 							icon="cancelar16" oncomplete="PF('projetoDialog').hide()"
-							update=":msg" immediate="true"
-							actionListener="#{projetoMB.cancelar()}">
+							onstart="PF('tabBagaca').select(0);" update=":msg"
+							immediate="true" actionListener="#{projetoMB.cancelar()}">
 
 							<p:resetInput target=":projeto_form" />
 

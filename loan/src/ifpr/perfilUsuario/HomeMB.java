@@ -88,6 +88,9 @@ public class HomeMB {
 	}
 
 	public void criarArqFotoPerfil(Pessoa pessoa) {
+		if (!arquivo.getUploader().equals(pessoa)) {
+			arquivo = new Arquivo();
+		}
 		arquivo.setFotoPerfil(true);
 		arquivo.setCaminho(Paths.FOTO_DEFAULT);
 		arquivo.setNome("default.png");

@@ -562,7 +562,9 @@ public class ChaveMB {
 						}
 					}
 				} else {
-					setarPartidaPontosAdversario(nodesCompetidores);
+					if (partidaTimeMeuPai.getPlacar() == -1) {
+						setarPartidaPontosAdversario(nodesCompetidores);
+					}
 				}
 			}
 		} catch (Exception e) {

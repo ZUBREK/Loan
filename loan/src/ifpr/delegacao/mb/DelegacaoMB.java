@@ -75,7 +75,7 @@ public class DelegacaoMB {
 
 	private List<DelegacaoPessoa> delegacaoPessoas;
 
-	private int anoOld;
+	private Integer anoOld;
 
 	public DelegacaoMB() {
 		delegacaoPessoas = new ArrayList<>();
@@ -131,7 +131,7 @@ public class DelegacaoMB {
 	public void salvar() {
 		if (delegacao.getId() != null) {
 
-			if (anoOld != delegacao.getAno()) {
+			if (!anoOld.equals(delegacao.getAno())) {
 				novaDelegacao = new Delegacao();
 				novaDelegacao.setCampus(delegacao.getCampus());
 				novaDelegacao.setNome(delegacao.getNome());
@@ -413,13 +413,5 @@ public class DelegacaoMB {
 
 	public void setDelegacaoPessoas(List<DelegacaoPessoa> delegacaoPessoas) {
 		this.delegacaoPessoas = delegacaoPessoas;
-	}
-
-	public int getAnoOld() {
-		return anoOld;
-	}
-
-	public void setAnoOld(int anoOld) {
-		this.anoOld = anoOld;
 	}
 }

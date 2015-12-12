@@ -146,7 +146,7 @@ public class TimeMB {
 
 	public void salvar() {
 		if (time.getId() != null) {
-			if (anoOld != time.getAno()) {
+			if (!anoOld.equals(time.getAno())) {
 				novoTime = new Time();
 				novoTime.setAno(time.getAno());
 				novoTime.setCampus(time.getCampus());
@@ -154,7 +154,7 @@ public class TimeMB {
 				novoTime.setNome(time.getNome());
 				novoTime.setTecnico(time.getTecnico());
 				resalvarEstudantesTime(time.getTimeEstudante());
-				timeDao.salvar(time);
+				timeDao.salvar(novoTime);
 			} else {
 				timeDao.update(time);
 			}
@@ -381,14 +381,6 @@ public class TimeMB {
 
 	public void setPontosTimeDao(PontosTimeDao pontosTimeDao) {
 		this.pontosTimeDao = pontosTimeDao;
-	}
-
-	public int getAnoOld() {
-		return anoOld;
-	}
-
-	public void setAnoOld(int anoOld) {
-		this.anoOld = anoOld;
 	}
 
 	public TecnicoEsportivoDao getTecEspDao() {

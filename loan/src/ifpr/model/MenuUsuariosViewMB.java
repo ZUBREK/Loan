@@ -58,10 +58,9 @@ public class MenuUsuariosViewMB {
 			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_COORDENADOR)) {
-
+			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "atendimento16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
-			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_SECRETARIO)) {
 
@@ -73,15 +72,13 @@ public class MenuUsuariosViewMB {
 
 			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
-			
 			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
 
 			submenu = new DefaultSubMenu("Usuários");
 			adicionarItem("Coordenadores", Paths.COORDENADORES, "user16", true);
 			adicionarItem("Tec. Esportivos", Paths.TECESP, "user16", true);
 			model.addElement(submenu);
-			
-			
+
 			submenu = new DefaultSubMenu("Competição");
 
 			adicionarItem("Times", Paths.TIMES, "user16", true);
@@ -89,12 +86,10 @@ public class MenuUsuariosViewMB {
 			model.addElement(submenu);
 
 		} else if (pessoaLogada.getTipo().equals(TipoPessoa.ROLE_TEC_COORD)) {
-
-			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
-			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
-			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
 			adicionarItem("Estudantes", Paths.ESTUDANTES, "user16", false);
-
+			adicionarItem("Eventos", Paths.EVENTOS, "attach16", false);
+			adicionarItem("Projetos PEA", Paths.PROJETOS, "attach16", false);
+			adicionarItem("Horários de Assistências", Paths.HORARIOASSISTENCIA, "attach16", false);
 		}
 
 	}
@@ -119,11 +114,11 @@ public class MenuUsuariosViewMB {
 
 		adicionarItem("Delegações", Paths.DELEGACOES, "attach16", true);
 
-		adicionarItem("Chaves", Paths.CHAVES, "attach16", true);
-
 		adicionarItem("Locais", Paths.LOCAIS, "attach16", true);
 
 		adicionarItem("Jogos", Paths.JOGOS, "atendimento16", true);
+
+		adicionarItem("Chaves", Paths.CHAVES, "attach16", true);
 
 		model.addElement(submenu);
 	}

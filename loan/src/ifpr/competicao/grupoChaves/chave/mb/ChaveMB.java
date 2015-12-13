@@ -922,7 +922,7 @@ public class ChaveMB {
 				}
 			}
 		} else {
-			mensagemErroFaces("Erro!", "JÃ¡ existe uma chave para a modalidade selecionada!");
+			mensagemErroFaces("Erro!", "Já existe uma chave para a modalidade selecionada!");
 			ArrayList<TipoChaveamento> tiposOld = new ArrayList<TipoChaveamento>(Arrays.asList(tipos));
 			tiposOld.clear();
 			TipoChaveamento[] tiposNew = tiposOld.toArray(new TipoChaveamento[tiposOld.size()]);

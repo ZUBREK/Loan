@@ -31,6 +31,7 @@ public abstract class Paths {
 	public static final String PASTA_CRACHAS = LOAN_DOCS + "/cracha";
 	public static final String MOLDURA_CRACHA = LOAN_DOCS + "/molduraCracha.png";
 	public static final String LOGO_JOGOS = LOAN_DOCS + "/logoJIFPR.png";
+	public static final String LOGO_IFPR = LOAN_DOCS + "/logoIFPR.png";
 	public static final String CRACHAS = "CrachasJIFPR.pdf";
 	public static final String CAMINHO_CRACHAS = PASTA_CRACHAS + "/" + CRACHAS;
 	public static final String CRACHAS_SECRETARIOS = PASTA_CRACHAS + "/CrachasSecretarios.pdf";

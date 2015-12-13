@@ -1,15 +1,12 @@
 package ifpr.arquivo.mb;
 
-import ifpr.arquivo.Arquivo;
-import ifpr.arquivo.dao.ArquivoDao;
-import ifpr.model.LoginControllerMB;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,67 +20,97 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import ifpr.arquivo.Arquivo;
+import ifpr.arquivo.TipoArquivo;
+import ifpr.arquivo.dao.ArquivoDao;
+import ifpr.model.LoginControllerMB;
+import ifpr.utils.Paths;
+
 @ManagedBean(name = "arquivoMB")
 @ViewScoped
 public class ArquivoMB {
-	
-	private final String CAMINHO_PASTA = "C:/home/loan_docs";
 
 	@ManagedProperty(value = "#{arquivoDao}")
 	private ArquivoDao arquivoDao;
 
 	private Arquivo arquivo;
 	private StreamedContent arqStreamed;
-	
+
 	@ManagedProperty(value = "#{arquivoLazyDataModel}")
 	private ArquivoLazyDataModel arquivoLazyDataModel;
 
 	private List<Arquivo> arquivosFiltered;
 
 	private LoginControllerMB loginController;
-	
+
+	TipoArquivo[] listaTipo;
+
+	private TipoArquivo tipo;
+
 	public ArquivoMB() {
 		arquivosFiltered = new ArrayList<Arquivo>();
 		FacesContext context = FacesContext.getCurrentInstance();
-		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}", LoginControllerMB.class);
+		loginController = context.getApplication().evaluateExpressionGet(context, "#{loginControllerMB}",
+				LoginControllerMB.class);
 	}
 
 	public void cancelar() {
 		arquivo = null;
+		tipo = null;
+	}
+
+	public void criar() {
+		arquivo = new Arquivo();
+		listaTipo = null;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-		arquivo = new Arquivo();
 		try {
-			File file = new File(CAMINHO_PASTA);
+			File file = new File(Paths.LOAN_DOCS);
 			file.mkdirs();
 
 			byte[] arquivoByte = event.getFile().getContents();
-			String caminho = CAMINHO_PASTA
-					+ event.getFile().getFileName();
+			String caminho = Paths.LOAN_DOCS + "/" + verificaCaminho();
 
 			FileOutputStream fos = new FileOutputStream(caminho);
 			fos.write(arquivoByte);
 			fos.close();
 			arquivo.setCaminho(caminho);
-			arquivo.setNome(event.getFile().getFileName());
+			arquivo.setNome(verificaCaminho());
 			arquivo.setDataUpload(new Date());
 			arquivo.setUploader(loginController.getPessoaLogada());
-			salvar();
 		} catch (Exception ex) {
 			System.out.println("Erro no upload de arquivo" + ex);
 		}
 
 	}
 
+	private String verificaCaminho() {
+		String caminho = null;
+		if (tipo.equals(TipoArquivo.ASSINATURA_DECLARACAO)) {
+			caminho = "assinaturaDeclaracao.png";
+		} else if (tipo.equals(TipoArquivo.LOGO_IFPR)) {
+			caminho = "logoIFPR.png";
+		} else if (tipo.equals(TipoArquivo.LOGO_JIFPR)) {
+			caminho = "logoJIFPR.png";
+		} else if (tipo.equals(TipoArquivo.MOLDURA_CRACHA)) {
+			caminho = "molduraCracha.png";
+		} else if (tipo.equals(TipoArquivo.MOLDURA_DECLARACAO)) {
+			caminho = "molduraDeclaracao.png";
+		}
+		return caminho;
+	}
+
 	public void salvar() {
 		if (arquivo.getId() == null) {
 			arquivoDao.salvar(arquivo);
 		}
+		arquivo = null;
+		tipo = null;
 	}
 
 	public void remover() {
-		try{
+		try {
 			arquivoDao.remover(arquivo);
 			File file = new File(arquivo.getCaminho());
 			file.delete();
@@ -96,7 +123,40 @@ public class ArquivoMB {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, message));
 	}
-	
+
+	private void verificaHasArquivo() {
+		listaTipo = TipoArquivo.values();
+		List<Arquivo> listaArq = arquivoDao.listDesc();
+		for (int i = 0; i < listaArq.size(); i++) {
+			if (listaArq.get(i).getNome().equals("logoIFPR.png")) {
+				ArrayList<TipoArquivo> tiposOld = new ArrayList<TipoArquivo>(Arrays.asList(listaTipo));
+				tiposOld.remove(TipoArquivo.LOGO_IFPR);
+				TipoArquivo[] tiposNew = tiposOld.toArray(new TipoArquivo[tiposOld.size()]);
+				listaTipo = tiposNew;
+			} else if (listaArq.get(i).getNome().equals("logoJIFPR.png")) {
+				ArrayList<TipoArquivo> tiposOld = new ArrayList<TipoArquivo>(Arrays.asList(listaTipo));
+				tiposOld.remove(TipoArquivo.LOGO_JIFPR);
+				TipoArquivo[] tiposNew = tiposOld.toArray(new TipoArquivo[tiposOld.size()]);
+				listaTipo = tiposNew;
+			} else if (listaArq.get(i).getNome().equals("assinaturaDeclaracao.png")) {
+				ArrayList<TipoArquivo> tiposOld = new ArrayList<TipoArquivo>(Arrays.asList(listaTipo));
+				tiposOld.remove(TipoArquivo.ASSINATURA_DECLARACAO);
+				TipoArquivo[] tiposNew = tiposOld.toArray(new TipoArquivo[tiposOld.size()]);
+				listaTipo = tiposNew;
+			} else if (listaArq.get(i).getNome().equals("molduraCracha.png")) {
+				ArrayList<TipoArquivo> tiposOld = new ArrayList<TipoArquivo>(Arrays.asList(listaTipo));
+				tiposOld.remove(TipoArquivo.MOLDURA_CRACHA);
+				TipoArquivo[] tiposNew = tiposOld.toArray(new TipoArquivo[tiposOld.size()]);
+				listaTipo = tiposNew;
+			} else if (listaArq.get(i).getNome().equals("molduraDeclaracao.png")) {
+				ArrayList<TipoArquivo> tiposOld = new ArrayList<TipoArquivo>(Arrays.asList(listaTipo));
+				tiposOld.remove(TipoArquivo.MOLDURA_DECLARACAO);
+				TipoArquivo[] tiposNew = tiposOld.toArray(new TipoArquivo[tiposOld.size()]);
+				listaTipo = tiposNew;
+			}
+		}
+	}
+
 	public ArquivoDao getArquivoDao() {
 		return arquivoDao;
 	}
@@ -117,8 +177,7 @@ public class ArquivoMB {
 		return arquivoLazyDataModel;
 	}
 
-	public void setArquivoLazyDataModel(
-			ArquivoLazyDataModel arquivoLazyDataModel) {
+	public void setArquivoLazyDataModel(ArquivoLazyDataModel arquivoLazyDataModel) {
 		this.arquivoLazyDataModel = arquivoLazyDataModel;
 	}
 
@@ -134,8 +193,7 @@ public class ArquivoMB {
 		InputStream stream;
 		try {
 			stream = new FileInputStream(arquivo.getCaminho());
-			arqStreamed = new DefaultStreamedContent(stream, null,
-					arquivo.getNome());
+			arqStreamed = new DefaultStreamedContent(stream, null, arquivo.getNome());
 		} catch (FileNotFoundException e) {
 			System.out.println("Erro no download de imagem");
 		}
@@ -154,6 +212,22 @@ public class ArquivoMB {
 	public void setLoginController(LoginControllerMB loginController) {
 		this.loginController = loginController;
 	}
-	
+
+	public TipoArquivo getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoArquivo tipo) {
+		this.tipo = tipo;
+	}
+
+	public TipoArquivo[] getListaTipo() {
+		verificaHasArquivo();
+		return listaTipo;
+	}
+
+	public void setListaTipo(TipoArquivo[] listaTipo) {
+		this.listaTipo = listaTipo;
+	}
 
 }
